@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "calendar"
+version = "0.1.0"
+description = "Proyecto para tratar de pasar de curso"
+authors = ["Elias Gill <eliasgill42@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "3.8"
+Kivy = "^2.1.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
