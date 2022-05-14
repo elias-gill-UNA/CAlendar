@@ -1,2 +1,3 @@
-class feriado:
-    pass
+class feriados:
+    def __init__(self,feriado):
+        self.feriado=feriado
