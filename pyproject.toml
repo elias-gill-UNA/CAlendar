@@ -7,6 +7,7 @@ authors = ["Elias Gill <eliasgill42@gmail.com>"]
 [tool.poetry.dependencies]
 python = "3.8"
 Kivy = "^2.1.0"
+requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
 
