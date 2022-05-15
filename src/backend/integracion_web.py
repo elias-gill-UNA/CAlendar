@@ -1,5 +1,7 @@
 import requests
-apikey = '2a882b8afd0aa5e04feeba388c7a365858fbbf28' 
+import json
+apiKey = '43bd49af-15b8-4d69-95ed-e2c1d327b876' 
 
-def test():
-    return 1
+country = 'PY'
+respuesta = requests.get(f'https://holidayapi.com/v1/holidays?pretty&key=43bd49af-15b8-4d69-95ed-e2c1d327b876&country=PY&year=2021')._content
+print(json.loads(respuesta)) #ignorar error (si, ironico)
