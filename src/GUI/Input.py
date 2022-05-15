@@ -1,7 +1,7 @@
 from tkinter import *
 
 root = Tk()
-root.iconbitmap('Icono.jpg')
+root.iconbitmap('icono.ico')
 
 def OnClick():
     buttonMsg = Label(root, text=inputUsuario)

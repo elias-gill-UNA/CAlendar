@@ -1,6 +1,9 @@
 from tkinter import *
+from navbar import Inicializar
 
 root = Tk()
+
+Inicializar(root)
 
 def OnClick():
     buttonMsg = Label(root, text="ABRIR ARCHIVO!")
