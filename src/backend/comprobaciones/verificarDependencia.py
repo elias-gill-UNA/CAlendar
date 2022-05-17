@@ -11,10 +11,10 @@ def verificarDependencia(fechaInicial,fechaFinal,duracion):#fechaInicial: es la 
     # fechaFinal: es la actividad  que depende de la actividadInicial, duracion: duracion de la actividadInicial
     fechaInicial=separarFecha(fechaInicial)
     fechaFinal=separarFecha(fechaFinal)
-    
+
     duracionInicial=date(fechaInicial[2],fechaInicial[1],fechaInicial[0])
     duracionFinal=date(fechaFinal[2],fechaFinal[1],fechaFinal[0])
-    
+
     delta=duracionFinal-duracionInicial
     if delta.days>=duracion:
         return True
