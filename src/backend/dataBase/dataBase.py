@@ -6,32 +6,18 @@ import random
 def nuevoProyecto(proyecto, db): # nombre del proyecto
     conn = sqlite3.connect(db)
     c = conn.cursor()
+
+    # Crear las tablas necesarias para el proyecto
     c.execute("CREATE TABLE IF NOT EXISTS Descripcion (id INT, name TEXT, desc TEXT, fecha TEXT, actiCount INT, depCount INT)") # crea la descripcion del proyecto
     c.execute("CREATE TABLE IF NOT EXISTS Actividades (id INT, name TEXT, duracion INT, fechaTemp TEXT, fechaTar Text, finalizado INT)") # tabla de actividades
     c.execute("CREATE TABLE IF NOT EXISTS Dependecias (id INT, idAntes TEXT, idDespues TEXT)") # tabla de Dependecias
 
-        # self.identificador=identificador
-        # self.identificadorAntes=identificadorAntes
-        # self.identificadorDespues=identificadorDespues
-
-
-
-
-
-
-    # llenamos los campos de identificacion del proyecto
+    # Llenado de los campos de identificacion del proyecto
     c.execute("INSERT INTO Descripcion (id, name, desc, fecha, actiCount, depCount) VALUES (?, ?, ?, ?, ?, ?)", 
               (proyecto.identificador, proyecto.nombre, proyecto.descripcion, proyecto.inicioPrevisto, 0, 0))
+
+    # Proyecto creado satisfactoriamente
     return True 
-
-
-
-
-
-
-
-
-
 
 
 def nuevaActividad(db):
