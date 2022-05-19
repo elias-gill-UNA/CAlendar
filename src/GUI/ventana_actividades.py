@@ -9,9 +9,9 @@ from tkcalendar import *
 class form(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.inicializarGUI()
+        self.__inicializarGUI__()
 
-    def inicializarGUI(self):
+    def __inicializarGUI__(self):
         self.title("")
 
         # Etiquetas
