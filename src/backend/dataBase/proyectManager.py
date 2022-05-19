@@ -1,37 +1,10 @@
-import dataBase
+import dbFunctions.db_proyects as dataBase
 import os
 
-def crearProyecto(nuevoProyecto):
-    if os.listdir('./proyects/').__len__() < 100: # si ya existen 99 proyectos
-        return {"status": 'error', "msg": 'Maximum number of projects reached'}
+# TODO  Cambiar los return y comenzar la documentacion
 
-    nombre = './proyects/'+nuevoProyecto.identificador+'db'
-    if os.path.exists(nombre): # si ya existe ese id
-        return {"status": False, "msg": 'The project already exists'}
-
-    newProyect = open(nombre + '.db', 'w')
-    newProyect.close() # crea el archivo '<proyecto>.db' si no esta creado
-    dataBase.nuevoProyecto(nuevoProyecto, nombre) # crear el proyecto
-    return {"status": True, "msg": 'Proyect has been created'}
-
-def eliminarProyecto(idProyecto):
-    nombre = './proyects/'+idProyecto+'db'
-    if os.path.exists(nombre): # si el proyecto existe lo elimina
-        os.remove(nombre) 
-        return {"status": True, "msg": 'Proyect removed succesfully'}
-    return {"status": False, "msg": 'Proyect does not exist'}
-
-# def abrirProyecto(id): # cargar todo el proyecto TODO 
-#     nombre = './proyects/'+id+'db'
-#     if os.path.exists(nombre): # si el proyecto existe lo elimina
-#         return {"status": True, "msg": }
-#     return {"status": False, "msg": 'Proyect does not exist'}
-    
-def getInfoProyecto(id): # acceder solo la informacion general del proyecto
-    # return <datos del proyecto (nombre, descrip, id...)>
-    pass
-
-def getProyectsList(): # vefile_path = os.path.splitext(file_path)[0]
+# retorna la lista de todos los proyectos existentes
+def getProyectsList(): 
     # Como cada proyecto se encuentra en su propio archivo idProyecto.db, entonces quitamos esa lista
     file_list = os.listdir('./proyects/')
     # Quitar la extension de archivo al id
@@ -41,6 +14,66 @@ def getProyectsList(): # vefile_path = os.path.splitext(file_path)[0]
     
     return file_list
 
-#def changeProyectValues():
 
-#def closeProyect():
+# automatiza eleccion de ID para el proyecto
+def nuevoID():
+    list = getProyectsList();
+    # el id es un entero 0 < n < 100, buscamos un nombre libre
+    for i in range(1, 100):
+        aproval = True
+        for k in list:
+            if i == int(k):
+                aproval = False
+        if aproval:
+            i = str(i)
+            return i
+
+
+# los proyectos se guardan en ../proyects/
+def crearProyecto(nuevoProyecto):
+    # comprobar si existen menos de 99 proyectos
+    if os.listdir('./proyects/').__len__() < 99: 
+        return {"status": False, "data": 'Maximum number of projects reached'}
+
+    id = nuevoID()
+    dataBase.nuevoProyecto(nuevoProyecto, id) # crear y llena las tablas del proyecto
+    return {"status": True, "data": 'Proyect has been created'}
+
+
+def eliminarProyecto(idProyecto):
+    # como cada proyecto tiene un .db distinto solo debemos eliminar ese archivo
+    nombre = './proyects/'+idProyecto+'db'
+    if os.path.exists(nombre): # si el proyecto existe lo elimina
+        os.remove(nombre) 
+        return {"status": True, "data": 'Proyect removed succesfully'}
+    return {"status": False, "data": 'Proyect does not exist'}
+
+
+# acceder solo la informacion general del proyecto
+def getProyectInfo(id): 
+
+
+
+
+def proyectListsWithInfo():
+    list = getProyectsList()
+    matriz = []
+    for i in list:
+        proyecto = [i, getProyectInfo(i)]
+        matriz.append(proyecto)
+    return matriz
+        
+
+
+def modificarDescripcion(id, proyect):
+    pass
+
+
+def cerrarProyecto(id):
+    return True
+
+
+def abrirProyecto(id): # cargar todo el proyecto TODO 
+    pass
+
+
