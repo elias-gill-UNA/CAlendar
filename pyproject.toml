@@ -8,6 +8,8 @@ authors = ["Elias Gill <eliasgill42@gmail.com>"]
 python = "3.8"
 Kivy = "^2.1.0"
 requests = "^2.27.1"
+tkcalendar = "^1.6.1"
+matplotlib = "^3.5.2"
 
 [tool.poetry.dev-dependencies]
 
