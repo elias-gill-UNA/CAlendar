@@ -51,8 +51,7 @@ def eliminarProyecto(idProyecto):
 
 # acceder solo la informacion general del proyecto
 def getProyectInfo(id): 
-
-
+    return dataBase.getInfo(id)
 
 
 def proyectListsWithInfo():
@@ -71,7 +70,6 @@ def modificarDescripcion(id, proyect):
 
 def cerrarProyecto(id):
     return True
-
 
 def abrirProyecto(id): # cargar todo el proyecto TODO 
     pass
