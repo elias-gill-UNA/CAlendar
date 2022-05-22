@@ -1,18 +1,15 @@
 import dbFunctions.db_proyects as dataBase
 import os
 
-# TODO  Cambiar los return y comenzar la documentacion
-
 # retorna la lista de todos los proyectos existentes
+# Como cada proyecto se encuentra en su propio archivo idProyecto.db, entonces quitamos esa lista
 def getProyectsList(): 
-    # Como cada proyecto se encuentra en su propio archivo idProyecto.db, entonces quitamos esa lista
     file_list = os.listdir('./proyects/')
-    # Quitar la extension de archivo al id
-    for index, item in enumerate(file_list):
+    for index, item in enumerate(file_list): # Quitar la extension de archivo al id
         basename = os.path.basename(item)
         file_list[index] = os.path.splitext(basename)[0]
     
-    return file_list
+    return file_list # retorna la lista de id's del proyecto
 
 
 # automatiza eleccion de ID para el proyecto
@@ -29,7 +26,7 @@ def nuevoID():
             return i
 
 
-# los proyectos se guardan en ../proyects/
+# Los proyectos se guardan en ../proyects/
 def crearProyecto(nuevoProyecto):
     # comprobar si existen menos de 99 proyectos
     if os.listdir('./proyects/').__len__() < 99: 
@@ -50,28 +47,38 @@ def eliminarProyecto(idProyecto):
 
 
 # acceder solo la informacion general del proyecto
-def getProyectInfo(id): 
-    return dataBase.getInfo(id)
+def getProyectInfo(id, conexion): 
+    if conexion: # si ya existe conexion
+        return {"status": True, "data": dataBase.getInfo(id, conexion)}
+
+    if not os.path.exists('./proyects/'+id+'.db'): # si el proyecto no existe 
+        return {"status": False, "data": 'Proyect does not exist'}
+
+    return {"status": True, "data": dataBase.getInfo(id, conexion)} # entonces si existe id
 
 
 def proyectListsWithInfo():
     list = getProyectsList()
     matriz = []
     for i in list:
-        proyecto = [i, getProyectInfo(i)]
+        proyecto = [i, dataBase.getInfo(i, None)]
         matriz.append(proyecto)
-    return matriz
+    return matriz # retorna un array [id, [Descripcion, fecha ...]]
         
 
+def modificarDescripcion(conexion, nuevaDescripcion): # solo se pueden modificar proyectos activos
+    dataBase.modificarValor(conexion, 'Descripcion', 'desc', nuevaDescripcion, "")
+    return {"status": True, "data": 'Succesfull'}
 
-def modificarDescripcion(id, proyect):
-    pass
 
-
-def cerrarProyecto(id):
+def cerrarProyecto(conexion): # pasarle la conexion
+    dataBase.cerrarProyecto(conexion)
     return True
 
-def abrirProyecto(id): # cargar todo el proyecto TODO 
-    pass
+
+def abrirProyecto(id): # cargar todo el proyecto  
+    if not os.path.exists('./proyects/'+id+'.db'): # si el proyecto existe 
+        return {"status": False, "data": 'Proyect does no exist'}
+    return {"status": True, "data":dataBase.abrirProyecto(id) } # retorna la conexion al proyecto
 
 

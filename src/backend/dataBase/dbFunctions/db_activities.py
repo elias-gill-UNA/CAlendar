@@ -1,14 +1,13 @@
-import sqlite3
-import os
-import time
-import random
+# --- Modulo en proceso ---
 
-def nuevaActividad(proyectId):
-    conn = sqlite3.connect(db)
-    c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS Descripcion (id INT, name TEXT, desc TEXT, fecha TEXT)") # crea la descripcion del proyecto
+def nuevaActividad(conexion, actividad):
+    conexion.execute("CREATE TABLE IF NOT EXISTS Descripcion (id INT, name TEXT, desc TEXT, fecha TEXT)") # crea la descripcion del proyecto
 
-    # llenamos los campos de identificacio del proyecto
-    c.execute("INSERT INTO tabla1 (id, name, desc, fecha) VALUES (?, ?, ?, ?)", 
-              (proyecto.identificador, proyecto.nombre, proyecto.descripcion, proyecto.inicioPrevisto))
+#     c.execute("INSERT INTO tabla1 (palabraclave, valor) VALUES (?, ?)", (keyword, value))
+#     conn.commit()
+
+#     c.execute('SELECT * FROM tabla1')
+#     data = c.fetchall()
     return True 
+
+
