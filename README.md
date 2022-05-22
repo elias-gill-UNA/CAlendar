@@ -5,9 +5,9 @@ Para la utilizacion de poetry usan los siguientes comandos en su terminal (y si,
 ```
 pip install poetry
 ```
-Se colocan en el proyecto, el cual ya se debe encuentrar configurado para usar poetry y hacen:
+Se colocan en la carpeta del proyecto y escriben:
 ```
 poetry install
 ```
-Y ya esta, ya tienen las dependencias necesarias para el proyecto.
+Y ya esta, ya tienen las dependencias necesarias para el proyecto con la version correspondiente.
 
