@@ -3,7 +3,7 @@ import os
 
 # retorna la lista de todos los proyectos existentes
 # Como cada proyecto se encuentra en su propio archivo idProyecto.db, entonces quitamos esa lista
-def getProyectsList(): 
+def __getProyectsList(): 
     file_list = os.listdir('./proyects/')
     for index, item in enumerate(file_list): # Quitar la extension de archivo al id
         basename = os.path.basename(item)
@@ -13,8 +13,8 @@ def getProyectsList():
 
 
 # automatiza eleccion de ID para el proyecto
-def nuevoID():
-    list = getProyectsList();
+def __nuevoID():
+    list = __getProyectsList();
     # el id es un entero 0 < n < 100, buscamos un nombre libre
     for i in range(1, 100):
         aproval = True
@@ -32,7 +32,7 @@ def crearProyecto(nuevoProyecto):
     if os.listdir('./proyects/').__len__() < 99: 
         return {"status": False, "data": 'Maximum number of projects reached'}
 
-    id = nuevoID()
+    id = __nuevoID()
     dataBase.nuevoProyecto(nuevoProyecto, id) # crear y llena las tablas del proyecto
     return {"status": True, "data": 'Proyect has been created'}
 
@@ -57,8 +57,8 @@ def getProyectInfo(id, conexion):
     return {"status": True, "data": dataBase.getInfo(id, conexion)} # entonces si existe id
 
 
-def proyectListsWithInfo():
-    list = getProyectsList()
+def getProyectListsWithInfo():
+    list = __getProyectsList()
     matriz = []
     for i in list:
         proyecto = [i, dataBase.getInfo(i, None)]
@@ -70,6 +70,9 @@ def modificarDescripcion(conexion, nuevaDescripcion): # solo se pueden modificar
     dataBase.modificarValor(conexion, 'Descripcion', 'desc', nuevaDescripcion, "")
     return {"status": True, "data": 'Succesfull'}
 
+def modificarNombre(conexion, nuevoNombre): # solo se pueden modificar proyectos activos
+    dataBase.modificarValor(conexion, 'Descripcion', 'name', nuevoNombre, "")
+    return {"status": True, "data": 'Succesfull'}
 
 def cerrarProyecto(conexion): # pasarle la conexion
     dataBase.cerrarProyecto(conexion)
