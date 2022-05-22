@@ -47,9 +47,3 @@ def cerrarProyecto(cursor):
     return True
 
 
-#     c.execute("INSERT INTO tabla1 (palabraclave, valor) VALUES (?, ?)", (keyword, value))
-#     conn.commit()
-
-#     c.execute('SELECT * FROM tabla1')
-#     data = c.fetchall()
-

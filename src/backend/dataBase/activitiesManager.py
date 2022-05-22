@@ -1,15 +1,12 @@
+import os
+
+# esto esta vacio DE MOMENTO
 def anadirActividad():
     pass
 
 def eliminarActividad():
     pass
 
-def modificarActividad():
+def modificarActividad(): # pass solo hace que la funcion no haga nada
     pass
 
-def ():
-    pass
-def anadirActividad():
-    pass
-def anadirActividad():
-    pass

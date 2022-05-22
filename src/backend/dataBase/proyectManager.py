@@ -72,7 +72,7 @@ def modificarDescripcion(conexion, nuevaDescripcion): # solo se pueden modificar
 
 
 def cerrarProyecto(conexion): # pasarle la conexion
-    cerrarProyecto(conexion)
+    dataBase.cerrarProyecto(conexion)
     return True
 
 
