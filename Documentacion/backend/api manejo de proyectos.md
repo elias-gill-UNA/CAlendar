@@ -1,5 +1,5 @@
 # API para el manejo de proyectos
-##Vista general
+## Vista general
 Para el manejo, creacion de proyectos y la modificacion de su informacion general, el backend dispone del siguiente modulo src/backend/dataBase/proyectManager.py.
 Todas las funciones retornan un "data", pero si existe un error entonces generan un error de python con "raise ValueError", por ello es requerido el uso de (try, except).
 
