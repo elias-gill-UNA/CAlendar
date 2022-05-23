@@ -30,11 +30,11 @@ def __nuevoID():
 def crearProyecto(nuevoProyecto):
     # comprobar si existen menos de 99 proyectos
     if os.listdir('./proyects/').__len__() < 99: 
-        return {"status": False, "data": 'Maximum number of projects reached'}
+        raise ValueError("Maximum number of projects reached")
 
     id = __nuevoID()
     dataBase.nuevoProyecto(nuevoProyecto, id) # crear y llena las tablas del proyecto
-    return {"status": True, "data": 'Proyect has been created'}
+    return True
 
 
 def eliminarProyecto(idProyecto):
@@ -42,37 +42,37 @@ def eliminarProyecto(idProyecto):
     nombre = './proyects/'+idProyecto+'db'
     if os.path.exists(nombre): # si el proyecto existe lo elimina
         os.remove(nombre) 
-        return {"status": True, "data": 'Proyect removed succesfully'}
-    return {"status": False, "data": 'Proyect does not exist'}
+        return True
+    raise ValueError("Proyect does not exist")
 
 
 # acceder solo la informacion general del proyecto
 def getProyectInfo(id, conexion): 
     if conexion: # si ya existe conexion
-        return {"status": True, "data": dataBase.getInfo(id, conexion)}
+        return dataBase.getInfo(id, conexion)
 
     if not os.path.exists('./proyects/'+id+'.db'): # si el proyecto no existe 
-        return {"status": False, "data": 'Proyect does not exist'}
+        raise ValueError("Proyect does not exist")
 
-    return {"status": True, "data": dataBase.getInfo(id, conexion)} # entonces si existe id
+    return dataBase.getInfo(id, conexion)
 
 
+# retorna un array con los proyectos existentes[id, [Descripcion, fecha ...]]
 def getProyectListsWithInfo():
     list = __getProyectsList()
     matriz = []
     for i in list:
         proyecto = [i, dataBase.getInfo(i, None)]
         matriz.append(proyecto)
-    return matriz # retorna un array [id, [Descripcion, fecha ...]]
-        
+    return matriz 
 
 def modificarDescripcion(conexion, nuevaDescripcion): # solo se pueden modificar proyectos activos
     dataBase.modificarValor(conexion, 'Descripcion', 'desc', nuevaDescripcion, "")
-    return {"status": True, "data": 'Succesfull'}
+    return True
 
 def modificarNombre(conexion, nuevoNombre): # solo se pueden modificar proyectos activos
     dataBase.modificarValor(conexion, 'Descripcion', 'name', nuevoNombre, "")
-    return {"status": True, "data": 'Succesfull'}
+    return True
 
 def cerrarProyecto(conexion): # pasarle la conexion
     dataBase.cerrarProyecto(conexion)
@@ -81,7 +81,7 @@ def cerrarProyecto(conexion): # pasarle la conexion
 
 def abrirProyecto(id): # cargar todo el proyecto  
     if not os.path.exists('./proyects/'+id+'.db'): # si el proyecto existe 
-        return {"status": False, "data": 'Proyect does no exist'}
-    return {"status": True, "data":dataBase.abrirProyecto(id) } # retorna la conexion al proyecto
+        raise ValueError("Proyect does not exist")
+    return dataBase.abrirProyecto(id) # retorna la conexion al proyecto
 
 
