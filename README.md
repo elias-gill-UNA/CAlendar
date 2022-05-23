@@ -7,7 +7,12 @@ pip install poetry
 ```
 Se colocan en la carpeta del proyecto y escriben:
 ```
+poetry shell
+```
+Deberia de iniciar el entorno virtual, luego realizan:
+```
 poetry install
 ```
+Y derian estar ready to go.
 Y ya esta, ya tienen las dependencias necesarias para el proyecto con la version correspondiente.
 
