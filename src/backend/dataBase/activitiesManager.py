@@ -1,4 +1,5 @@
 import os
+from dbFunctions import db_activities
 
 # esto esta vacio DE MOMENTO
 def anadirActividad():

@@ -67,11 +67,11 @@ def getProyectListsWithInfo():
     return matriz 
 
 def modificarDescripcion(conexion, nuevaDescripcion): # solo se pueden modificar proyectos activos
-    dataBase.modificarValor(conexion, 'Descripcion', 'desc', nuevaDescripcion, "")
+    dataBase.modificarValor(conexion, 'descripcion', nuevaDescripcion)
     return True
 
 def modificarNombre(conexion, nuevoNombre): # solo se pueden modificar proyectos activos
-    dataBase.modificarValor(conexion, 'Descripcion', 'name', nuevoNombre, "")
+    dataBase.modificarValor(conexion, 'nombre', nuevoNombre)
     return True
 
 def cerrarProyecto(conexion): # pasarle la conexion
