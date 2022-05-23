@@ -40,7 +40,7 @@ class Interfaz(tk.Frame):
         self.duracion.grid(row=1, column=3)
 
         lbl_separador = tk.Label(frame, text="")
-        lbl_separador.grid(row=4, column=0)
+        lbl_separador.grid(row=2, column=0)
 
         # Botones
         btn_crear = tk.Button(frame, text="Crear Actividad")
@@ -99,7 +99,7 @@ class Interfaz(tk.Frame):
 
         # Lista de opciones
         self.opcion=tk.StringVar()
-        combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias", "Camino Crítico"],textvariable=self.opcion)
+        combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"],textvariable=self.opcion)
         combo.place(x=50, y=50)
         combo.grid(row=0, column=1)
     # Actualiza la tabla
