@@ -15,9 +15,6 @@ class TareaEnFormatoGUI:
         self.nombre = nombre
 
 
-for i in range(filas):
-    matriz.append([0]*columnas)
-
 def calcularPosi(matriz,dependencias,nombres,columnas):
     contador=0
     definitivo=-1
@@ -32,6 +29,10 @@ def calcularPosi(matriz,dependencias,nombres,columnas):
     return definitivo
 
 def DiagramaGantt(nombres,dependencias,duracion,matriz,columnas):
+    #creacion de matriz
+    for i in range(filas):
+        matriz.append([0] * columnas)
+
     for i in range(len(nombres)):
         if dependencias[i][0]!="-":
             contador=calcularPosi(matriz,dependencias[i],nombres,columnas)
