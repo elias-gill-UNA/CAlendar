@@ -5,7 +5,7 @@ description = "Proyecto para tratar de pasar de curso"
 authors = ["Elias Gill <eliasgill42@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.8"
+python = "3.8.10"
 Kivy = "^2.1.0"
 requests = "^2.27.1"
 tkcalendar = "^1.6.1"
