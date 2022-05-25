@@ -8,8 +8,8 @@ def anadirActividad(conexion, nuevaActividad):
         raise ValueError("Maximum number of activities reached")
 
     db.nuevaActividad(conexion, nuevaActividad)
-    cont_actividades = info[5] # actualizar el contador en la DB
-    actualizarContador(conexion, 'actiCount', cont_actividades + 1)
+    cont_actividades = info[5] # actualizar el contador de actividades del proyecto
+    actualizarContador(conexion, 'actiCount', cont_actividades + 1) 
     return True
 
 def eliminarActividad(conexion, id):
@@ -17,21 +17,24 @@ def eliminarActividad(conexion, id):
         raise ValueError("Activitie does not exist")
 
     db.eliminarActividad(conexion, id)
-    cont_actividades = proyect(None, conexion)[5] # actualizar el contador en la DB
+    cont_actividades = proyect(None, conexion)[5] # actualizar el contador 
     actualizarContador(conexion, 'actiCount', cont_actividades - 1)
     return True
 
 # debe recibir objeto actividad nuevo
-def modificarActividad(conexion, actividadModificada): 
+def modificarActividad(conexion, id, actividadModificada): 
     if len(db.getInfoActividad(conexion, id)) == 0: # si no existe id
         raise ValueError("Activitie does not exist")
 
-    db.actualizarActividad(conexion, actividadModificada)
+    db.actualizarActividad(conexion, id, actividadModificada)
     return True
     
 def getInfoActividad(conexion, id):
-    info = db.getInfoActividad(conexion, id)
-    if len(info) == 0:
-        raise ValueError("Activitie does not exist")
+    info = db.getInfoActividad(conexion, id) # busca en el proyecto esa actividad
+    if len(info) == 0: # si no encuentra retorna vacio
+        raise ValueError("Activitie does not exist") 
         
     return info
+
+def getListaActividades(conexio):
+    return db.getList(conexio)

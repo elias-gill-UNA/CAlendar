@@ -17,21 +17,21 @@ def eliminarActividad(conexion, id):
     cursor.close()
     return True
 
-def getList(conexion):
+def getListaActividades(conexion): # retorna lista de actividades
     cursor = conexion.cursor()
     cursor.execute('SELECT * FROM Actividades')
     data = conexion.fetchall()
     cursor.close()
     return data
 
-def getInfoActividad(conexion, id):
+def getInfoActividad(conexion, id): # si la actividad no existe retorna un array vacio
     cursor = conexion.cursor()
     cursor.execute(f'SELECT * FROM Actividades WHERE id={id}')
     data = conexion.fetchone()
     cursor.close()
     return data
 
-def actualizarActividad(conexion, actividad): # requiere conexion, nueva acti y id
+def modificarActividad(conexion, id,actividad): # requiere conexion, nueva acti y id
     cursor = conexion.cursor()
     cursor.execute(f"UPDATE Actividades SET (nombre, duracion, fechaPrevista, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?) WEHRE id={id}",
               (actividad.nombre, actividad.duracion, actividad.fechaInicioTemprano, actividad.fechaInicioTardio,
