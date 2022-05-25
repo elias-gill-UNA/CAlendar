@@ -12,7 +12,7 @@ def nuevaActividad(conexion, actividad):
 
 def eliminarActividad(conexion, id):
     cursor = conexion.cursor()
-    cursor.execute(f"delete from Actividades where id={id}")
+    cursor.execute(f"DELETE FROM Actividades WHERE id={id}")
     conexion.commit() # guardar cambios
     cursor.close()
     return True
@@ -24,7 +24,7 @@ def getList(conexion):
     cursor.close()
     return data
 
-def getActividad(conexion, id):
+def getInfoActividad(conexion, id):
     cursor = conexion.cursor()
     cursor.execute(f'SELECT * FROM Actividades WHERE id={id}')
     data = conexion.fetchone()
@@ -33,12 +33,11 @@ def getActividad(conexion, id):
 
 def actualizarActividad(conexion, actividad): # requiere conexion, nueva acti y id
     cursor = conexion.cursor()
-    cursor.execute(f"UPDATE Actividades SET (nombre, duracion, fechaPrevista, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?) where id={id}",
+    cursor.execute(f"UPDATE Actividades SET (nombre, duracion, fechaPrevista, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?) WEHRE id={id}",
               (actividad.nombre, actividad.duracion, actividad.fechaInicioTemprano, actividad.fechaInicioTardio,
                actividad.finalizado)) # insertar nueva actividad
     conexion.commit() # guardar cambios
     cursor.close()
     return True
-
 
 

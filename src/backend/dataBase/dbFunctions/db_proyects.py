@@ -34,7 +34,7 @@ def getInfo(id, conexion):
     conn.close()
     return data
 
-def modificarValor(conexion, parametro, valor):
+def actualizarContador(conexion, parametro, valor):
     cursor = conexion.cursor
     cursor.execute(f"UPDATE Descripcion SET {parametro} = {valor}") # cambiar el valor en alguna tabla
     conexion.commit()

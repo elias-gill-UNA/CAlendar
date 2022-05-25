@@ -29,7 +29,7 @@ def __nuevoID():
 # Los proyectos se guardan en ../proyects/
 def crearProyecto(nuevoProyecto):
     # comprobar si existen menos de 99 proyectos
-    if os.listdir('./proyects/').__len__() < 99: 
+    if os.listdir('./proyects/').__len__() == 999: 
         raise ValueError("Maximum number of projects reached")
 
     id = __nuevoID()
@@ -51,7 +51,7 @@ def getProyectInfo(id, conexion):
     if conexion: # si ya existe conexion
         return dataBase.getInfo(id, conexion)
 
-    if not os.path.exists('./proyects/'+id+'.db'): # si el proyecto no existe 
+    if not os.path.exists('./proyects/'+id+'.db'): 
         raise ValueError("Proyect does not exist")
 
     return dataBase.getInfo(id, conexion)
@@ -67,11 +67,11 @@ def getProyectListsWithInfo():
     return matriz 
 
 def modificarDescripcion(conexion, nuevaDescripcion): # solo se pueden modificar proyectos activos
-    dataBase.modificarValor(conexion, 'descripcion', nuevaDescripcion)
+    dataBase.actualizarContador(conexion, 'descripcion', nuevaDescripcion)
     return True
 
 def modificarNombre(conexion, nuevoNombre): # solo se pueden modificar proyectos activos
-    dataBase.modificarValor(conexion, 'nombre', nuevoNombre)
+    dataBase.actualizarContador(conexion, 'nombre', nuevoNombre)
     return True
 
 def cerrarProyecto(conexion): # pasarle la conexion
