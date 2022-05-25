@@ -19,4 +19,6 @@ Y ya esta, ya tienen las dependencias necesarias para el proyecto con la version
 # Version alternativa.
 El proyecto tambien tiene el "depedencies.txt", el cual Pycharm lee y hace lo que tiene que hacer automaticamente.
 En todo caso se deria de usar:
-  pip install -r requirement.txt
+```
+pip install -r requirement.txt
+```
