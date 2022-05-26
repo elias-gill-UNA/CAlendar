@@ -1,9 +1,10 @@
-import tkinter as tk
-from tkinter import ttk
+from librerias import *
 
 
-from tkcalendar import *
-
+def ir_Proyecto(f3, f1, f2):
+    f1.destroy()
+    f2.destroy()
+    f3.destroy()
 
 
 class Interfaz(tk.Frame):
@@ -11,17 +12,24 @@ class Interfaz(tk.Frame):
         super().__init__(master)  # indica la ventana contenedora del frame principal
         self.master = master
         self.pack()  # ubica los elementos
-        self.frame1()
-        self.frame2()
-        self.frame3()
+
+        # Crea los frames a usar
+        f1 = tk.Frame(self)
+        f1.grid(row=1, column=0)
+        f2 = tk.Frame(self)
+        f2.grid(row=2, column=0)
+        f3 = tk.Frame(self)
+        f3.grid(row=3, column=0)
+
+        self.frame1(f1)
+        self.frame2(f2)
+        self.frame3(f3)
+
+        # Titulo de la ventana
         lbl_titulo = tk.Label(self, text="CREAR O EDITAR ACTIVIDADES", font=("Courier", 20))
         lbl_titulo.grid(row=0, column=0)
 
-    def frame1(self):
-        # Crea un cuadro
-        frame = tk.Frame(self)
-        frame.grid(row=1, column=0)
-
+    def frame1(self, frame):
         # Etiquetas
         lbl_nombre = tk.Label(frame, text="Nombre de la actividad:", font=("Times New Roman", 12))
         lbl_nombre.grid(row=0, column=0, sticky="w")
@@ -55,11 +63,7 @@ class Interfaz(tk.Frame):
         btn_mostrar = tk.Button(frame, text="Actualizar Tabla")
         btn_mostrar.grid(row=5, column=3)
 
-    def frame2(self):
-        # Crea un cuadro para la tabla
-        frame = tk.Frame(self)
-        frame.grid(row=2, column=0)
-
+    def frame2(self, frame):
         # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
         tabla = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2"))
         tabla.place(x=90, y=180)
@@ -82,33 +86,35 @@ class Interfaz(tk.Frame):
         tabla.heading("#2", text="Fecha Inicio")
         tabla.heading("#3", text="Duración")
 
+    def frame3(self, frame):
+        # Lista de opciones
+        self.opcion = tk.StringVar()
+        combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"], textvariable=self.opcion)
+        combo.place(x=50, y=50)
+        combo.grid(row=0, column=1)
 
-    def frame3(self):
-        # Crea un cuadro
-        frame = tk.Frame(self)
-        frame.grid(row=3, column=0)
+        # Etiquetas
+        lbl_opciones = tk.Label(frame, text="Opciones:")
+        lbl_opciones.grid(row=0, column=0)
 
         # Botones
         # Tiene que ir a la funcion informe que esta en comprobaciones
         btn_siguiente = tk.Button(frame, text="Informe")
         btn_siguiente.grid(row=0, column=2)
 
-        # Etiquetas
-        lbl_opciones = tk.Label(frame, text="Opciones:")
-        lbl_opciones.grid(row=0, column=0)
+        # Crea un espacio entre los botones
+        espacio = tk.Label(frame, text="\t\t\t\t")
+        espacio.grid(row=0, column=3)
 
-        # Lista de opciones
-        self.opcion=tk.StringVar()
-        combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"],textvariable=self.opcion)
-        combo.place(x=50, y=50)
-        combo.grid(row=0, column=1)
+        btn_salir = tk.Button(frame, text="Salir", command=quit)
+        btn_salir.grid(row=0, column=4)
+
     # Actualiza la tabla
     def actualizar(self):
         pass
 
     # Elimina una actividad de la tabla
     def eliminar(self):
-
         pass
 
     # Editar alguna actividad
@@ -116,14 +122,10 @@ class Interfaz(tk.Frame):
         pass
 
 
-
-
-# Crea la ventana root: raiz o principal
-root = tk.Tk()
-# Tamaño de la ventana
-root.geometry("850x500")
-# Titulo de la ventana
-root.title("ACTIVIDADES")
-
-app = Interfaz(master=root)
-app.mainloop()
+def ventana_Acti(root):
+    # Tamaño de la ventana
+    root.geometry("850x500")
+    # Titulo de la ventana
+    root.title("ACTIVIDADES")
+    app = Interfaz(root)
+    app.mainloop()
