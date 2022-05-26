@@ -28,19 +28,12 @@ def __validacion__(self, nombre, duracion, identificador, fechaInicio):
         valido = False
     return valido
 
-def informe(self):
-    opcion = self.opcion.get()
+def validarInforme(opcion):
 
     if opcion == "":
         messagebox.showwarning("Error", "Elija una opción para continuar")
-    elif opcion == "Diagrama de Gantt":
-        # Mostrar diagrama
-        pass
-    elif opcion == "Mapa de Dependencias":
-        # Mostrar mapa
-        pass
-    else:
-        # Mostrar camino crítico
-        pass
+        return False
+    return True
+
 
 

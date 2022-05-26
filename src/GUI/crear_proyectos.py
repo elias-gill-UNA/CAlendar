@@ -1,6 +1,4 @@
-from crear_edit_borrarActividades import *
 from librerias import *
-from src.clases import proyecto as Pr
 
 def ir_Actividad(frame, frame2, frame3, ID, Nom, Des, Fech):
     # Crea un objeto de tipo proyecto
@@ -95,7 +93,8 @@ def ventana_Pro(root):
     btn_salir.grid(row=0, column=2)
 
     btn_siguiente = tk.Button(frame3, text="Siguiente",
-                              command=lambda: ir_Actividad(frame, frame2, frame3, ID.get(), nombre.get(), descrip.get(1.0,"end"),
+                              command=lambda: ir_Actividad(frame, frame2, frame3, ID.get(), nombre.get(),
+                                                           descrip.get(1.0, "end"),
                                                            fechaI))
     btn_siguiente.grid(row=0, column=5, sticky="ns")
 
