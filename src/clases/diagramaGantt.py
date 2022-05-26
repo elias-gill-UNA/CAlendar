@@ -1,6 +1,6 @@
 nombres=["a","b","c","d","e","f","g","h","i"]
 duracion=[25,50,45,60,5,5,20,6,100]
-dependencias=[["-"],["a"],["a"],["b"],["b"],["c"],["e","f"],["d"],["g","h"]]
+dependencias=[["Inicio"],["a"],["a"],["b"],["b"],["c"],["e","f"],["d"],["g","h"]]
 colores = ["red","green","yellow","pink","purple","orange","black","blue","orange"]
 columnas=365
 filas=len(nombres)
@@ -34,7 +34,7 @@ def DiagramaGantt(nombres,dependencias,duracion,matriz,columnas):
         matriz.append([0] * columnas)
 
     for i in range(len(nombres)):
-        if dependencias[i][0]!="-":
+        if dependencias[i][0]!="Inicio":
             contador=calcularPosi(matriz,dependencias[i],nombres,columnas)
             contador=contador+1
         else:
