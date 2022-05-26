@@ -11,7 +11,7 @@ def nuevoProyecto(proyecto, id): # nombre del proyecto
 
     # Llenado de los campos de identificacion del proyecto
     cursor.execute("INSERT INTO Descripcion (nombre, descripcion, fechaInicio, actiCount, depCount) VALUES (?, ?, ?, ?, ?)", 
-              (proyecto.nombre, proyecto.descripcion, proyecto.inicioPrevisto, 0, 0))
+              (proyecto.nombre, proyecto.descripcion, proyecto.fechaInicio, 0, 0))
 
     # Proyecto creado satisfactoriamente
     conn.commit()
@@ -34,7 +34,7 @@ def getInfo(id, conexion):
     conn.close()
     return data
 
-def actualizarContador(conexion, parametro, valor):
+def actualizarParametro(conexion, parametro, valor):
     cursor = conexion.cursor
     cursor.execute(f"UPDATE Descripcion SET {parametro} = {valor}") # cambiar el valor en alguna tabla
     conexion.commit()
