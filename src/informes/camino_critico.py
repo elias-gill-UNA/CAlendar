@@ -91,9 +91,10 @@ def __cantidadCaminosCriticos(objCritico, actvInicio):
             sumar = True
 
 
-# recibe lisa de actividades y la prepara para comenzar 
+# recibe la lista de actividades y la prepara para comenzar 
 # WARNING : no volver a usar esta lista, porque esta funcion la modifica
-def __inicializar(listaActividades):
+# NOTE: PASAR UNA LISTA DE ACTIVIDADES AUXILIAR O VOLVER A PEDIR DEL BACKEND UNA NUEVA
+def __inicializarLista(listaActividades):
     for actividad in listaActividades:
         actividad.anterioresPendientes = len(actividad.anteriores)
         actividad.siguientes = []
