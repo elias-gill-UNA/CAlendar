@@ -10,7 +10,11 @@ setup(
         'GUI', 
         'informes', 
         'utilidades', 
+<<<<<<< HEAD
         'backend', 'backend.dataBase', 'backend.comprobaciones', 'backend.dataBase.dbFunctions'
+=======
+        'backend', 'backend.dataBase', 'backend.comprobaciones' 
+>>>>>>> 9182951 (la mierda de los imports)
     ]
     # scripts=[]
 )

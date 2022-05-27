@@ -1,3 +1,4 @@
+./src/dist/CAlendar-0.1.tar.gz
 babel==2.10.1; python_version >= "3.6" \
     --hash=sha256:3f349e85ad3154559ac4930c3918247d319f21910d5ce4b25d439ed8693b98d2 \
     --hash=sha256:98aeaca086133efb3e1e2aad0396987490c8425929ddbcfe0550184fdc54cd13
