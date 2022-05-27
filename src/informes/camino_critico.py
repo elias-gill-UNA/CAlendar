@@ -110,11 +110,15 @@ def __inicializarLista(listaActividades):
 
     for actividad in listaActividades:
         actividad.siguientesPendientes = len(actividad.siguientes)
-    for actividad in listaActividades:#para hacer que las actividades sin antecedentes tengan como antecedentes a la actividad imaginaria "inicio"
-        if len(actividad.anteriores) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":
+
+    # continuar preparando la lista de actividades
+    for actividad in listaActividades:
+        #  actividades sin antecedentes tienen como antecedente a "Inicio"
+        if len(actividad.anteriores) == 0 and actividad.nombre != "Inicio" and actividad.nombre != "Fin":
             actividad.anteriores.append(listaActividades[0])
             listaActividades[0].siguientes.append(actividad)
 
-        if len(actividad.siguientes) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":#para hacer que las actividades sin descendientes sean antecedentes a la actividad imaginaria "fin"
+        #  actividades sin presendente tienen como presendente a "Fin"
+        if len(actividad.siguientes) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":
             listaActividades[len(listaActividades)-1].anteriores.append(actividad)
 
