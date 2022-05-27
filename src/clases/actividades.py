@@ -1,12 +1,12 @@
-class actividad:
-    def __init__(self, identificador,nombre,duracion, dependencias,fechaInicioTemprano,fechaInicioTardio):
-        self.identificador=identificador
-        self.nombre=nombre
-        self.duracion=duracion
-        self.dependencias=dependencias
-        self.fechaInicioTemprano=fechaInicioTemprano
-        self.fechaInicioTardio=fechaInicioTardio
-        self.finalizo=0#si finalizo es igual a 1, entonces la actividad fue terminada
+class Actividad:
+    def __init__(self,identificador, nombre,duracion, dependencias,fechaInicioTemprano,fechaInicioTardio):
+        self.identificador = identificador
+        self.nombre = nombre
+        self.duracion = duracion
+        self.dependencias = dependencias
+        self.fechaInicioTemprano = fechaInicioTemprano
+        self.fechaInicioTardio = fechaInicioTardio
+        self.finalizo = 0 # si finalizo es igual a 1, entonces la actividad fue terminada
 
 #TODO Cambiar
 #Retorna todas las actividades desde la base de datos en forma de arreglo
@@ -23,7 +23,7 @@ def leerActividades():
 def crearActividad(nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio):
     dependenciasArreglo = decifrarDependenciasDelInput(dependenciasString)
     dependenciasComoEnteros = dependenciasAEnteros(dependenciasArreglo)
-    nuevaActividad = actividad(calcularIdentificadorNuevo(), nombre, duracion, dependenciasArreglo, fechaInicioTemprano, fechaInicioTardio)
+    nuevaActividad = Actividad(calcularIdentificadorNuevo(), nombre, duracion, dependenciasArreglo, fechaInicioTemprano, fechaInicioTardio)
     return nuevaActividad
 
 def editarActividad():

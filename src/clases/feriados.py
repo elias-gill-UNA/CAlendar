@@ -1,3 +1,4 @@
-class feriados:
-    def __init__(self,feriado):
-        self.feriado=feriado
+class Feriados:
+    def __init__(self, descripcion, fecha):
+        self.feriado = descripcion
+        self.fecha = fecha
