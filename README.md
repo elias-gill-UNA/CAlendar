@@ -5,11 +5,18 @@ proyecto
 ```
 pip install -r requirement.txt
 ```
+<<<<<<< HEAD
 Luego proseguir con el siguiente apartado.
 # Solucionar los problemas de import.
 Ok esto esta siendo una mierda con este lenguaje de juguete. Para que les funcionen los import tienen que hacer asi.
 
 Se colocan dentro de la carpeta __src__ y hacen:
+=======
+
+Ok esto esta siendo una mierda con este lenguaje de juguete. Para que les funcionen los import tienen que hacer asi.
+
+Se colocan dentro de la carpeta src y hacen:
+>>>>>>> b166d58 (la mierda de los imports)
 ````
 python ./setup.py sdist
 ````
@@ -17,8 +24,14 @@ Si la mierda funciona ahora hagan:
 ````
 pip install ./dist/CAlendar-0.1.tar.gz
 ````
+<<<<<<< HEAD
 PERO QUE ASCOOOO. 
 
 ## Ojo, agregando nuevos paquetes:
 Si es que crean nuevas subcarpetas (es decir, nuevos paquetes) tienen que crear un archivo
 `__init__.py` dentro de esa carpeta (dejar vacio el archivo) y actualizar el archivo setup.py
+=======
+
+PERO QUE ASCOOOO
+
+>>>>>>> b166d58 (la mierda de los imports)
