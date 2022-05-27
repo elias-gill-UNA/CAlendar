@@ -1,4 +1,7 @@
-from librerias import *
+import tkinter as tk
+from tkinter import ttk
+from tkcalendar import *
+from src.clases.actividades import *
 
 def ir_Proyecto(f3,f2,f1,fP):
 
@@ -7,8 +10,7 @@ def ir_Proyecto(f3,f2,f1,fP):
     f3.destroy()
     fP.destroy()
     # Aca tendria que volver a la ventana de proyecto (nose como hacer aun)
-
-
+tabla = 0
 
 class Interfaz(tk.Frame):
     def __init__(self, master=None):
@@ -39,36 +41,51 @@ class Interfaz(tk.Frame):
         self.nombre = tk.Entry(frame, width=20)
         self.nombre.grid(row=0, column=1)
 
+        lbl_dependencias = tk.Label(frame, text="Dependencias:", font=("Times New Roman", 12))
+        lbl_dependencias.grid(row=0, column=2, sticky="w")
+        self.dependencias = tk.Entry(frame, width=20)
+        self.dependencias.grid(row=0, column=3)
+
         self.fechaInicio = tk.StringVar()
-        lbl_fechaInicio = tk.Label(frame, text="Fecha de Inicio dd/mm/aa:", font=("Times New Roman", 12))
+        lbl_fechaInicio = tk.Label(frame, text="Fecha de Inicio:", font=("Times New Roman", 12))
         lbl_fechaInicio.grid(row=1, column=0, sticky="w")
         fechaI = DateEntry(frame, selectmode="day", textvariable=self.fechaInicio, width=17)
         fechaI.grid(row=1, column=1)
 
+        self.fechaFinal = tk.StringVar()
+        lbl_fechaFinal = tk.Label(frame, text="Fecha de Final:", font=("Times New Roman", 12))
+        lbl_fechaFinal.grid(row=1, column=2, sticky="w")
+        fechaF = DateEntry(frame, selectmode="day", textvariable=self.fechaFinal, width=17)
+        fechaF.grid(row=1, column=3)
+
         lbl_duracion = tk.Label(frame, text="Duración:", font=("Times New Roman", 12))
-        lbl_duracion.grid(row=1, column=2, sticky="w")
+        lbl_duracion.grid(row=1, column=4, sticky="w")
         self.duracion = tk.Entry(frame, width=20)
-        self.duracion.grid(row=1, column=3)
+        self.duracion.grid(row=1, column=5)
 
         lbl_separador = tk.Label(frame, text="")
         lbl_separador.grid(row=2, column=0)
 
         # Botones
-        btn_crear = tk.Button(frame, text="Crear Actividad",command=self.__crearActividad__)
+        btn_crear = tk.Button(frame, text="Crear Actividad",
+        command= lambda: crearActividad(self.nombre.get(),
+        self.duracion.get(), self.dependencias.get(), self.fechaInicio.get(), self.fechaFinal.get()))
         btn_crear.grid(row=5, column=0)
 
-        btn_editar = tk.Button(frame, text="Editar Actividad")
+        btn_editar = tk.Button(frame, text="Editar Actividad", command=editarActividad)
         btn_editar.grid(row=5, column=1)
 
-        btn_eliminar = tk.Button(frame, text="Eliminar Actividad")
+        btn_eliminar = tk.Button(frame, text="Eliminar Actividad", command= lambda: self.eliminar(tabla))
         btn_eliminar.grid(row=5, column=2)
 
         btn_mostrar = tk.Button(frame, text="Actualizar Tabla")
         btn_mostrar.grid(row=5, column=3)
 
     def __frame2__(self, frame):
+        global tabla
+
         # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
-        tabla = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2"))
+        tabla = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2", "#3", "#4", "#5"))
         tabla.place(x=90, y=180)
         tabla.grid(row=1, column=0)
 
@@ -78,21 +95,27 @@ class Interfaz(tk.Frame):
         barraDesplazamiento.grid(row=1, column=1, sticky="ns")
 
         # Tamaño de las columnas
-        tabla.column("#0", width=50)
-        tabla.column("#1", width=400)
-        tabla.column("#2", width=90)
-        tabla.column("#3", width=60)
+        tabla.column("#0", width=40)
+        tabla.column("#1", width=200)
+        tabla.column("#2", width=100)
+        tabla.column("#3", width=200)
+        tabla.column("#4", width=200)
+        tabla.column("#5", width=200)
 
         # Titulos
         tabla.heading("#0", text="Id")
-        tabla.heading("#1", text="Nombre de la actividad")
-        tabla.heading("#2", text="Fecha Inicio")
-        tabla.heading("#3", text="Duración")
+        tabla.heading("#1", text="Titulo")
+        tabla.heading("#2", text="Duración")
+        tabla.heading("#3", text="Dependencias")
+        tabla.heading("#4", text="Fecha Inicio Temprano")
+        tabla.heading("#5", text="Fecha Inicio Tardio")
+
+        self.colocarActividadesEnTabla(tabla)
 
     def __frame3__(self, frame,f2,f1,fP):
         # Lista de opciones
-        self.opcion = tk.StringVar()
-        combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"], textvariable=self.opcion)
+        self.opcion=tk.StringVar()
+        combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"],textvariable=self.opcion)
         combo.place(x=50, y=50)
         combo.grid(row=0, column=1)
 
@@ -114,13 +137,7 @@ class Interfaz(tk.Frame):
 
         btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command= lambda :ir_Proyecto(frame,f2,f1,fP))
         btn_newPro.grid(row=0, column=0)
-
-    # Crea la actividad
-    def __crearActividad__(self):
-        # Crear objeto de tipo actividad
-        #A=Ac.actividad()
-        print("HOLA")
-
+    
     # Muestra el informe seleccionado
     def __informe__(self):
         opcion=self.opcion.get()
@@ -138,14 +155,28 @@ class Interfaz(tk.Frame):
                 # Mostrar el diagrama de gantt
                 pass
 
+    def colocarActividadesEnTabla(self, tabla):
+        actividades = leerActividades()
+
+        #Llena la tabla de actividades
+        for actividad in actividades:
+            # Converite sus dependencias en formato string para poder visualizar
+            stringDependencias = convertirArregloDependenciasAString(actividad.dependencias)
+            tabla.insert('', tk.END,
+            values=(actividad.identificador,actividad.nombre, actividad.duracion,
+                    stringDependencias, actividad.fechaInicioTemprano,
+                    actividad.fechaInicioTardio))
 
     # Actualiza la tabla
     def actualizar(self):
         pass
 
     # Elimina una actividad de la tabla
-    def eliminar(self):
-        pass
+    def eliminar(self, tabla):
+        curItem = tabla.focus()
+        actividadEliminada = tabla.item(curItem)['values']
+        print(actividadEliminada[0])
+        eliminarActividad(actividadEliminada[0])
 
     # Editar alguna actividad
     def editar(self):
@@ -159,3 +190,6 @@ def ventana_Acti(root):
     root.title("ACTIVIDADES")
     app = Interfaz(root)
     app.mainloop()
+
+root = tk.Tk()
+ventana_Acti(root)
