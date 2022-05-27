@@ -22,3 +22,17 @@ En todo caso se deria de usar:
 ```
 pip install -r requirement.txt
 ```
+
+Ok esto esta siendo una mierda con este lenguaje de juguete. Para que les funcionen los import tienen que hacer asi.
+
+Se colocan dentro de la carpeta src y hacen:
+````
+python ./setup.py sdist
+````
+Si la mierda funciona ahora hagan:
+````
+pip install ./dist/CAlendar-0.1.tar.gz
+````
+
+PERO QUE ASCOOOO
+
