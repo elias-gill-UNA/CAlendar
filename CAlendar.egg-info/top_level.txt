@@ -1,5 +1,0 @@
-GUI
-backend
-clases
-informes
-utilidades
