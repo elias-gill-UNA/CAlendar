@@ -1,4 +1,5 @@
 .idea
+CAlendar.egg-info
 __pycache__
 *.db
 env
