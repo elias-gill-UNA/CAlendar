@@ -1,14 +1,17 @@
 from dbFunctions import db_activities as db
 from proyectManager import getProyectInfo as proyect
 from dbFunctions.db_proyects import actualizarParametro as actualizarContador 
+# TODO importar dependencias 
 
-def anadirActividad(conexion, nuevaActividad):
+def anadirActividad(conexion, nuevaActividad, numDeps):
     info = proyect(None, conexion)
-    if len(info[5]) == 101: # no mas de 99 actividades, dos actividades fantasmas
+    cont_actividades = info[5] # actualizar el contador de actividades del proyecto
+    cont_deps = info[6]
+    if cont_actividades == 99: # no mas de 99 actividades, dos actividades fantasmas
         raise ValueError("Maximum number of activities reached")
+    elif cont_deps + numDeps == 
 
     db.nuevaActividad(conexion, nuevaActividad)
-    cont_actividades = info[5] # actualizar el contador de actividades del proyecto
     actualizarContador(conexion, 'actiCount', cont_actividades + 1) 
     return True
 
@@ -40,4 +43,5 @@ def getInfoActividad(conexion, id):
     return info
 
 def getListaActividades(conexion):
+    # armar las actividades
     return db.getListaActividades(conexion)
