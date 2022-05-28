@@ -1,5 +1,5 @@
 class relacion:
-    def __init__(self,identificador,identificadorAntes,identificadorDespues):
-        self.identificador=identificador # numerico
-        self.identificadorAntes=identificadorAntes # numerico
-        self.identificadorDespues=identificadorDespues # numerico
+    def __init__(self, antecesor, predecesor):
+        self.id = 0
+        self.antecesor = antecesor # id antecedente
+        self.predecesor = predecesor # id precedente

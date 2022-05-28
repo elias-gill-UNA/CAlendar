@@ -3,8 +3,8 @@
 
 def nuevaActividad(conexion, actividad):
     cursor = conexion.cursor()
-    cursor.execute("INSERT INTO Actividades (nombre, duracion, fechaPrevista, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?)",
-              (actividad.nombre, actividad.duracion, actividad.fechaInicioTemprano, actividad.fechaInicioTardio,
+    cursor.execute("INSERT INTO Actividades (nombre, duracion, dependencias, fechaPrevista, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?)",
+              (actividad.nombre, actividad.duracion, actividad.dependecias, actividad.fechaInicioTemprano, actividad.fechaInicioTardio,
                actividad.finalizado)) # insertar nueva actividad
     conexion.commit() # guardar cambios
     cursor.close()
