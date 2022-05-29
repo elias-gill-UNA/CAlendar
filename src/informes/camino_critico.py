@@ -1,5 +1,5 @@
 # carga o dibuja el camino critico y lo guarda en la matriz
-def __cargarCriticos(objCritico, inicio, indice):
+def cargarCriticos(objCritico, inicio, indice):
     bandera = False
     for descendiente in inicio.siguientes:
         if descendiente in objCritico.actividadesCriticas: # si el descendiente es critico
@@ -12,21 +12,22 @@ def __cargarCriticos(objCritico, inicio, indice):
                         objCritico.caminosCriticos[indice].append(k)
 
             objCritico.caminosCriticos[indice].append(descendiente)
-            __cargarCriticos(objCritico, descendiente,indice)
+            cargarCriticos(objCritico, descendiente,indice)
             indice = indice+1
             bandera = True
             aux = descendiente
 
 
 # funcion que prepara las matrices para los distintos caminos criticos
-def __inicializarCritico(objCritico, listaActividades):
+def inicializarCritico(objCritico, listaActividades):
     for i in range(objCritico.cantidadCritico):
         objCritico.caminosCriticos.append([listaActividades[0]]) # anade el inicio al nuevo CamCrit
 
 
 # funcion principal que busca el camino critico
 def caminoCritico(listaActividades, proyecto, objCritico):
-    __inicializarLista(listaActividades)
+    
+    inicializarLista(listaActividades)
 
     actividad = listaActividades[0] # actividad inicio
     actividad.inicioTemprano = 0
@@ -77,24 +78,24 @@ def caminoCritico(listaActividades, proyecto, objCritico):
 
 
 # determina la cantidad de caminos criticos que existen en el proyecto
-def __cantidadCaminosCriticos(objCritico, actvInicio):
+def cantidadCaminosCriticos(objCritico, actvInicio):
     sumar = False
     for actividad in actvInicio.siguientes:
 
         if actividad in objCritico.actividadesCriticas and sumar: # si este si es mayor que 1 es porque hay mas de 1 
             objCritico.cantidadCritico = objCritico.cantidadCritico + 1
-            __cantidadCaminosCriticos(objCritico, actividad)
+            cantidadCaminosCriticos(objCritico, actividad)
 
         # si esta actividad es critica y sumar == False
         if actividad in objCritico.actividadesCriticas and not sumar:
-            __cantidadCaminosCriticos(objCritico, actividad)
+            cantidadCaminosCriticos(objCritico, actividad)
             sumar = True
 
 
 # recibe la lista de actividades y la prepara para comenzar 
 # WARNING : no volver a usar esta lista, porque esta funcion la modifica
 # NOTE: PASAR UNA LISTA DE ACTIVIDADES AUXILIAR O VOLVER A PEDIR DEL BACKEND UNA NUEVA
-def __inicializarLista(listaActividades):
+def inicializarLista(listaActividades): # crear un armador para esta funcion
     for actividad in listaActividades:
         actividad.anterioresPendientes = len(actividad.anteriores)
         actividad.siguientes = []
@@ -110,11 +111,15 @@ def __inicializarLista(listaActividades):
 
     for actividad in listaActividades:
         actividad.siguientesPendientes = len(actividad.siguientes)
-    for actividad in listaActividades:#para hacer que las actividades sin antecedentes tengan como antecedentes a la actividad imaginaria "inicio"
-        if len(actividad.anteriores) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":
+
+    # continuar preparando la lista de actividades
+    for actividad in listaActividades:
+        #  actividades sin antecedentes tienen como antecedente a "Inicio"
+        if len(actividad.anteriores) == 0 and actividad.nombre != "Inicio" and actividad.nombre != "Fin":
             actividad.anteriores.append(listaActividades[0])
             listaActividades[0].siguientes.append(actividad)
 
-        if len(actividad.siguientes) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":#para hacer que las actividades sin descendientes sean antecedentes a la actividad imaginaria "fin"
+        #  actividades sin presendente tienen como presendente a "Fin"
+        if len(actividad.siguientes) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":
             listaActividades[len(listaActividades)-1].anteriores.append(actividad)
 

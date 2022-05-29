@@ -1,44 +1,56 @@
+from os import error
+import backend.dataBase.activitiesManager as db
+
 class Actividad:
-    def __init__(self,identificador, nombre,duracion, dependencias,fechaInicioTemprano,fechaInicioTardio):
+    def __init__(self, identificador, nombre, duracion, dependencias, fechaInicioTemprano, fechaInicioTardio, finalizo):
         self.identificador = identificador
         self.nombre = nombre
         self.duracion = duracion
         self.dependencias = dependencias
         self.fechaInicioTemprano = fechaInicioTemprano
         self.fechaInicioTardio = fechaInicioTardio
-        self.finalizo = 0 # si finalizo es igual a 1, entonces la actividad fue terminada
+        self.finalizo = finalizo # ENTERO    1: finalizado  0: aun no
 
-#TODO Cambiar
-#Retorna todas las actividades desde la base de datos en forma de arreglo
-def leerActividades():
-    actividades = []
-    for i in range(0, 10):
-        nuevaActividad = crearActividad('Titulo', 5, "5, 7, 9", "21/12/2020", "21/12/2022")
-        actividades.append(nuevaActividad)
+# Retorna todas las actividades de la base de datos dentro de un array
+def leerActividades(conexion):
+    return db.getListaActividades(conexion) # y si, esto nomas es :)
 
-    return actividades
 
-#Implementar base de datos
 #Asegurarte de actualizar la tabla al crear una actividad nueva
-def crearActividad(nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio):
-    dependenciasArreglo = decifrarDependenciasDelInput(dependenciasString)
-    dependenciasComoEnteros = dependenciasAEnteros(dependenciasArreglo)
-    nuevaActividad = Actividad(calcularIdentificadorNuevo(), nombre, duracion, dependenciasArreglo, fechaInicioTemprano, fechaInicioTardio)
-    return nuevaActividad
+def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio):
+    contadorDependencias = len(dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString)))
+    nuevaActividad = Actividad(0, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio, 0)
+    try: # comprueba si es posible crear la actividad
+        db.anadirActividad(conexion, nuevaActividad, contadorDependencias)
+        return nuevaActividad
+    except ValueError:
+        return ValueError
 
-def editarActividad():
+
+def editarActividad(conexion, id, nuevosDatos): # TODO  consultar a Ric que pedo
+    # usar db.modificarActividad(conexion, actividadModificada). Pasarle la actividad ya modificada y la conexion
+    # ATENCION: NO toquen el id por lo que mas quieran en sus vidas
     pass
 
-#Eliminar actividad de la base de datos
-#NOTE asegurar que elimines todas las dependencias referentes a esta actividad
-def eliminarActividad(actividadID):
-    print('eliminar actividad: ',actividadID)
-    pass
 
-#Conseguir desde la base de datos el identificador de la ultima actividad y sumarle 1
-def calcularIdentificadorNuevo():
-    return 1
 
+#Eliminar actividad de la base de datos y sus relaciones
+def eliminarActividad(conexion, actividadID):
+    try: 
+        db.eliminarActividad(conexion, actividadID)
+        lista = db.getListaActividades(conexion)
+
+        for actividad in lista: # por cada actividad 
+            if actividadID in actividad.dependencias: # si una actividad contiene actividadID como dependencia
+                index = actividad.dependencias.index(actividadID) # ver su posicion
+                actividad.dependencias.pop(index) # eliminar
+                db.modificarActividad(conexion, actividad.identificador, actividad) # actualizar la actividad
+        return True
+    except:
+        return ValueError
+
+
+#  # Funciones de trasnformacion de dependencias #  # 
 def decifrarDependenciasDelInput(dependenciasString):
     arregloDependencias = dependenciasString.split(",")
     return arregloDependencias;

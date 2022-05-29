@@ -6,7 +6,7 @@ def nuevoProyecto(proyecto, id): # nombre del proyecto
 
     # Crear las tablas necesarias para el proyecto
     cursor.execute("CREATE TABLE IF NOT EXISTS Descripcion (nombre TEXT, descripcion TEXT, fechaInicio TEXT, actiCount INT, depCount INT)") #  tabla de descripcion del proyecto
-    cursor.execute("CREATE TABLE IF NOT EXISTS Actividades (id integer primary key, nombre TEXT, duracion INT, fechaPrevista TEXT, fechaTardia TEXT, finalizado INT)") # tabla de actividades
+    cursor.execute("CREATE TABLE IF NOT EXISTS Actividades (id integer primary key, nombre TEXT, duracion INT, dependencias TEXT, fechaPrevista TEXT, fechaTardia TEXT, finalizado INT)") # tabla de actividades
     cursor.execute("CREATE TABLE IF NOT EXISTS Dependencias (id INT, idAntes TEXT, idDespues TEXT)") # tabla de Dependecias
 
     # Llenado de los campos de identificacion del proyecto
