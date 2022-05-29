@@ -6,4 +6,4 @@ from src.clases import proyecto as Pr
 from src.clases import actividades as Ac
 from crear_edit_borrarActividades import *
 import sqlite3
-from src.utilidades.informes import diagrama_de_gant
+#from src.utilidades.informes import diagrama_de_gant
