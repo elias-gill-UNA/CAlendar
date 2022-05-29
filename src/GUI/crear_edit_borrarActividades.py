@@ -1,14 +1,13 @@
-import tkinter as tk
-from tkinter import ttk
-from tkcalendar import DateEntry
-from funcionesSobreObjetos.actividadFunciones import *
+from tkcalendar import *
+from clases.actividades import *
+from src.GUI.crear_proyectos import ventana_Pro
 
-def ir_Proyecto(f3,f2,f1,fP):
-
+def ir_Proyecto(f3,f2,f1,fP,root):
     f1.destroy()
     f2.destroy()
     f3.destroy()
     fP.destroy()
+    #ventana_Pro(root)
     # Aca tendria que volver a la ventana de proyecto (nose como hacer aun)
 tabla = 0
 
@@ -32,7 +31,7 @@ class Interfaz(tk.Frame):
 
         self.__frame1__(f1)
         self.__frame2__(f2)
-        self.__frame3__(f3, f2, f1, self)
+        self.__frame3__(f3, f2, f1, self,master)
 
     def __frame1__(self, frame):
         # Etiquetas
@@ -112,7 +111,7 @@ class Interfaz(tk.Frame):
 
         self.colocarActividadesEnTabla(tabla)
 
-    def __frame3__(self, frame,f2,f1,fP):
+    def __frame3__(self, frame,f2,f1,fP,master):
         # Lista de opciones
         self.opcion=tk.StringVar()
         combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"],textvariable=self.opcion)
@@ -135,7 +134,7 @@ class Interfaz(tk.Frame):
         btn_salir = tk.Button(frame, text="Salir", command=quit)
         btn_salir.grid(row=0, column=4)
 
-        btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command= lambda :ir_Proyecto(frame,f2,f1,fP))
+        btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command= lambda :ir_Proyecto(frame,f2,f1,fP,master))
         btn_newPro.grid(row=0, column=0)
     
     # Muestra el informe seleccionado
@@ -148,7 +147,7 @@ class Interfaz(tk.Frame):
                 pass
             elif opcion == "Mapa de Dependencias":
                 # Mostrar mapa
-                pass
+                passMerge pull request #33 from elias-gill-UNA/Importe-Circular-Fix
             else:
                 # Mostrar camino crítico
                 pass
@@ -191,5 +190,5 @@ def ventana_Acti(root):
     app = Interfaz(root)
     app.mainloop()
 
-root = tk.Tk()
-ventana_Acti(root)
+#root = tk.Tk()
+#ventana_Acti(root)

@@ -1,8 +1,12 @@
 import tkinter as tk
+from tkinter import ttk
+from tkinter import *
+from tkcalendar import *
+from GUI.crear_edit_borrarActividades import *
 
 def ir_Actividad(frame, frame2, frame3, ID, Nom, Des, Fech):
     # Crea un objeto de tipo proyecto
-    P = Pr.proyecto(ID, Nom, Des, Fech)
+    #P = Pr.proyecto(ID, Nom, Des, Fech)
     # Aca tendria que guardar los datos ingresados en la Bd
     # .............
     # Limpia la ventana
@@ -10,6 +14,7 @@ def ir_Actividad(frame, frame2, frame3, ID, Nom, Des, Fech):
     frame2.destroy()
     frame3.destroy()
     # Pasa a la ventana para crear actividades
+
     ventana_Acti(root)
 
 
