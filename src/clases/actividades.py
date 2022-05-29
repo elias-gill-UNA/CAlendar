@@ -1,6 +1,5 @@
 from os import error
 import backend.dataBase.activitiesManager as db
-import backend.dataBase.dependecyManager as dps
 
 class Actividad:
     def __init__(self, identificador, nombre, duracion, dependencias, fechaInicioTemprano, fechaInicioTardio, finalizo):
@@ -14,16 +13,9 @@ class Actividad:
 
 # Retorna todas las actividades de la base de datos dentro de un array
 def leerActividades(conexion):
-    aux = db.getListaActividades(conexion)
-    actividades = []
-    # cargar en objetos propios
-    for i in aux: 
-        activ = Actividad(i[0], i[1], i[2], i[3], i[4], i[5], i[6]) 
-        actividades.append(activ)
+    return db.getListaActividades(conexion) # y si, esto nomas es :)
 
-    return actividades
 
-#Implementar base de datos
 #Asegurarte de actualizar la tabla al crear una actividad nueva
 def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio):
     contadorDependencias = len(dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString)))
@@ -34,17 +26,31 @@ def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTe
     except ValueError:
         return ValueError
 
-def editarActividad():
+
+def editarActividad(conexion, id, nuevosDatos): # TODO  consultar a Ric que pedo
     # usar db.modificarActividad(conexion, actividadModificada). Pasarle la actividad ya modificada y la conexion
     # ATENCION: NO toquen el id por lo que mas quieran en sus vidas
     pass
 
-#Eliminar actividad de la base de datos
-#NOTE asegurar que elimines todas las dependencias referentes a esta actividad
-def eliminarActividad(actividadID):
-    print('eliminar actividad: ',actividadID)
-    pass
 
+
+#Eliminar actividad de la base de datos y sus relaciones
+def eliminarActividad(conexion, actividadID):
+    try: 
+        db.eliminarActividad(conexion, actividadID)
+        lista = db.getListaActividades(conexion)
+
+        for actividad in lista: # por cada actividad 
+            if actividadID in actividad.dependencias: # si una actividad contiene actividadID como dependencia
+                index = actividad.dependencias.index(actividadID) # ver su posicion
+                actividad.dependencias.pop(index) # eliminar
+                db.modificarActividad(conexion, actividad.identificador, actividad) # actualizar la actividad
+        return True
+    except:
+        return ValueError
+
+
+#  # Funciones de trasnformacion de dependencias #  # 
 def decifrarDependenciasDelInput(dependenciasString):
     arregloDependencias = dependenciasString.split(",")
     return arregloDependencias;
