@@ -1,31 +1,15 @@
-
-# Poetry y como utilizar. 
-Poetry no es nada mas que un gestor de paquetes muy simple y facil de usar (para el que conozca npm o cargo ya saben la onda).
-Para la utilizacion de poetry usan los siguientes comandos en su terminal (y si, no hay de otra):
-```
-pip install poetry
-```
-Se colocan en la carpeta del proyecto y escriben:
-```
-poetry shell
-```
-Deberia de iniciar el entorno virtual, luego realizan:
-```
-poetry install
-```
-Y derian estar ready to go.
-Y ya esta, ya tienen las dependencias necesarias para el proyecto con la version correspondiente.
-
-# Version alternativa.
-El proyecto tambien tiene el "depedencies.txt", el cual Pycharm lee y hace lo que tiene que hacer automaticamente.
-En todo caso se deria de usar:
+# Instalacion de dependencias.
+El proyecto tiene declaradas las dependencias dentro de "depedencies.txt", el cual Pycharm lee y hace lo que tiene que hacer automaticamente.
+Para hacerlo manualmente (de preferencia) deben realizar el siguiente comando dentro de la carpeta principal del
+proyecto
 ```
 pip install -r requirement.txt
 ```
-
+Luego proseguir con el siguiente apartado.
+# Solucionar los problemas de import.
 Ok esto esta siendo una mierda con este lenguaje de juguete. Para que les funcionen los import tienen que hacer asi.
 
-Se colocan dentro de la carpeta src y hacen:
+Se colocan dentro de la carpeta __src__ y hacen:
 ````
 python ./setup.py sdist
 ````
@@ -33,6 +17,8 @@ Si la mierda funciona ahora hagan:
 ````
 pip install ./dist/CAlendar-0.1.tar.gz
 ````
+PERO QUE ASCOOOO. 
 
-PERO QUE ASCOOOO
-
+## Ojo, agregando nuevos paquetes:
+Si es que crean nuevas subcarpetas (es decir, nuevos paquetes) tienen que crear un archivo
+`__init__.py` dentro de esa carpeta (dejar vacio el archivo) y actualizar el archivo setup.py
