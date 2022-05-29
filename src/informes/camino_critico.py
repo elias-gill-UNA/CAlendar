@@ -26,7 +26,7 @@ def __inicializarCritico(objCritico, listaActividades):
 
 # funcion principal que busca el camino critico
 def caminoCritico(listaActividades, proyecto, objCritico):
-    __inicializar(listaActividades)
+    __inicializarLista(listaActividades)
 
     actividad = listaActividades[0] # actividad inicio
     actividad.inicioTemprano = 0
