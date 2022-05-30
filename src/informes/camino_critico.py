@@ -3,13 +3,13 @@ from clases.clases_cam_critico import *
 def cargarCriticos(objCritico, inicio, indice):
     bandera = False
     for descendiente in inicio.siguientes:
-        if descendiente in objCritico.actividadesCriticas: # si el descendiente es critico
+        if descendiente in objCritico.actividadesCriticas:  # si el descendiente es critico
             if bandera == True:
                 # Copia el camino critico dentro del objCritico
                 for k in objCritico.caminosCriticos[indice - 1]:
-                    if k == aux: # solo ignora el error
+                    if k == aux:  # solo ignora el error
                         break
-                    if k.nombre != "Inicio": # nombre de la primera actividad
+                    if k.nombre != "Inicio":  # nombre de la primera actividad
                         objCritico.caminosCriticos[indice].append(k)
 
             objCritico.caminosCriticos[indice].append(descendiente)
@@ -22,18 +22,18 @@ def cargarCriticos(objCritico, inicio, indice):
 # funcion que prepara las matrices para los distintos caminos criticos
 def inicializarCritico(objCritico, listaActividades):
     for i in range(objCritico.cantidadCritico):
-        objCritico.caminosCriticos.append([listaActividades[0]]) # anade el inicio al nuevo CamCrit
+        objCritico.caminosCriticos.append([listaActividades[0]])  # anade el inicio al nuevo CamCrit
 
 
 # funcion principal que busca el camino critico
 def caminoCritico(listaActividades, proyecto, objCritico):
     __inicializarLista(listaActividades)
 
-    actividad = listaActividades[0] # actividad inicio
+    actividad = listaActividades[0]  # actividad inicio
     actividad.inicioTemprano = 0
     cola = [actividad]
 
-    while len(cola) > 0: # esto es magia negra lgm
+    while len(cola) > 0:  # esto es magia negra lgm
         actividad = cola.pop(0)
 
         actividad.finTemprano = actividad.inicioTemprano + actividad.duracion
@@ -47,34 +47,35 @@ def caminoCritico(listaActividades, proyecto, objCritico):
 
             descendiente.anterioresPendientes -= 1
             if descendiente.anterioresPendientes == 0:
-                cola.append(descendiente) # nadie sabe que paso aca
+                cola.append(descendiente)  # nadie sabe que paso aca
 
     proyecto.finTardio = proyecto.finTemprano + proyecto.holgura
-    proyecto.inicioTardio = proyecto.finTardio # actualizar los tiempos de inicio y fin del proyecto
+    proyecto.inicioTardio = proyecto.finTardio  # actualizar los tiempos de inicio y fin del proyecto
 
-    actividad = listaActividades[-1] # quitar ultimo elemento
+    actividad = listaActividades[-1]  # quitar ultimo elemento
     actividad.finTardio = proyecto.finTardio
-    cola = [actividad] # algo
+    cola = [actividad]  # algo
 
-    while len(cola) > 0: # mas magia oscura y prohibida
+    while len(cola) > 0:  # mas magia oscura y prohibida
         actividad = cola.pop(0)
 
-        actividad.inicioTardio = actividad.finTardio - actividad.duracion # actualizar los tiempos de las actividades
+        actividad.inicioTardio = actividad.finTardio - actividad.duracion  # actualizar los tiempos de las actividades
         actividad.holgura = actividad.inicioTardio - actividad.inicioTemprano
 
         if (actividad.holgura == proyecto.holgura):
-            objCritico.actividadesCriticas.append(actividad) # si es una actividad critica entonces la anade a la lista 
+            objCritico.actividadesCriticas.append(
+                actividad)  # si es una actividad critica entonces la anade a la lista
 
-        if (proyecto.inicioTardio > actividad.inicioTardio): # actualiza los tiempos de inicio tardio del proyecto
+        if (proyecto.inicioTardio > actividad.inicioTardio):  # actualiza los tiempos de inicio tardio del proyecto
             proyecto.inicioTardio = actividad.inicioTardio
 
         for antecesor in actividad.anteriores:
             if antecesor.finTardio == -1 or antecesor.finTardio > actividad.inicioTardio:
-                antecesor.finTardio = actividad.inicioTardio # que Iluvatar no salve
+                antecesor.finTardio = actividad.inicioTardio  # que Iluvatar no salve
 
-            antecesor.siguientesPendientes -= 1 
+            antecesor.siguientesPendientes -= 1
             if antecesor.siguientesPendientes == 0:
-                cola.append(antecesor) # agrega algo en algun lugar
+                cola.append(antecesor)  # agrega algo en algun lugar
 
 
 # determina la cantidad de caminos criticos que existen en el proyecto
@@ -82,7 +83,7 @@ def cantidadCaminosCriticos(objCritico, actvInicio):
     sumar = False
     for actividad in actvInicio.siguientes:
 
-        if actividad in objCritico.actividadesCriticas and sumar: # si este si es mayor que 1 es porque hay mas de 1 
+        if actividad in objCritico.actividadesCriticas and sumar:  # si este si es mayor que 1 es porque hay mas de 1
             objCritico.cantidadCritico = objCritico.cantidadCritico + 1
             cantidadCaminosCriticos(objCritico, actividad)
 
