@@ -266,17 +266,14 @@ class ventana_Actividad(tk.Frame):
 
     def colocarActividadesEnTabla(self, tabla):
         actividades = leerActividades()
-        i = 1
         # Llena la tabla de actividades
         for actividad in actividades:
             # Converite sus dependencias en formato string para poder visualizar
             stringDependencias = convertirArregloDependenciasAString(actividad.dependencias)
-            # text indica la columna donde se va a colocar
-            tabla.insert('', END, text=str(i),
+            tabla.insert('', END,
                          values=(actividad.identificador, actividad.nombre, actividad.duracion,
                                  stringDependencias, actividad.fechaInicioTemprano,
                                  actividad.fechaInicioTardio))
-            i += 1
 
     # Actualiza la tabla
     def actualizar(self):
