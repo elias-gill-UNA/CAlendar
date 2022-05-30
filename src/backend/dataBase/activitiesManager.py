@@ -51,7 +51,7 @@ def getInfoActividad(conexion, id):
     return info
 
 
-def getListaActividades(conexion):
+def getListaActividades(conexion): # retorna las dependencias como string
     # conseguir la lista
     aux = db.getListaActividades(conexion)
     actividades = []
@@ -60,3 +60,22 @@ def getListaActividades(conexion):
         activ = Actividad(i[0], i[1], i[2], i[3], i[4], i[5], i[6]) 
         actividades.append(activ)
     return actividades
+
+
+# retorna un matriz con las dependencias autoreferenciadas en vez de id's
+def getListaActividadesAutoreferenciada(conexion):
+    lista = getListaActividades(conexion)
+
+    # trasnformar las dependencias a una lista de enteros
+    for i in lista:
+        i.dependencias = dependenciasAEnteros(decifrarDependenciasDelInput(i.dependencias)) 
+
+    # buscar entre las dependencias de cada actividad y reemplazar los id por las posiciones que ocupan en el array
+    for actividad in lista: 
+        for i, dependencia in actividad.dependencias:
+            for index, aux in actividad:
+                if dependencia == aux.identificador:
+                    actividad.dependencia[i] = index # cambia por el indice en vez del id
+        
+    return lista
+

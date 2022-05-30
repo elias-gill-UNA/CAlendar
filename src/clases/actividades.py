@@ -27,11 +27,11 @@ def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTe
         return ValueError
 
 
-def editarActividad(conexion, id, nuevosDatos): # TODO  consultar a Ric que pedo
+def editarActividad(conexion, id, nuevosDatos): 
+    # TODO  consultar a Ric que pedo
     # usar db.modificarActividad(conexion, actividadModificada). Pasarle la actividad ya modificada y la conexion
     # ATENCION: NO toquen el id por lo que mas quieran en sus vidas
     pass
-
 
 
 #Eliminar actividad de la base de datos y sus relaciones
