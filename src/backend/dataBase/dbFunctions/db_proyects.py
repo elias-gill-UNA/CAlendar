@@ -5,9 +5,9 @@ def nuevoProyecto(proyecto, id): # nombre del proyecto
     cursor = conn.cursor()
 
     # Crear las tablas necesarias para el proyecto
-    cursor.execute("CREATE TABLE IF NOT EXISTS Descripcion (nombre TEXT, descripcion TEXT, fechaInicio TEXT, actiCount INT, depCount INT)") #  tabla de descripcion del proyecto
+    cursor.execute("CREATE TABLE IF NOT EXISTS Descripcion (nombre TEXT, descripcion TEXT, fechaInicio TEXT, actiCount INT, depCount INT, diasLaborales INT)") #  tabla de descripcion del proyecto
     cursor.execute("CREATE TABLE IF NOT EXISTS Actividades (id integer primary key, nombre TEXT, duracion INT, dependencias TEXT, fechaPrevista TEXT, fechaTardia TEXT, finalizado INT)") # tabla de actividades
-    cursor.execute("CREATE TABLE IF NOT EXISTS Dependencias (id INT, idAntes TEXT, idDespues TEXT)") # tabla de Dependecias
+    cursor.execute("CREATE TABLE IF NOT EXISTS Feriados (Fecha TEXT)") # tabla de Dependecias
 
     # Llenado de los campos de identificacion del proyecto
     cursor.execute("INSERT INTO Descripcion (nombre, descripcion, fechaInicio, actiCount, depCount) VALUES (?, ?, ?, ?, ?)", 
@@ -34,17 +34,20 @@ def getInfo(id, conexion):
     conn.close()
     return data
 
-def actualizarParametro(conexion, parametro, valor):
+# actualiza un parametro concreto de la info del proyecto
+def actualizarParametro(conexion, parametro, valor): 
     cursor = conexion.cursor
-    cursor.execute(f"UPDATE Descripcion SET {parametro} = {valor}") # cambiar el valor en alguna tabla
+    cursor.execute(f"UPDATE Descripcion SET {parametro} = {valor}") 
     conexion.commit()
     cursor.close()
     return True
 
+# retorna una conexion al proyecto
 def abrirProyecto(id):
-    conn = sqlite3.connect(f'../proyects/{id}.db') # abre el proyecto
-    return conn # retorna la conexion al proyecto
+    conn = sqlite3.connect(f'../proyects/{id}.db') # conexion
+    return conn 
 
+# cierra la conexion
 def cerrarProyecto(conexion):
     conexion.close()
     return True
