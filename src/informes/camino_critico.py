@@ -1,3 +1,4 @@
+from clases.clases_cam_critico import *
 # carga o dibuja el camino critico y lo guarda en la matriz
 def cargarCriticos(objCritico, inicio, indice):
     bandera = False
@@ -94,6 +95,7 @@ def cantidadCaminosCriticos(objCritico, actvInicio):
 # recibe la lista de actividades y la prepara para comenzar 
 # WARNING : no volver a usar esta lista, porque esta funcion la modifica
 # NOTE: PASAR UNA LISTA DE ACTIVIDADES AUXILIAR O VOLVER A PEDIR DEL BACKEND UNA NUEVA
+
 def __inicializarLista(listaActividades):
     for actividad in listaActividades:
         #actividad.siguientes = []
@@ -120,3 +122,19 @@ def __inicializarLista(listaActividades):
     for actividad in listaActividades:
         actividad.siguientesPendientes = len(actividad.siguientes)
 
+def convertirLista(listaGeneral,listaacts):
+    for i in listaGeneral: #inicializa cada actividad con antecedentes en vacio
+        actividad = ActividadCaminoCritico(i.nombre,i.duracion,[])
+        listaacts.append(actividad)
+
+    for i in listaGeneral:
+        for j in i.dependencias: #como cada actividad tiene sus antecedentes en forma del indice de esa actividad, hago appen de esa actividad en ese indice
+            listaacts[listaGeneral.index(i)].anteriores.append(listaacts[j])
+
+    anteriores = []
+    actividad = ActividadCaminoCritico("Inicio", 0, anteriores)
+    listaacts.insert(0,actividad) #inicio siempre al comienzo
+
+    anteriores = [] #fin siempre al final
+    actividad = ActividadCaminoCritico("Fin", 0, anteriores)
+    listaacts.append(actividad)

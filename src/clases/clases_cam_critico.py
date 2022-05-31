@@ -4,7 +4,7 @@ class ObjetoCritico:
         self.caminosCriticos = [] # los caminos en si
         self.actividadesCriticas=[]
 
-class ActivCamCritico:
+class ActividadCaminoCritico:
     def __init__(self, nombre, duracion, anteriores):
         self.nombre = nombre
         self.duracion = duracion
