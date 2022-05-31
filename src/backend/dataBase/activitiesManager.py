@@ -1,7 +1,7 @@
-from dbFunctions import db_activities as db
-from clases.actividades import Actividad
-from proyectManager import getProyectInfo as proyect
-from dbFunctions.db_proyects import actualizarParametro as actualizarContador 
+import backend.dataBase.dbFunctions.db_activities as db
+from clases.actividades import *
+from backend.dataBase.proyectManager import getProyectInfo as proyect
+from backend.dataBase.dbFunctions.db_proyects import actualizarParametro as actualizarContador 
 # TODO importar dependencias 
 
 def anadirActividad(conexion, nuevaActividad, numDeps):

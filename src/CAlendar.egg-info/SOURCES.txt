@@ -1,3 +1,5 @@
+__init__.py
+main.py
 setup.py
 CAlendar.egg-info/PKG-INFO
 CAlendar.egg-info/SOURCES.txt
@@ -8,6 +10,7 @@ GUI/__init__.py
 GUI/crear_edit_borrarActividades.py
 GUI/crear_proyectos.py
 GUI/diagrama_de_gantt.py
+GUI/icono.ico
 GUI/librerias.py
 GUI/navbar.py
 GUI/nodo.py
@@ -20,6 +23,12 @@ backend/dataBase/__init__.py
 backend/dataBase/activitiesManager.py
 backend/dataBase/dependecyManager.py
 backend/dataBase/proyectManager.py
+backend/dataBase/dbFunctions/__init__.py
+backend/dataBase/dbFunctions/db_activities.py
+backend/dataBase/dbFunctions/db_dependecies.py
+backend/dataBase/dbFunctions/db_proyects.py
+backend/dataBase/proyects/dase.db
+backend/dataBase/tests/test.py
 clases/__init__.py
 clases/actividades.py
 clases/clases_cam_critico.py
@@ -30,5 +39,6 @@ clases/relaciones.py
 informes/__init__.py
 informes/camino_critico.py
 informes/diagramaGantt.py
+informes/tests/cam_critico.py
 utilidades/__init__.py
 utilidades/calendario.py

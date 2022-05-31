@@ -1,4 +1,4 @@
-import dbFunctions.db_proyects as dataBase
+import backend.dataBase.dbFunctions.db_proyects as dataBase
 import os
 
 # retorna la lista de todos los proyectos existentes

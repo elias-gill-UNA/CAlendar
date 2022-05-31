@@ -1,5 +1,5 @@
 from camino_critico import *
-from ...clases.clases_cam_critico import *
+from clases.clases_cam_critico import *
 
 # crea el proyecto y cargar actividades
 proyect = Proyecto()
