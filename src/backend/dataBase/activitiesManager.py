@@ -2,12 +2,11 @@ import backend.dataBase.dbFunctions.db_activities as db
 from clases.actividades import *
 from backend.dataBase.proyectManager import getProyectInfo as proyect
 from backend.dataBase.dbFunctions.db_proyects import actualizarParametro as actualizarContador 
-# TODO importar dependencias 
 
 def anadirActividad(conexion, nuevaActividad, numDeps):
     info = proyect(None, conexion)
-    cont_actividades = info[5] 
-    cont_deps = info[6]
+    cont_actividades = info.contadorActividades
+    cont_deps = info.contadorConexiones
 
     if cont_actividades == 99: # no mas de 99 actividades
         raise ValueError("Maximum number of activities reached")
@@ -21,16 +20,16 @@ def anadirActividad(conexion, nuevaActividad, numDeps):
 
 
 # eliminar las actividades
-def eliminarActividad(conexion, id):
-    act = db.getInfoActividad(conexion, id)
-    if len(act) == 0: # si no existe id
-        raise ValueError("Activitie does not exist")
-    elif act.nombre == "Inicio" or act.nombre == "Final":
-        raise ValueError("No puedes eliminar estas actividades")
+def eliminarActividad(conexion, idActividad):
+    act = db.getInfoActividad(conexion, idActividad)
+    if not len(act): # si no existe id
+        raise ValueError("Activitie does not exist or empty")
 
-    db.eliminarActividad(conexion, id)
-    cont_actividades = proyect(None, conexion)[5] # actualizar el contador 
-    actualizarContador(conexion, 'actiCount', cont_actividades - 1)
+    db.eliminarActividad(conexion, idActividad) # eliminar la actividad
+    info = proyect(None, conexion) 
+
+    actualizarContador(conexion, 'actiCount', info.contadorActividades - 1) # actualizar contadores
+    actualizarContador(conexion, 'depCount', info.contadorConexiones - len(act[3]))
     return True
 
 
