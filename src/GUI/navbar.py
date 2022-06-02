@@ -1,4 +1,5 @@
 from tkinter import *
+from clases.actividades import Actividad
 
 root = None
 
@@ -15,7 +16,6 @@ def GuardarArchivo():
 def Inicializar(mainRoot):
     root = mainRoot
     root.title("  Zebra Proyectos")
-    root.iconbitmap('icono.ico')
     myMenu = Menu(root)
     root.config(menu=myMenu)
 

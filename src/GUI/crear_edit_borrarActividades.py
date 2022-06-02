@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from tkcalendar import *
-from clases.actividades import *
+from tkcalendar import DateEntry
+from funcionesSobreObjetos.actividadFunciones import *
 
 def ir_Proyecto(f3,f2,f1,fP):
 

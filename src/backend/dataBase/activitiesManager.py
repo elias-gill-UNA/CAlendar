@@ -1,5 +1,5 @@
 import backend.dataBase.dbFunctions.db_activities as db
-from clases.actividades import *
+from clases.actividades import Actividad
 from backend.dataBase.proyectManager import getProyectInfo as getInfoProyecto
 from backend.dataBase.dbFunctions.db_proyects import actualizarParametro as actualizarContador 
 
@@ -63,13 +63,19 @@ def getListaActividades(conexion): # retorna las dependencias como string
     return actividades
 
 
+def depesEnteros(deps):
+    aux = deps.split(',')
+    for i, valor in aux:
+        aux[i] = int(valor)
+    return aux
+
 # retorna un matriz con las dependencias autoreferenciadas en vez de id's
 def getListaActividadesAutoreferenciada(conexion):
     lista = getListaActividades(conexion)
 
     # trasnformar las dependencias a una lista de enteros
     for i in lista:
-        i.dependencias = dependenciasAEnteros(decifrarDependenciasDelInput(i.dependencias)) 
+        i.dependencias = depesEnteros(i.dependencias)
 
     # buscar entre las dependencias de cada actividad y reemplazar los id por las posiciones que ocupan en el array
     for actividad in lista: 
