@@ -22,13 +22,13 @@ def anadirActividad(conexion, nuevaActividad, numDeps):
 # eliminar las actividades
 def eliminarActividad(conexion, idActividad):
     act = getInfoActividad(conexion, idActividad)
-    cont_deps = len(act.dependencias.split(',')) # saca el numero de dependencias de la actividad
-    if not 1: # si no existe id
+    if not act: # si no existe id
         raise ValueError("Activitie does not exist or empty")
 
     db.eliminarActividad(conexion, idActividad) # eliminar la actividad
     info = getInfoProyecto(None, conexion) 
 
+    cont_deps = len(act.dependencias.split(',')) # numero de dependencias
     actualizarContador(conexion, 'actiCount', info.contadorActividades - 1) # actualizar contadores
     actualizarContador(conexion, 'depCount', info.contadorConexiones - cont_deps)
     return True
@@ -45,7 +45,7 @@ def modificarActividad(conexion, id, actividadModificada):
 
 def getInfoActividad(conexion, id):
     info = db.getInfoActividad(conexion, id) # busca en el proyecto esa actividad
-    if len(info) == 0: # si no encuentra retorna vacio
+    if not info: # no encontro la actividad
         raise ValueError("Activitie does not exist") 
     
     activ = Actividad(info[0], info[1], info[2], info[3], info[4], info[5], info[6]) 

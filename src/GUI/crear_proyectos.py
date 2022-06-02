@@ -1,4 +1,4 @@
-
+import tkinter as tk
 def ir_Actividad(frame, frame2, frame3, ID, Nom, Des, Fech):
     # Crea un objeto de tipo proyecto
     P = Pr.proyecto(ID, Nom, Des, Fech)

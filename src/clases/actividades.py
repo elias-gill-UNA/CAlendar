@@ -1,4 +1,5 @@
-from GUI.crear_proyectos import ir_Actividad
+# from GUI.crear_proyectos import ir_Actividad
+from sqlite3.dbapi2 import Error
 from backend.dataBase import proyectManager
 import backend.dataBase.activitiesManager as activitiesManager
 import backend.dataBase.dbFunctions.db_proyects as db_proyects
@@ -19,8 +20,20 @@ def leerActividades(conexion):
 
 #Asegurarte de actualizar la tabla al crear una actividad nueva
 def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio):
-    contadorDependencias = len(dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString)))
+    if dependenciasString != '':
+        deps = dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString))
+    else:
+        deps = False
+
+    contadorDependencias = 0
     nuevaActividad = Actividad(0, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio, 0)
+
+    lista = activitiesManager.getListaActividades(conexion)
+    if deps:
+        for i in lista: # tirar error si una dependencia no existe
+            if not i in deps:
+                raise ValueError("La activida de la que depende no existe")
+
     try: # comprueba si es posible crear la actividad
         activitiesManager.anadirActividad(conexion, nuevaActividad, contadorDependencias)
         return nuevaActividad
@@ -39,10 +52,12 @@ def eliminarActividad(conexion, actividadID):
     try: 
         activitiesManager.eliminarActividad(conexion, actividadID)
         lista = activitiesManager.getListaActividades(conexion)
-        infoProyecto = proyectManager.getProyectInfo(None, conexion)
 
         # si una actividad contiene actividadID como dependencia entonces actualizarla
         for actividad in lista: 
+            infoProyecto = proyectManager.getProyectInfo(None, conexion)
+            if actividad.dependencias == '':
+                break
             aux = dependenciasAEnteros(decifrarDependenciasDelInput(actividad.dependencias)) # dependencias a enteros
             if actividadID in aux:  
                 index = aux.index(actividadID) 
@@ -52,8 +67,6 @@ def eliminarActividad(conexion, actividadID):
                 activitiesManager.modificarActividad(conexion, actividad.identificador, actividad) # actualizar la actividad
                 db_proyects.actualizarParametro(conexion, 'depCount', infoProyecto.contadorConexiones - 1) 
 
-                print(ir_Actividad)
-                
         return True
     except ValueError:
         return ValueError
