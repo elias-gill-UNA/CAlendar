@@ -151,7 +151,7 @@ class Interfaz(tk.Frame):
                 # Mostrar mapa
             else:
                 # Mostrar camino crítico
-                pass
+                #pass
                 # Mostrar el diagrama de gantt
                 pass
 
