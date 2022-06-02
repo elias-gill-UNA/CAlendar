@@ -10,6 +10,7 @@ setup(
         'GUI', 
         'informes', 
         'utilidades', 
+        'funcionesSobreObjetos', 
         'backend', 'backend.dataBase', 'backend.comprobaciones', 'backend.dataBase.dbFunctions'
     ]
     # scripts=[]
