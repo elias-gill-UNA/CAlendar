@@ -1,4 +1,3 @@
-from librerias import *
 
 def ir_Actividad(frame, frame2, frame3, ID, Nom, Des, Fech):
     # Crea un objeto de tipo proyecto

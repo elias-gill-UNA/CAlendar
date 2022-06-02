@@ -1,10 +1,10 @@
 import backend.dataBase.dbFunctions.db_activities as db
 from clases.actividades import *
-from backend.dataBase.proyectManager import getProyectInfo as proyect
+from backend.dataBase.proyectManager import getProyectInfo as getInfoProyecto
 from backend.dataBase.dbFunctions.db_proyects import actualizarParametro as actualizarContador 
 
 def anadirActividad(conexion, nuevaActividad, numDeps):
-    info = proyect(None, conexion)
+    info = getInfoProyecto(None, conexion)
     cont_actividades = info.contadorActividades
     cont_deps = info.contadorConexiones
 
@@ -21,19 +21,20 @@ def anadirActividad(conexion, nuevaActividad, numDeps):
 
 # eliminar las actividades
 def eliminarActividad(conexion, idActividad):
-    act = db.getInfoActividad(conexion, idActividad)
-    if not len(act): # si no existe id
+    act = getInfoActividad(conexion, idActividad)
+    cont_deps = len(act.dependencias.split(',')) # saca el numero de dependencias de la actividad
+    if not 1: # si no existe id
         raise ValueError("Activitie does not exist or empty")
 
     db.eliminarActividad(conexion, idActividad) # eliminar la actividad
-    info = proyect(None, conexion) 
+    info = getInfoProyecto(None, conexion) 
 
     actualizarContador(conexion, 'actiCount', info.contadorActividades - 1) # actualizar contadores
-    actualizarContador(conexion, 'depCount', info.contadorConexiones - len(act[3]))
+    actualizarContador(conexion, 'depCount', info.contadorConexiones - cont_deps)
     return True
 
 
-# debe recibir objeto actividad nuevo
+# debe recibir un nuevo objeto actividad
 def modificarActividad(conexion, id, actividadModificada): 
     if len(db.getInfoActividad(conexion, id)) == 0: # si no existe ese ID
         raise ValueError("Activitie does not exist")
@@ -46,8 +47,9 @@ def getInfoActividad(conexion, id):
     info = db.getInfoActividad(conexion, id) # busca en el proyecto esa actividad
     if len(info) == 0: # si no encuentra retorna vacio
         raise ValueError("Activitie does not exist") 
-        
-    return info
+    
+    activ = Actividad(info[0], info[1], info[2], info[3], info[4], info[5], info[6]) 
+    return activ
 
 
 def getListaActividades(conexion): # retorna las dependencias como string

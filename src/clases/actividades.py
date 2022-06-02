@@ -1,4 +1,4 @@
-from os import error
+from GUI.crear_proyectos import ir_Actividad
 from backend.dataBase import proyectManager
 import backend.dataBase.activitiesManager as activitiesManager
 import backend.dataBase.dbFunctions.db_proyects as db_proyects
@@ -17,7 +17,6 @@ class Actividad:
 def leerActividades(conexion):
     return activitiesManager.getListaActividades(conexion) # y si, esto nomas es :)
 
-
 #Asegurarte de actualizar la tabla al crear una actividad nueva
 def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio):
     contadorDependencias = len(dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString)))
@@ -35,7 +34,6 @@ def editarActividad(conexion, id, nuevosDatos):
     # ATENCION: NO toquen el id por lo que mas quieran en sus vidas
     pass
 
-
 #Eliminar actividad de la base de datos y sus relaciones
 def eliminarActividad(conexion, actividadID):
     try: 
@@ -43,16 +41,18 @@ def eliminarActividad(conexion, actividadID):
         lista = activitiesManager.getListaActividades(conexion)
         infoProyecto = proyectManager.getProyectInfo(None, conexion)
 
-        for actividad in lista: # por cada actividad 
-            aux = dependenciasAEnteros(decifrarDependenciasDelInput(actividad.dependencias)) # dependencias de actividad
-            if actividadID in aux: # si una actividad contiene actividadID como dependencia
-                index = aux.index(actividadID) # ver su posicion
-                aux.pop(index) # eliminar
-                actividad.dependencias = convertirArregloDependenciasAString(aux) # trasnformar de nuevo a string 
+        # si una actividad contiene actividadID como dependencia entonces actualizarla
+        for actividad in lista: 
+            aux = dependenciasAEnteros(decifrarDependenciasDelInput(actividad.dependencias)) # dependencias a enteros
+            if actividadID in aux:  
+                index = aux.index(actividadID) 
+                aux.pop(index) 
+                actividad.dependencias = convertirArregloDependenciasAString(aux) # trasnformar dependencias nuevo a string 
 
                 activitiesManager.modificarActividad(conexion, actividad.identificador, actividad) # actualizar la actividad
-                db_proyects.actualizarParametro(conexion, 'depCount', infoProyecto.contadorConexiones - 1) # act. el contador
-                print(infoProyecto.contadorConexiones)
+                db_proyects.actualizarParametro(conexion, 'depCount', infoProyecto.contadorConexiones - 1) 
+
+                print(ir_Actividad)
                 
         return True
     except ValueError:
