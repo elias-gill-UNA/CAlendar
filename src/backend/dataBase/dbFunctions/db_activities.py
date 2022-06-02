@@ -3,8 +3,8 @@
 
 def nuevaActividad(conexion, actividad):
     cursor = conexion.cursor()
-    cursor.execute("INSERT INTO Actividades (nombre, duracion, dependencias, fechaPrevista, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?)",
-              (actividad.nombre, actividad.duracion, actividad.dependecias, actividad.fechaInicioTemprano, actividad.fechaInicioTardio,
+    cursor.execute("INSERT INTO Actividades (nombre, duracion, dependencias, fechaPrevista, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?, ?)",
+              (actividad.nombre, actividad.duracion, actividad.dependencias, actividad.fechaInicioTemprano, actividad.fechaInicioTardio,
                actividad.finalizado)) # insertar nueva actividad
     conexion.commit() # guardar cambios
     cursor.close()
@@ -20,21 +20,22 @@ def eliminarActividad(conexion, id):
 def getListaActividades(conexion): # retorna lista de actividades
     cursor = conexion.cursor()
     cursor.execute('SELECT * FROM Actividades')
-    data = conexion.fetchall()
+    data = cursor.fetchall()
     cursor.close()
     return data
 
 def getInfoActividad(conexion, id): # si la actividad no existe retorna un array vacio
     cursor = conexion.cursor()
     cursor.execute(f'SELECT * FROM Actividades WHERE id={id}')
-    data = conexion.fetchone()
+    data = cursor.fetchone()
     cursor.close()
     return data
 
-def modificarActividad(conexion, id,actividad): # requiere conexion, nueva acti y id
+def modificarActividad(conexion, id, actividad): # requiere conexion, nueva acti y id
     cursor = conexion.cursor()
-    cursor.execute(f"UPDATE Actividades SET (nombre, duracion, dependencias, fechaTardia, finalizado) VALUES (?, ?, ?, ?, ?) WEHRE id={id}",
-              (actividad.nombre, actividad.duracion, actividad.dependencias, actividad.fechaInicioTemprano, actividad.fechaInicioTardio,
+    cursor.execute(f"UPDATE Actividades SET nombre = ?, duracion = ?, dependencias = ?, fechaPrevista = ?, fechaTardia = ?, finalizado = ? WHERE id={id}",
+              (f"{actividad.nombre}", actividad.duracion, f"{actividad.dependencias}",
+              f"{actividad.fechaInicioTemprano}", f"{actividad.fechaInicioTardio}",
                actividad.finalizado)) # insertar nueva actividad
     conexion.commit() # guardar cambios
     cursor.close()
