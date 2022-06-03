@@ -1,8 +1,9 @@
-from tkinter import messagebox
 from datetime import datetime
+from tkinter import messagebox
+
 
 # Cuando carga o edita una actividad debe validar aca
-def __validacion__(self, nombre, duracion, identificador, fechaInicio):
+def validar_Actividad(nombre, duracion, identificador, fechaInicio):
     valido = True
     if not 1 < len(nombre) <= 20:
         messagebox.showwarning("Mensaje", "Nombre de Actividad invalido")
@@ -28,12 +29,42 @@ def __validacion__(self, nombre, duracion, identificador, fechaInicio):
         valido = False
     return valido
 
-def validarInforme(opcion):
 
+def validarInforme(opcion):
     if opcion == "":
         messagebox.showwarning("Error", "Elija una opción para continuar")
         return False
     return True
 
 
+def validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
+    valido = True
+    if not DL.isdigit():
+        messagebox.showwarning("Mensaje", "Cantidad de dias laborales invalidos")
+        valido = False
+    elif  int(DL)<=0 or int(DL)>7:
+        messagebox.showwarning("Mensaje", "Cantidad de dias laborales invalidos")
+        valido = False
+    if not 1 < len(nombre) <= 30:
+        messagebox.showwarning("Mensaje", "Nombre de Actividad invalido")
+        valido = False
+    if not 1 < len(descripcion) <= 60:
+        messagebox.showwarning("Mensaje", "Descripcion invalido")
+        valido = False
+    if not holgura.isdigit():
+        messagebox.showwarning("Mensaje", "Holgura invalida")
+        valido = False
+    '''elif not 0 < int(holgura) > 7:
+        messagebox.showwarning("Mensaje", "Cantidad de dias laborales invalidos")
+        valido = False'''
+    if not validarFecha(fechaI):
+        valido = False
+    return valido
 
+def validarFecha(fecha):
+    try:
+        bool(datetime.strptime(str(fecha), "%Y-%m-%d").date())
+    except ValueError:
+        messagebox.showwarning("Mensaje", "Fecha invalida")
+        return False
+    return True

@@ -7,9 +7,11 @@ from matplotlib.pyplot import text
 
 from tkcalendar import *
 import funcionesSobreObjetos.proyectoFunciones as prFunctions
-import funcionesSobreObjetos.actividadFunciones as actFunctions
+#import funcionesSobreObjetos.actividadFunciones as actFunctions
 from funcionesSobreObjetos.actividadFunciones import *
 from clases.proyecto import *
+from backend.dataBase.proyectManager import *
+import backend.comprobaciones.verificarEntradas as vrfInput
 # 0 indica que viene de la ventana de Proyectos
 # 1 indica que viene de la ventana de Actividades
 def limpiar_Pantalla(framePrincipal, num_Ventana):
@@ -20,18 +22,28 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
         ventana_Proyecto(root)
 
 
-def guardar_Proyecto(framePrincipal, ID, nombre, descripcion, fechaI):
-    # Aca se debe crear el proyecto pero debe validar los datos
-    #Proyecto(nombre,descripcion,fechaI,,holgura)
-    #prFunctions.abrirProyecto()
-    limpiar_Pantalla(framePrincipal, 0)
+def guardar_Proyecto(framePrincipal, DL, nombre, descripcion, fechaI, holgura):
+    # Validar los datos
+    if vrfInput.validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
+        # Se crea el proyecto
+        Pr=Proyecto(nombre,descripcion,fechaI,DL,holgura)
+        print("Se creo el proyecto",crearProyecto(Pr))
+        print("id",Pr.identificador)
+        #PR2=prFunctions.abrirProyecto(Pr.identificador)
+        #print(PR2)
+        info=getProyectInfo(Pr.identificador,None)
+        print("Info",info)
+        #h=getProyectListsWithInfo()
+        #print(h)
+
+        limpiar_Pantalla(framePrincipal, 0)
 
 
 def guardar_Actividad(framePrincipal, nombre, duracion, dependencias, fechaInicio, fechaFinal):
     # Se crea la actividad
 
     # Falta validar los datos antes
-    actFunctions.crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
+    #actFunctions.crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
     limpiar_Pantalla(framePrincipal, 1)
 
 
@@ -57,10 +69,10 @@ class ventana_Proyecto(tk.Frame):
         nombre = tk.Entry(frame1, width=20)
         nombre.grid(row=1, column=1)
 
-        lbl_ID = tk.Label(frame1, text="Identificador:", font=("Times New Roman", 12))
-        lbl_ID.grid(row=2, column=0, sticky="w")
-        ID = tk.Entry(frame1, width=20)
-        ID.grid(row=2, column=1)
+        lbl_Dl = tk.Label(frame1, text="Dias laborales:", font=("Times New Roman", 12))
+        lbl_Dl.grid(row=2, column=0, sticky="w")
+        DL = tk.Entry(frame1, width=20)
+        DL.grid(row=2, column=1)
 
         fechaInicio = tk.StringVar()  # Guarda la fecha ingresada
         lbl_fechaInicio = tk.Label(frame1, text="Fecha de Inicio dd/mm/aa:", font=("Times New Roman", 12))
@@ -122,9 +134,9 @@ class ventana_Proyecto(tk.Frame):
         btn_salir.grid(row=0, column=2)
 
         btn_siguiente = tk.Button(frame3, text="Siguiente",
-                                  command=lambda: guardar_Proyecto(self, ID.get(), nombre.get(),
+                                  command=lambda: guardar_Proyecto(self, DL.get(), nombre.get(),
                                                                    descrip.get(1.0, "end"),
-                                                                   fechaI))
+                                                                   fechaI.get_date(),holgura.get()))
         btn_siguiente.grid(row=0, column=5, sticky="ns")
 
 
