@@ -1,38 +1,81 @@
+from backend.dataBase.dbFunctions import db_feriados, db_proyects
+from clases.feriados import Feriado
 
-def zeller(año,mes,dia): # determina que dia cae una fecha especifica
-    a=int((14-mes)/12)
-    y=año-a
-    m=mes+ 12*a - 2
-    d=int((dia+y+int(y/4)-int(y/100)+int(y/400)+int((31*m)/12)) % 7)
+# retorna si es dia laboral, feriado o fin de semana 
+def diaLaboral(año, mes, dia): 
+    feriados = db_feriados.getFeriados()
+    for feriado in feriados:
+        if(dia == feriado.dia and mes == feriado.mes):
+            return False, feriado
+    return __fin_semana(año,mes,dia)
+# determina que dia cae una fecha especifica
+def zeller(año,mes,dia): 
+    a = int((14-mes)/12)
+    y = año-a
+    m = mes+ 12*a - 2
+    d = int((dia+y+int(y/4)-int(y/100)+int(y/400)+int((31*m)/12)) % 7)
     return d
 
-
-feriados = { # [dia, mes, descripcion] lista de feriados nacionales
-    "1":[1,1,"Año nuevo"],
-    "2":[1,3,"Dia de los heroes"],
-    "3":[1,5,"Dia del trabajador"],
-    "4":[14,5,"Dia de la Patria"],
-    "5":[15,5,"Dia de la Madre"],
-    "6":[12,6,"Paz del Chaco"],
-    "7":[15,8,"Fundacion de Asuncion"],
-    "8":[29,9,"Batalla de Boqueron"],
-    "9":[8,12,"Dia de la Virgen de Caacupe"],
-    "10":[25,12,"Navidad"]
+# cargar los feriados nacionales
+def cargarFeriadosNacionales(id):
+    conexion = db_proyects.abrirProyecto(id)
+    feriados = { 
+        [1,1,"Año nuevo"],
+        [1,3,"Dia de los heroes"],
+        [1,5,"Dia del trabajador"],
+        [14,5,"Dia de la Patria"],
+        [15,5,"Dia de la Madre"],
+        [12,6,"Paz del Chaco"],
+        [15,8,"Fundacion de Asuncion"],
+        [29,9,"Batalla de Boqueron"],
+        [8,12,"Dia de la Virgen de Caacupe"],
+        [25,12,"Navidad"]
     }
+    for feriado in feriados: # cargar feriados en la db
+        feriado = Feriado(feriado[0], feriado[1], feriado[2])
+        db_feriados.nuevoFeriado(feriado)
+
+    db_proyects.cerrarProyecto(conexion)
+    return True
 
 
-def fin_semana(año, mes, dia): # determina si un dia cae fin de semana
+##############################################################
+#  funciones sobre los dias feriados en conjunto con la DB  #
+##############################################################
+
+def anadirFeriado(conexion, dia, mes, descripcion):
+    feriado = Feriado(dia, mes, descripcion)
+    db_feriados.nuevoFeriado(conexion, feriado)
+    return getListaFeriados(conexion)
+
+def leerFeriado(conexion, id):
+    info = db_feriados.getFeriado(conexion, id)
+    feriado = Feriado(info[1], info[2], info[3])
+    feriado.identificador = info[0]
+    return feriado
+
+def getListaFeriados(conexion):
+    list = db_feriados.getListaFeriados(conexion)
+    for i in list:
+        feriado = Feriado(i[1], i[2], i[3])
+        feriado.identificador = i[0]
+        list.append(feriado)
+    return list
+
+# elimina el feriado si es que existe
+def eliminarFeriado(conexion, id):
+    if leerFeriado(conexion, id):
+        db_feriados.eliminarFeriado(id)
+        return True
+    raise ValueError("El feriado no existe")
+
+
+def __fin_semana(año, mes, dia): # determina si un dia cae fin de semana
     d = zeller(año, mes, dia)
     if d == 6 or d == 0:
-        return True, "Fin de semana"
+        return False, "Fin de semana"
     else:
-        return False, "Dia normal"
+        return True, "Dia normal"
 
-def feriado(año,mes,dia): # retorna si es dia laboral, feriado o fin de semana 
-    for key in feriados.keys(): # si es feriado
-        if(dia==feriados[key][0] and mes == feriados[key][1]):
-            return True, feriados[key][2]
-    return fin_semana(año,mes,dia)
 
-# formato de return (true/false, 'Descripcion del dia'), guardar como    var [2] = feriado(dia, ano, mes)
-# true: feriado/finde  false: dia normal
+
