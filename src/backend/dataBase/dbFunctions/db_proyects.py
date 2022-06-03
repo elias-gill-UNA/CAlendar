@@ -7,15 +7,9 @@ def nuevoProyecto(proyecto, id): # nombre del proyecto
     cursor = conn.cursor()
 
     # Crear las tablas necesarias para el proyecto
-<<<<<<< HEAD
-    cursor.execute("CREATE TABLE IF NOT EXISTS Descripcion (id INT, nombre TEXT, descripcion TEXT, fechaInicio TEXT, actiCount INT, depCount INT, diasLaborales INT, holgura INT)") #  tabla de descripcion del proyecto
-    cursor.execute("CREATE TABLE IF NOT EXISTS Actividades (id INTEGER PRIMARY KEY, nombre TEXT, duracion INT, dependencias TEXT, fechaPrevista TEXT, fechaTardia TEXT, finalizado INT)") # tabla de actividades
-    cursor.execute("CREATE TABLE IF NOT EXISTS Feriados (Fecha TEXT)") # tabla de Dependecias
-=======
     cursor.execute("CREATE TABLE IF NOT EXISTS Descripcion (nombre TEXT, descripcion TEXT, fechaInicio TEXT, actiCount INT, depCount INT)") #  tabla de descripcion del proyecto
     cursor.execute("CREATE TABLE IF NOT EXISTS Actividades (id integer primary key, nombre TEXT, duracion INT, dependencias TEXT, fechaPrevista TEXT, fechaTardia TEXT, finalizado INT)") # tabla de actividades
-    cursor.execute("CREATE TABLE IF NOT EXISTS Feriados (id integer primary key, fecha TEXT, descripcion TEXT)") # tabla de Dependecias
->>>>>>> 3b5b130 (anadi nueva funcionalidad para andir feriados en la base de datos)
+    cursor.execute("CREATE TABLE IF NOT EXISTS Feriados (id integer primary key, dia INT, mes INT, descripcion TEXT)") # tabla de Dependecias
 
     # Llenado de los campos de identificacion del proyecto
     cursor.execute("INSERT INTO Descripcion (id, nombre, descripcion, fechaInicio, actiCount, depCount, diasLaborales, holgura) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 

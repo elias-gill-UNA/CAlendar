@@ -2,12 +2,20 @@ from backend.dataBase.dbFunctions import db_feriados, db_proyects
 from clases.feriados import Feriado
 
 # retorna si es dia laboral, feriado o fin de semana 
-def diaLaboral(año, mes, dia): 
-    feriados = db_feriados.getFeriados()
+def diaLaboral(feriados, año, mes, dia): 
     for feriado in feriados:
         if(dia == feriado.dia and mes == feriado.mes):
             return False, feriado
     return __fin_semana(año,mes,dia)
+
+# determina si un dia cae fin de semana
+def __fin_semana(año, mes, dia): 
+    d = zeller(año, mes, dia)
+    if d == 6 or d == 0:
+        return False, "Fin de semana"
+    else:
+        return True, "Dia normal"
+
 # determina que dia cae una fecha especifica
 def zeller(año,mes,dia): 
     a = int((14-mes)/12)
@@ -33,7 +41,7 @@ def cargarFeriadosNacionales(id):
     }
     for feriado in feriados: # cargar feriados en la db
         feriado = Feriado(feriado[0], feriado[1], feriado[2])
-        db_feriados.nuevoFeriado(feriado)
+        db_feriados.nuevoFeriado(conexion, feriado)
 
     db_proyects.cerrarProyecto(conexion)
     return True
@@ -65,17 +73,11 @@ def getListaFeriados(conexion):
 # elimina el feriado si es que existe
 def eliminarFeriado(conexion, id):
     if leerFeriado(conexion, id):
-        db_feriados.eliminarFeriado(id)
+        db_feriados.eliminarFeriado(conexion, id)
         return True
     raise ValueError("El feriado no existe")
 
 
-def __fin_semana(año, mes, dia): # determina si un dia cae fin de semana
-    d = zeller(año, mes, dia)
-    if d == 6 or d == 0:
-        return False, "Fin de semana"
-    else:
-        return True, "Dia normal"
 
 
 
