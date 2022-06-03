@@ -1,3 +1,4 @@
+from clases.clases_cam_critico import *
 # carga o dibuja el camino critico y lo guarda en la matriz
 def cargarCriticos(objCritico, inicio, indice):
     bandera = False
@@ -26,8 +27,7 @@ def inicializarCritico(objCritico, listaActividades):
 
 # funcion principal que busca el camino critico
 def caminoCritico(listaActividades, proyecto, objCritico):
-    
-    inicializarLista(listaActividades)
+    __inicializarLista(listaActividades)
 
     actividad = listaActividades[0] # actividad inicio
     actividad.inicioTemprano = 0
@@ -95,10 +95,15 @@ def cantidadCaminosCriticos(objCritico, actvInicio):
 # recibe la lista de actividades y la prepara para comenzar 
 # WARNING : no volver a usar esta lista, porque esta funcion la modifica
 # NOTE: PASAR UNA LISTA DE ACTIVIDADES AUXILIAR O VOLVER A PEDIR DEL BACKEND UNA NUEVA
-def inicializarLista(listaActividades): # crear un armador para esta funcion
+
+def __inicializarLista(listaActividades):
     for actividad in listaActividades:
+        #actividad.siguientes = []
+
+        if len(actividad.anteriores) == 0 and actividad.nombre != "Inicio" and actividad.nombre != "Fin":
+            actividad.anteriores.append(listaActividades[0])
+        
         actividad.anterioresPendientes = len(actividad.anteriores)
-        actividad.siguientes = []
         actividad.inicioTemprano = -1
         actividad.inicioTardio = -1
         actividad.finTemprano = -1
@@ -110,16 +115,26 @@ def inicializarLista(listaActividades): # crear un armador para esta funcion
             anterior.siguientes.append(actividad)
 
     for actividad in listaActividades:
+        if len(actividad.siguientes) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":
+            actividad.siguientes.append(listaActividades[len(listaActividades)-1])
+            listaActividades[len(listaActividades)-1].anteriores.append(actividad)
+    
+    for actividad in listaActividades:
         actividad.siguientesPendientes = len(actividad.siguientes)
 
-    # continuar preparando la lista de actividades
-    for actividad in listaActividades:
-        #  actividades sin antecedentes tienen como antecedente a "Inicio"
-        if len(actividad.anteriores) == 0 and actividad.nombre != "Inicio" and actividad.nombre != "Fin":
-            actividad.anteriores.append(listaActividades[0])
-            listaActividades[0].siguientes.append(actividad)
+def convertirLista(listaGeneral,listaacts):
+    for i in listaGeneral: #inicializa cada actividad con antecedentes en vacio
+        actividad = ActividadCaminoCritico(i.nombre,i.duracion,[])
+        listaacts.append(actividad)
 
-        #  actividades sin presendente tienen como presendente a "Fin"
-        if len(actividad.siguientes) == 0 and actividad.nombre!="Inicio" and actividad.nombre!="Fin":
-            listaActividades[len(listaActividades)-1].anteriores.append(actividad)
+    for i in listaGeneral:
+        for j in i.dependencias: #como cada actividad tiene sus antecedentes en forma del indice de esa actividad, hago appen de esa actividad en ese indice
+            listaacts[listaGeneral.index(i)].anteriores.append(listaacts[j])
 
+    anteriores = []
+    actividad = ActividadCaminoCritico("Inicio", 0, anteriores)
+    listaacts.insert(0,actividad) #inicio siempre al comienzo
+
+    anteriores = [] #fin siempre al final
+    actividad = ActividadCaminoCritico("Fin", 0, anteriores)
+    listaacts.append(actividad)
