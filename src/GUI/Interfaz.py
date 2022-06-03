@@ -28,13 +28,16 @@ def guardar_Proyecto(framePrincipal, DL, nombre, descripcion, fechaI, holgura):
         # Se crea el proyecto
         Pr=Proyecto(nombre,descripcion,fechaI,DL,holgura)
         print("Se creo el proyecto",crearProyecto(Pr))
-        print("id",Pr.identificador)
+        h = getProyectListsWithInfo()
+        print(h)
+        #print("id",Pr.identificador,"des:",Pr.descripcion,"nom:",Pr.nombre)
+
+
         #PR2=prFunctions.abrirProyecto(Pr.identificador)
         #print(PR2)
-        info=getProyectInfo(Pr.identificador,None)
-        print("Info",info)
-        #h=getProyectListsWithInfo()
-        #print(h)
+        #info=getProyectInfo(Pr.identificador,None)
+        #print("Info",info)
+
 
         limpiar_Pantalla(framePrincipal, 0)
 

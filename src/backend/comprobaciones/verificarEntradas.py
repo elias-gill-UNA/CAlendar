@@ -54,9 +54,6 @@ def validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
     if not holgura.isdigit():
         messagebox.showwarning("Mensaje", "Holgura invalida")
         valido = False
-    '''elif not 0 < int(holgura) > 7:
-        messagebox.showwarning("Mensaje", "Cantidad de dias laborales invalidos")
-        valido = False'''
     if not validarFecha(fechaI):
         valido = False
     return valido
