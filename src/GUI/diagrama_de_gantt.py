@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt # instalar : pip install matplotlib
 import numpy as np
-from src.clases.diagramaGantt import ConseguirDataParaGUI
+from informes.diagramaGantt import ConseguirDataParaGUI
 
 # Datos
 horizonte = 365  # Simula 1 año
