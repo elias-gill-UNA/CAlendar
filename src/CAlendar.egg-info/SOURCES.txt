@@ -7,7 +7,6 @@ CAlendar.egg-info/dependency_links.txt
 CAlendar.egg-info/top_level.txt
 GUI/Inputs.py
 GUI/Interfaz.py
-GUI/Ventana_Actividad.py
 GUI/__init__.py
 GUI/crear_edit_borrarActividades.py
 GUI/crear_proyectos.py
@@ -21,14 +20,11 @@ backend/comprobaciones/verificarDependencia.py
 backend/comprobaciones/verificarEntradas.py
 backend/dataBase/__init__.py
 backend/dataBase/activitiesManager.py
-backend/dataBase/dependecyManager.py
 backend/dataBase/proyectManager.py
 backend/dataBase/dbFunctions/__init__.py
 backend/dataBase/dbFunctions/db_activities.py
-backend/dataBase/dbFunctions/db_dependecies.py
 backend/dataBase/dbFunctions/db_proyects.py
 backend/dataBase/proyects/dase.db
-backend/dataBase/tests/test.py
 clases/__init__.py
 clases/actividades.py
 clases/clases_cam_critico.py
@@ -36,6 +32,8 @@ clases/diagramaGantt.py
 clases/feriados.py
 clases/proyecto.py
 clases/relaciones.py
+funcionesSobreObjetos/actividadFunciones.py
+funcionesSobreObjetos/proyectoFunciones.py
 informes/__init__.py
 informes/camino_critico.py
 informes/diagramaGantt.py

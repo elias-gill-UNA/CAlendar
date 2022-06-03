@@ -2,10 +2,14 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 
-from clases.actividades import *
+from matplotlib.pyplot import text
+
+
 from tkcalendar import *
-
-
+import funcionesSobreObjetos.proyectoFunciones as prFunctions
+import funcionesSobreObjetos.actividadFunciones as actFunctions
+from funcionesSobreObjetos.actividadFunciones import *
+from clases.proyecto import *
 # 0 indica que viene de la ventana de Proyectos
 # 1 indica que viene de la ventana de Actividades
 def limpiar_Pantalla(framePrincipal, num_Ventana):
@@ -18,14 +22,16 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
 
 def guardar_Proyecto(framePrincipal, ID, nombre, descripcion, fechaI):
     # Aca se debe crear el proyecto pero debe validar los datos
-
+    #Proyecto(nombre,descripcion,fechaI,,holgura)
+    #prFunctions.abrirProyecto()
     limpiar_Pantalla(framePrincipal, 0)
 
 
 def guardar_Actividad(framePrincipal, nombre, duracion, dependencias, fechaInicio, fechaFinal):
     # Se crea la actividad
+
     # Falta validar los datos antes
-    crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
+    actFunctions.crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
     limpiar_Pantalla(framePrincipal, 1)
 
 
@@ -63,11 +69,16 @@ class ventana_Proyecto(tk.Frame):
         fechaI.grid(row=3, column=1)
 
         lbl_descripcion = tk.Label(frame1, text="Descripción:", font=("Times New Roman", 12))
-        lbl_descripcion.grid(row=4, column=0, sticky="w")
-
+        lbl_descripcion.grid(row=5, column=0, sticky="w")
         # Crea una caja de texto para la descripción
         descrip = Text(frame1, width=20, height=5)
-        descrip.grid(row=4, column=1)
+        descrip.grid(row=5, column=1)
+
+        lbl_holgura = tk.Label(frame1, text="Holgura:", font=("Times New Roman", 12))
+        lbl_holgura.grid(row=4, column=0, sticky="w")
+        # Crea una caja de texto para el ID
+        holgura = tk.Entry(frame1, width=20)
+        holgura.grid(row=4,column=1)
 
         # Crea un espacio entre frame y frame2
         espacio = tk.Label(frame1, text="")
@@ -183,7 +194,7 @@ class ventana_Actividad(tk.Frame):
                                                                 self.fechaInicio.get(), self.fechaFinal.get()))
         btn_crear.grid(row=5, column=0)
 
-        btn_editar = tk.Button(frame, text="Editar Actividad", command=editarActividad)
+        btn_editar = tk.Button(frame, text="Editar Actividad")
         btn_editar.grid(row=5, column=1)
 
         btn_eliminar = tk.Button(frame, text="Eliminar Actividad", command=lambda: self.eliminar(tabla))
@@ -265,7 +276,7 @@ class ventana_Actividad(tk.Frame):
                 pass
 
     def colocarActividadesEnTabla(self, tabla):
-        actividades = leerActividades()
+        '''actividades = leerActividades()
         # Llena la tabla de actividades
         for actividad in actividades:
             # Converite sus dependencias en formato string para poder visualizar
@@ -273,7 +284,8 @@ class ventana_Actividad(tk.Frame):
             tabla.insert('', END,
                          values=(actividad.identificador, actividad.nombre, actividad.duracion,
                                  stringDependencias, actividad.fechaInicioTemprano,
-                                 actividad.fechaInicioTardio))
+                                 actividad.fechaInicioTardio))'''
+        pass
 
     # Actualiza la tabla
     def actualizar(self):
