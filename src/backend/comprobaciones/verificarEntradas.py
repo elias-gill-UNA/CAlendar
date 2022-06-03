@@ -5,27 +5,28 @@ from tkinter import messagebox
 # Cuando carga o edita una actividad debe validar aca
 def validar_Actividad(nombre, duracion, identificador, fechaInicio):
     valido = True
+    # Valida el nombre
     if not 1 < len(nombre) <= 20:
         messagebox.showwarning("Mensaje", "Nombre de Actividad invalido")
         valido = False
+    # Valida la duracion
     if not duracion.isdigit():
         messagebox.showwarning("Mensaje", "La duración ingresada no es válida")
         valido = False
     elif not 0 < int(duracion) <= 99:
         messagebox.showwarning("Mensaje", "La duración no puede superar 99 días")
         valido = False
-
+    # Valida el identificador
     if not identificador.isdigit():
         messagebox.showwarning("Mensaje", "El identificador ingresado no es válido")
         valido = False
     elif not 0 <= int(identificador) <= 999:
         messagebox.showwarning("Mensaje", "El identificador  no puede superar 999 ")
         valido = False
-
-    try:
-        bool(datetime.strptime(fechaInicio, "%m/%d/%y"))
-    except ValueError:
-        messagebox.showwarning("Mensaje", "Fecha invalida")
+    # Valida las fechas
+    if not validarFecha(fechaInicioTemprano):
+        valido = False
+    if not validarFecha(fechaInicioTardio):
         valido = False
     return valido
 

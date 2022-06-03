@@ -21,7 +21,6 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
     else:
         ventana_Proyecto(root)
 
-
 def guardar_Proyecto(framePrincipal, DL, nombre, descripcion, fechaI, holgura):
     # Validar los datos
     if vrfInput.validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
