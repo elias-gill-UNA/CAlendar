@@ -1,10 +1,5 @@
-class ObjetoCritico:
-    def __init__(self):
-        self.cantidadCritico = 1 # numero de caminos criticos
-        self.caminosCriticos = [] # los caminos en si
-        self.actividadesCriticas=[]
-
-class ActividadCaminoCritico:
+#actividad camino critico
+class ActividadCaminoCritico:#anteriores debe ser una lista de IDs de actividades, tengo que convertir la lista de IDs a objetos del tipo actividad del camino critico
     def __init__(self, nombre, duracion, anteriores):
         self.nombre = nombre
         self.duracion = duracion
@@ -20,5 +15,14 @@ class ActividadCaminoCritico:
         self.finTemprano = -1
         self.finTardio = -1
         self.holgura = -1
+        #fechas
+        self.fechaInicioTemprano = ""#esto se inicializa con la formula
+        self.fechaInicioTardio = ""
+        self.fechaFinTemprano = ""
+        self.fechaFinTardio = ""
 
-
+class ObjetoCritico:
+    def __init__(self):
+        self.cantidadCritico = 1 # numero de caminos criticos
+        self.caminosCriticos = [] # los caminos en si
+        self.actividadesCriticas=[]
