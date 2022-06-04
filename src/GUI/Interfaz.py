@@ -1,19 +1,18 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import messagebox
 from tkinter import ttk
 
-from matplotlib.pyplot import text
-
-
-from tkcalendar import *
-import funcionesSobreObjetos.proyectoFunciones as prFunctions
-#import funcionesSobreObjetos.actividadFunciones as actFunctions
-from funcionesSobreObjetos.actividadFunciones import *
-from clases.proyecto import *
+import backend.comprobaciones.verificarEntradas as vp
 from backend.dataBase.proyectManager import *
-import backend.comprobaciones.verificarEntradas as vrfInput
+# import funcionesSobreObjetos.actividadFunciones as actFunctions
+from funcionesSobreObjetos.actividadFunciones import *
+from tkcalendar import *
+
+
 # 0 indica que viene de la ventana de Proyectos
 # 1 indica que viene de la ventana de Actividades
+conexion=None
 def limpiar_Pantalla(framePrincipal, num_Ventana):
     framePrincipal.destroy()
     if num_Ventana == 0:
@@ -21,31 +20,32 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
     else:
         ventana_Proyecto(root)
 
-def guardar_Proyecto(framePrincipal, DL, nombre, descripcion, fechaI, holgura):
-    # Validar los datos
-    if vrfInput.validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
-        # Se crea el proyecto
-        Pr=Proyecto(nombre,descripcion,fechaI,DL,holgura)
-        print("Se creo el proyecto",crearProyecto(Pr))
-        h = getProyectListsWithInfo()
-        print(h)
-        #print("id",Pr.identificador,"des:",Pr.descripcion,"nom:",Pr.nombre)
 
+def guardar_Proyecto(framePrincipal, tabla, DL, nombre, descripcion, fechaI, holgura, frame3, boton):
+    # Aca se debe crear el proyecto pero debe validar los datos
+    if vp.validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
+        Pr = Proyecto(nombre, descripcion, fechaI, DL, holgura)
+        h = proyectManager.getProyectListsWithInfo()
+        proyectManager.crearProyecto(Pr)
+        h = proyectManager.getProyectListsWithInfo()
 
-        #PR2=prFunctions.abrirProyecto(Pr.identificador)
-        #print(PR2)
-        #info=getProyectInfo(Pr.identificador,None)
-        #print("Info",info)
+        for i in h:
+            tabla.insert('', tk.END, text=i.identificador, values=(i.nombre, i.fechaInicio, i.descripcion))
+            conexion = abrirProyecto(i.identificador)
+            print(conexion)
 
-
-        limpiar_Pantalla(framePrincipal, 0)
+        btn_siguiente = tk.Button(frame3, text="Siguiente", command=lambda: limpiar_Pantalla(framePrincipal, 0))
+        btn_siguiente.grid(row=0, column=6, sticky="ns")
+        boton.destroy()
 
 
 def guardar_Actividad(framePrincipal, nombre, duracion, dependencias, fechaInicio, fechaFinal):
     # Se crea la actividad
 
     # Falta validar los datos antes
-    #actFunctions.crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
+    # actFunctions.crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
+    # if vp.validar_Proyecto()
+
     limpiar_Pantalla(framePrincipal, 1)
 
 
@@ -68,7 +68,8 @@ class ventana_Proyecto(tk.Frame):
 
         lbl_nombre = tk.Label(frame1, text="Nombre del Proyecto:", font=("Times New Roman", 12))
         lbl_nombre.grid(row=1, column=0, sticky="w")
-        nombre = tk.Entry(frame1, width=20)
+        ou = StringVar()
+        nombre = tk.Entry(frame1, width=20, textvariable=ou)
         nombre.grid(row=1, column=1)
 
         lbl_Dl = tk.Label(frame1, text="Dias laborales:", font=("Times New Roman", 12))
@@ -76,7 +77,7 @@ class ventana_Proyecto(tk.Frame):
         DL = tk.Entry(frame1, width=20)
         DL.grid(row=2, column=1)
 
-        fechaInicio = tk.StringVar()  # Guarda la fecha ingresada
+        fechaInicio = tk.StringVar()
         lbl_fechaInicio = tk.Label(frame1, text="Fecha de Inicio dd/mm/aa:", font=("Times New Roman", 12))
         lbl_fechaInicio.grid(row=3, column=0, sticky="w")
         fechaI = DateEntry(frame1, selectmode="day", textvariable=fechaInicio, width=17)
@@ -84,15 +85,15 @@ class ventana_Proyecto(tk.Frame):
 
         lbl_descripcion = tk.Label(frame1, text="Descripción:", font=("Times New Roman", 12))
         lbl_descripcion.grid(row=5, column=0, sticky="w")
+
         # Crea una caja de texto para la descripción
         descrip = Text(frame1, width=20, height=5)
         descrip.grid(row=5, column=1)
 
         lbl_holgura = tk.Label(frame1, text="Holgura:", font=("Times New Roman", 12))
         lbl_holgura.grid(row=4, column=0, sticky="w")
-        # Crea una caja de texto para el ID
         holgura = tk.Entry(frame1, width=20)
-        holgura.grid(row=4,column=1)
+        holgura.grid(row=4, column=1)
 
         # Crea un espacio entre frame y frame2
         espacio = tk.Label(frame1, text="")
@@ -102,26 +103,26 @@ class ventana_Proyecto(tk.Frame):
         frame2.grid(row=2, column=0)
 
         # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
-        tabla = ttk.Treeview(frame2, height=10, columns=("#0", "#1", "#2"))
-        tabla.place(x=90, y=180)
-        tabla.grid(row=0, column=0)
+        self.tabla = ttk.Treeview(frame2, height=10, columns=("#0", "#1", "#2"))
+        self.tabla.place(x=90, y=180)
+        self.tabla.grid(row=0, column=0)
 
         # Barra de desplazamiento
-        barraDesplazamiento = ttk.Scrollbar(frame2, orient=tk.VERTICAL, command=tabla.yview)
-        tabla.configure(yscrollcommand=barraDesplazamiento)
+        barraDesplazamiento = ttk.Scrollbar(frame2, orient=tk.VERTICAL, command=self.tabla.yview)
+        self.tabla.configure(yscrollcommand=barraDesplazamiento.set)
         barraDesplazamiento.grid(row=0, column=2, sticky="nsew")
 
         # Tamaño de las columnas
-        tabla.column("#0", width=40)
-        tabla.column("#1", width=200)
-        tabla.column("#2", width=120)
-        tabla.column("#3", width=200)
+        self.tabla.column("#0", width=40)
+        self.tabla.column("#1", width=200)
+        self.tabla.column("#2", width=200)
+        self.tabla.column("#3", width=200)
 
         # Titulos
-        tabla.heading("#0", text="Id")
-        tabla.heading("#1", text="Nombre del Proyecto")
-        tabla.heading("#2", text="Fecha Inicio Previsto")
-        tabla.heading("#3", text="Descripcion")
+        self.tabla.heading("#0", text="Id", anchor=CENTER)
+        self.tabla.heading("#1", text="Nombre del Proyecto", anchor=CENTER)
+        self.tabla.heading("#2", text="Fecha Inicio Previsto", anchor=CENTER)
+        self.tabla.heading("#3", text="Descripcion", anchor=CENTER)
 
         frame3 = tk.Frame(self)
         frame3.grid(row=3, column=0)
@@ -131,15 +132,26 @@ class ventana_Proyecto(tk.Frame):
         espacio = tk.Label(frame3, text="\t\t\t\t")
         espacio.grid(row=0, column=4)
 
-        # Botones
+        btn_elimi = tk.Button(frame3, text="Elimine uno ", command=lambda: eliminar_item(self.tabla))
+        btn_elimi.grid(row=0, column=5)
+
         btn_salir = tk.Button(frame3, text="Salir", command=quit)
         btn_salir.grid(row=0, column=2)
+        btn_guardar_proyecto = tk.Button(frame3, text="Guardar proyecto",
+                                         command=lambda: guardar_Proyecto(self, self.tabla, DL.get(), nombre.get(),
+                                                                          descrip.get(1.0, "end"),
+                                                                          fechaI.get_date(), holgura.get(), frame3,
+                                                                          btn_guardar_proyecto))
+        btn_guardar_proyecto.grid(row=0, column=4, sticky="ns")
 
-        btn_siguiente = tk.Button(frame3, text="Siguiente",
-                                  command=lambda: guardar_Proyecto(self, DL.get(), nombre.get(),
-                                                                   descrip.get(1.0, "end"),
-                                                                   fechaI.get_date(),holgura.get()))
-        btn_siguiente.grid(row=0, column=5, sticky="ns")
+        def eliminar_item(tabla):
+            try:
+                x = tabla.selection()[0]
+                id = tabla.item(tabla.selection())['text']
+                tabla.delete(x)
+                eliminarProyecto(id)
+            except IndexError:
+                messagebox.showwarning("Mensaje", "Seleccione un Proyecto para eliminar!")
 
 
 tabla = 0
@@ -246,7 +258,7 @@ class ventana_Actividad(tk.Frame):
         tabla.heading("#4", text="Fecha Inicio Temprano")
         tabla.heading("#5", text="Fecha Inicio Tardio")
 
-        self.colocarActividadesEnTabla(tabla)
+        #self.colocarActividadesEnTabla(tabla)
 
     def __frame3__(self, frame):
         # Lista de opciones
@@ -289,8 +301,8 @@ class ventana_Actividad(tk.Frame):
                 # Mostrar camino crítico
                 pass
 
-    def colocarActividadesEnTabla(self, tabla):
-        '''actividades = leerActividades()
+    '''def colocarActividadesEnTabla(self, tabla):
+        actividades = leerActividades()
         # Llena la tabla de actividades
         for actividad in actividades:
             # Converite sus dependencias en formato string para poder visualizar
@@ -299,7 +311,6 @@ class ventana_Actividad(tk.Frame):
                          values=(actividad.identificador, actividad.nombre, actividad.duracion,
                                  stringDependencias, actividad.fechaInicioTemprano,
                                  actividad.fechaInicioTardio))'''
-        pass
 
     # Actualiza la tabla
     def actualizar(self):
