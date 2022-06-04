@@ -1,3 +1,4 @@
+from backend.dataBase import proyectManager
 import backend.dataBase.dbFunctions.db_activities as db
 from clases.actividades import Actividad
 from backend.dataBase.proyectManager import getProyectInfo as getInfoProyecto
@@ -36,10 +37,18 @@ def eliminarActividad(conexion, idActividad):
 
 # debe recibir un nuevo objeto actividad
 def modificarActividad(conexion, id, actividadModificada): 
-    if len(db.getInfoActividad(conexion, id)) == 0: # si no existe ese ID
+    actVieja = getInfoActividad(conexion, id)
+    dpesProy = proyectManager.getProyectInfo(None, conexion).contadorConexiones
+    if not actVieja: # si no existe ese ID
         raise ValueError("Activitie does not exist")
 
-    db.modificarActividad(conexion, id, actividadModificada) # modificar
+    # modificar la actividad
+    nuevasDeps = len(actividadModificada.dependencias.split())
+    db.modificarActividad(conexion, id, actividadModificada) 
+
+    #actualizar el contador de dependencias
+    contadorNuevo = dpesProy - len(actVieja.dependencias) + nuevasDeps
+    actualizarContador(conexion, 'depCount', contadorNuevo)
     return True
     
 
