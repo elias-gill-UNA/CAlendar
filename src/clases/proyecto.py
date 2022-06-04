@@ -1,8 +1,7 @@
 class Proyecto:
-    def __init__(self,nombre, descripcion, holgura,fechaInicioTemprano):
+    def __init__(self, nombre, descripcion, fechaInicioTemprano):
         self.nombre = nombre
         self.descripcion = descripcion
-        self.holgura = holgura
 
         # valores cargados y actualizados por la base de datos
         self.identificador = 0 # esto se sobreescribe en la base de datos, dejar en 0 al crear proyecto
@@ -14,9 +13,10 @@ class Proyecto:
         self.inicioTardio = -1
         self.finTemprano = -1
         self.finTardio = -1
+        self.holgura = 0
 
         #fechas asignados por el camino critico
-        self.fechaInicioTemprano = fechaInicioTemprano#Esto mete el usuario
+        self.fechaInicioTemprano = fechaInicioTemprano
         self.fechaInicioTardio = ""
         self.fechaFinTemprano = ""
         self.fechaFinTardio = ""
