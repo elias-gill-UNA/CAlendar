@@ -2,6 +2,7 @@ import backend.dataBase.dbFunctions.db_proyects as dataBase
 import os
 from clases.proyecto import Proyecto
 path = os.path.expanduser("~") + '/CAlendar-database/proyects/'
+from utilidades.calendario import cargarFeriadosNacionales
 
 # retorna la lista de todos los proyectos existentes
 # Como cada proyecto se encuentra en su propio archivo idProyecto.db, entonces quitamos esa lista
@@ -31,6 +32,7 @@ def crearProyecto(nuevoProyecto):
 
     id = __nuevoID()
     dataBase.nuevoProyecto(nuevoProyecto, id) # crear y llena las tablas del proyecto
+    cargarFeriadosNacionales(id)
     return True
 
 
