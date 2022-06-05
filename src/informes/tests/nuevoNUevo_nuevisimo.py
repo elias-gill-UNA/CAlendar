@@ -2,16 +2,16 @@ from clases.actividades import Actividad
 from clases.clases_cam_critico import ObjetoCritico
 from clases.proyecto import Proyecto
 from backend.dataBase import proyectManager
+from informes.camino_critico import funcionFinalYSuperpoderosa
 
 # crea el proyecto y cargar actividades
-proyectManager.getProyectListsWithInfo()
 proyectManager.crearProyecto(Proyecto("Nombre del proyecto", "ohala que funciones", "27/05/2022" ))
 conexion = proyectManager.abrirProyecto(1)
 
 objCrit = ObjetoCritico()
 listaGeneral = []
 listaacts = []
-proyecto = Proyecto("Nombre del proyecto", "ohala que funciones", "27/05/2022")
+proyect = Proyecto("Nombre del proyecto", "ohala que funciones", "27/05/2022")
 listaCopia = []
 
 #para probar nms
@@ -31,7 +31,10 @@ listaGeneral[7].dependencias=[0]
 listaGeneral[8].dependencias=[4,7]
 listaGeneral[9].dependencias=[6,8]
 listaGeneral[10].dependencias=[6]
-#para probar nms
+
+# super mega ultra funcion
+funcionFinalYSuperpoderosa(conexion, listaGeneral, listaCopia, objCrit, proyect)
+
 
 print("Las actividades criticas son: ", end='')
 for i in objCrit.actividadesCriticas:
@@ -61,10 +64,5 @@ for actividad in listaacts:
     print("el fin temprano de la actividad es "+str(actividad.fechaFinTemprano))#
     print("el fin tardio de la actividad es "+str(actividad.fechaFinTardio))
     print("........")
-aux1=proyect.fechaInicioTardio.split("/")
-fecha1=date(int(aux1[2]),int(aux1[1]),int(aux1[0]))
-aux2=proyect.fechaFinTardio.split("/")
-fecha2=date(int(aux2[2]),int(aux2[1]),int(aux2[0]))
-print(fecha2-fecha1)
 
 

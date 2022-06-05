@@ -10,7 +10,7 @@ def getFeriado(conexion, id):
 def getListaFeriados(conexion): 
     cursor = conexion.cursor()
     cursor.execute('SELECT * FROM Feriados')
-    data = conexion.fetchall()
+    data = cursor.fetchall()
     cursor.close()
     return data
 

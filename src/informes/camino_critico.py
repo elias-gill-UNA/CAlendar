@@ -210,8 +210,10 @@ def caminoCriticoCopia(listaActividades, proyecto,objCritico):
 
 
 def inicializarFechaInicio(listaActividades,listaCopia,proyect):
-    for i, actividad in listaCopia:
+    i = 0
+    for actividad in listaCopia:
         listaActividades[i].fechaInicioTemprano = suma(proyect.fechaInicioTemprano, actividad.inicioTemprano)
+        i += 1
 
 def resta(fecha, cantidad):
     final = fecha

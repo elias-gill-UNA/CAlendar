@@ -7,13 +7,13 @@ def nuevoProyecto(proyecto, id): # nombre del proyecto
     cursor = conn.cursor()
 
     # Crear las tablas necesarias para el proyecto
-    cursor.execute("CREATE TABLE IF NOT EXISTS Descripcion (nombre TEXT, descripcion TEXT, fechaInicio TEXT, actiCount INT, depCount INT)") #  tabla de descripcion del proyecto
+    cursor.execute("CREATE TABLE IF NOT EXISTS Descripcion (id INT, nombre TEXT, descripcion TEXT, fechaInicio TEXT, actiCount INT, depCount INT)") #  tabla de descripcion del proyecto
     cursor.execute("CREATE TABLE IF NOT EXISTS Actividades (id integer primary key, nombre TEXT, duracion INT, dependencias TEXT, fechaPrevista TEXT, fechaTardia TEXT, finalizado INT)") # tabla de actividades
     cursor.execute("CREATE TABLE IF NOT EXISTS Feriados (id integer primary key, dia INT, mes INT, descripcion TEXT)") # tabla de Dependecias
 
     # Llenado de los campos de identificacion del proyecto
-    cursor.execute("INSERT INTO Descripcion (id, nombre, descripcion, fechaInicio, actiCount, depCount, diasLaborales, holgura) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
-              (id, proyecto.nombre, proyecto.descripcion, proyecto.fechaInicio, 0, 0, proyecto.diasLaborales, proyecto.holgura))
+    cursor.execute("INSERT INTO Descripcion (id, nombre, descripcion, fechaInicio, actiCount, depCount) VALUES (?, ?, ?, ?, ?, ?)", 
+              (id, proyecto.nombre, proyecto.descripcion, proyecto.fechaInicioTemprano, 0, 0 ))
 
     # Proyecto creado satisfactoriamente
     conn.commit()
