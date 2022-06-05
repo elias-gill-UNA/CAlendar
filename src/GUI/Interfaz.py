@@ -68,10 +68,10 @@ def seleccionar_id(tabla, framePrincipal):
     id = tabla.item(tabla.selection())['text']
     # abre el proyecto seleccionado o el recien creado?
     # abrir el proyecto recien creado y dar valor a las globales
-    conexion = proyectManager.abrirProyecto(id)
-    # conexion = proyecto[0]
-    # descripcion = proyecto[1]
-    # listaActividades = proyecto[2]
+    proyecto = funcProyectos.abrirProyecto(id)
+    conexion = proyecto[0]
+    descripcion = proyecto[1]
+    listaActividades = proyecto[2]
     limpiar_Pantalla(framePrincipal, 0)
 
 
