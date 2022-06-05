@@ -1,8 +1,14 @@
 import tkinter as tk
+from tkinter import ttk
+from tkinter import *
+from tkcalendar import *
+from GUI.crear_edit_borrarActividades import *
+
 
 def ir_Actividad(frame, frame2, frame3, ID, Nom, Des, Fech):
+    #from src.GUI.crear_edit_borrarActividades import ventana_Acti
     # Crea un objeto de tipo proyecto
-    P = Pr.proyecto(ID, Nom, Des, Fech)
+    #P = Pr.proyecto(ID, Nom, Des, Fech)
     # Aca tendria que guardar los datos ingresados en la Bd
     # .............
     # Limpia la ventana
@@ -10,8 +16,9 @@ def ir_Actividad(frame, frame2, frame3, ID, Nom, Des, Fech):
     frame2.destroy()
     frame3.destroy()
     # Pasa a la ventana para crear actividades
+    #ventana_Acti(root)
     ventana_Acti(root)
-
+    #ventana_Pro(root)
 
 def ventana_Pro(root):
     # Crea la ventana principal
@@ -98,8 +105,9 @@ def ventana_Pro(root):
                                                            fechaI))
     btn_siguiente.grid(row=0, column=5, sticky="ns")
 
-    root.mainloop()
+
 
 
 root = tk.Tk()
 ventana_Pro(root)
+root.mainloop()

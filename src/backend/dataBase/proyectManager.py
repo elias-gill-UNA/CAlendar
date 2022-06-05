@@ -32,8 +32,9 @@ def crearProyecto(nuevoProyecto):
 
     id = __nuevoID()
     dataBase.nuevoProyecto(nuevoProyecto, id) # crear y llena las tablas del proyecto
-    cargarFeriadosNacionales(id)
-    return True
+    #cargarFeriadosNacionales(id)
+    return id
+
 
 
 def eliminarProyecto(id):
@@ -52,7 +53,7 @@ def getProyectInfo(id, conexion):
 
     # convertir la tupla a objeto proyecto
     info = dataBase.getInfo(id, conexion) 
-    proyecto = Proyecto(info[0][1], info[0][2], info[0][3], info[0][6], info[0][7])
+    proyecto = Proyecto(info[0][1], info[0][2], info[0][3])
     proyecto.contadorActividades = info[0][4]
     proyecto.contadorConexiones = info[0][5]
     proyecto.identificador = info[0][0]
