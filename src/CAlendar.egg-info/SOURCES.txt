@@ -23,12 +23,11 @@ backend/dataBase/activitiesManager.py
 backend/dataBase/proyectManager.py
 backend/dataBase/dbFunctions/__init__.py
 backend/dataBase/dbFunctions/db_activities.py
+backend/dataBase/dbFunctions/db_feriados.py
 backend/dataBase/dbFunctions/db_proyects.py
-backend/dataBase/proyects/dase.db
 clases/__init__.py
 clases/actividades.py
 clases/clases_cam_critico.py
-clases/diagramaGantt.py
 clases/feriados.py
 clases/proyecto.py
 clases/relaciones.py

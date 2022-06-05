@@ -38,13 +38,13 @@ def agregar_actividad(inicio, duracion, color,numActividad):
     eje.broken_barh([(inicio, duracion)], (altura * numActividad, altura), facecolors=(color))
 
 def AgregarActividades():
-    global ndatos;
+    global ndatos
 
-    arregloGUI = ConseguirDataParaGUI();
+    arregloGUI = ConseguirDataParaGUI()
 
-    ndatos = len(arregloGUI);
+    ndatos = len(arregloGUI)
 
-    arregloGUI.reverse();
+    arregloGUI.reverse()
 
     for i in range(0, len(arregloGUI)):
         tareaGUI = arregloGUI[i]
@@ -55,6 +55,6 @@ def AgregarActividades():
 
 # duaracion: cuantos dias se establecio para esa actividad
 #Ej: agregar_actividad(20, 120, "blue",2)
-AgregarActividades();
-CrearDiagrama();
+AgregarActividades()
+CrearDiagrama()
 plt.show()  # Muestra la figura
