@@ -69,6 +69,7 @@ def seleccionar_id(tabla, framePrincipal):
     # abre el proyecto seleccionado o el recien creado?
     # abrir el proyecto recien creado y dar valor a las globales
     conexion = abrirProyecto(id)
+    print(conexion[0])
     # conexion = proyecto[0]
     # descripcion = proyecto[1]
     # listaActividades = proyecto[2]
