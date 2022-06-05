@@ -276,3 +276,4 @@ def funcionFinalYSuperpoderosa(conection, listaActvsAutoref, listaFinalFinal, ob
     inicializarCritico(objeCrit, listaFinalFinal)
     cargarCriticos(objeCrit, listaFinalFinal[0], 0)
         
+

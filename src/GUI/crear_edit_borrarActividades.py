@@ -1,19 +1,20 @@
-import tkinter as tk
-from tkinter import ttk
-from tkcalendar import DateEntry
-from funcionesSobreObjetos.actividadFunciones import *
+from tkcalendar import *
+from clases.actividades import *
+import crear_proyectos as PR
 
-def ir_Proyecto(f3,f2,f1,fP):
-
+def ir_Proyecto(f3,f2,f1,fP,root):
+    #from src.GUI.crear_proyectos import ventana_Pro
     f1.destroy()
     f2.destroy()
     f3.destroy()
     fP.destroy()
+    #ventana_Pro(root)
+    PR.ventana_Pro(root)
     # Aca tendria que volver a la ventana de proyecto (nose como hacer aun)
 tabla = 0
 
 class Interfaz(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master):
         super().__init__(master)  # indica la ventana contenedora del frame principal
         self.master = master
         self.pack()  # ubica los elementos
@@ -32,7 +33,7 @@ class Interfaz(tk.Frame):
 
         self.__frame1__(f1)
         self.__frame2__(f2)
-        self.__frame3__(f3, f2, f1, self)
+        self.__frame3__(f3, f2, f1, self,self.master)
 
     def __frame1__(self, frame):
         # Etiquetas
@@ -112,7 +113,7 @@ class Interfaz(tk.Frame):
 
         self.colocarActividadesEnTabla(tabla)
 
-    def __frame3__(self, frame,f2,f1,fP):
+    def __frame3__(self, frame,f2,f1,fP,master):
         # Lista de opciones
         self.opcion=tk.StringVar()
         combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"],textvariable=self.opcion)
@@ -135,7 +136,7 @@ class Interfaz(tk.Frame):
         btn_salir = tk.Button(frame, text="Salir", command=quit)
         btn_salir.grid(row=0, column=4)
 
-        btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command= lambda :ir_Proyecto(frame,f2,f1,fP))
+        btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command= lambda :ir_Proyecto(frame,f2,f1,fP,master))
         btn_newPro.grid(row=0, column=0)
     
     # Muestra el informe seleccionado
@@ -148,10 +149,9 @@ class Interfaz(tk.Frame):
                 pass
             elif opcion == "Mapa de Dependencias":
                 # Mostrar mapa
-                pass
             else:
                 # Mostrar camino crítico
-                pass
+                #pass
                 # Mostrar el diagrama de gantt
                 pass
 
@@ -185,11 +185,8 @@ class Interfaz(tk.Frame):
 
 def ventana_Acti(root):
     # Tamaño de la ventana
-    root.geometry("850x500")
+    root.geometry("1050x500")
     # Titulo de la ventana
     root.title("ACTIVIDADES")
-    app = Interfaz(root)
-    app.mainloop()
+    Interfaz(root)
 
-root = tk.Tk()
-ventana_Acti(root)

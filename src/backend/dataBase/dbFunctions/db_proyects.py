@@ -53,5 +53,3 @@ def abrirProyecto(id):
 def cerrarProyecto(conexion):
     conexion.close()
     return True
-
-

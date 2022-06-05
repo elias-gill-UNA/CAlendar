@@ -4,3 +4,4 @@ class Actividad:
         self.nombre = nombre
         self.duracion = duracion
         self.dependencias = dependencias
+

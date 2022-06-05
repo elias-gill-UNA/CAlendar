@@ -71,6 +71,7 @@ def getListaActividades(conexion): # retorna las dependencias como string
         activ = Actividad(i[1], i[2], i[3]) 
         activ.identificador = i[0]
         actividades.append(activ)
+        
     return actividades
 
 
