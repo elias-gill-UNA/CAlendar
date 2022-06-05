@@ -210,7 +210,7 @@ def caminoCriticoCopia(listaActividades, proyecto,objCritico):
 def inicializarFechaInicio(listaActividades,listaCopia,proyect):
     i = 0
     for actividad in listaCopia:
-        listaActividades[i].fechaInicioTemprano = suma(proyect.fechaInicioTemprano, actividad.inicioTemprano)
+        listaActividades[i].fechaInicioTemprano = suma(proyect.fechaInicio, actividad.inicioTemprano)
         i += 1
 
 def resta(fecha, cantidad):
@@ -263,7 +263,7 @@ def funcionFinalYSuperpoderosa(conection, listaActvsAutoref, listaFinalFinal, ob
     conexion = conection
     listaCopia = []
     objeCritCopia = ObjetoCritico()
-    proyCopia = Proyecto(0,0, proyectoOriginal.fechaFinTemprano)
+    proyCopia = Proyecto(0,0, proyectoOriginal.fechaInicio)
 
     convertirLista(listaActvsAutoref, listaCopia)
     caminoCriticoCopia(listaCopia, proyCopia, objeCritCopia)
