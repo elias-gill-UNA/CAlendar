@@ -33,7 +33,8 @@ def crearProyecto(nuevoProyecto):
     id = __nuevoID()
     dataBase.nuevoProyecto(nuevoProyecto, id) # crear y llena las tablas del proyecto
     cargarFeriadosNacionales(id)
-    return True
+    return id
+
 
 
 def eliminarProyecto(id):

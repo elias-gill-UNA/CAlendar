@@ -9,10 +9,14 @@ from backend.dataBase.proyectManager import *
 from funcionesSobreObjetos.actividadFunciones import *
 from tkcalendar import *
 
+conexion = 0  # id del proyecto cuando se selecciona
+descripcion = 0  # descripcion del proyecto cuando se selecciona
+listaActividades = 0  # lista de actividades del proyecto cuando se selecciona
+
 
 # 0 indica que viene de la ventana de Proyectos
 # 1 indica que viene de la ventana de Actividades
-conexion=None
+
 def limpiar_Pantalla(framePrincipal, num_Ventana):
     framePrincipal.destroy()
     if num_Ventana == 0:
@@ -21,22 +25,36 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
         ventana_Proyecto(root)
 
 
-def guardar_Proyecto(framePrincipal, tabla, DL, nombre, descripcion, fechaI, holgura, frame3, boton):
+def guardar_Proyecto(framePrincipal, tabla, DL, nombre, descrip, fechaI, holgura, frame3, boton):
     # Aca se debe crear el proyecto pero debe validar los datos
-    if vp.validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
-        Pr = Proyecto(nombre, descripcion, fechaI, DL, holgura)
-        h = proyectManager.getProyectListsWithInfo()
-        proyectManager.crearProyecto(Pr)
-        h = proyectManager.getProyectListsWithInfo()
+    global conexion
+    global listaActividades
+    global descripcion
 
+    if vp.validar_Proyecto(DL, nombre, descrip, fechaI, holgura):
+        Pr = Proyecto(nombre, descrip, fechaI, DL, holgura)
+        h = proyectManager.getProyectListsWithInfo()
+        id=proyectManager.crearProyecto(Pr)
+        h = proyectManager.getProyectListsWithInfo()
         for i in h:
             tabla.insert('', tk.END, text=i.identificador, values=(i.nombre, i.fechaInicio, i.descripcion))
-            conexion = abrirProyecto(i.identificador)
-            print(conexion)
 
-        btn_siguiente = tk.Button(frame3, text="Siguiente", command=lambda: limpiar_Pantalla(framePrincipal, 0))
+        # abrir el proyecto recien creado y dar valor a las globales
+        proyecto = abrirProyecto(id)
+        conexion = proyecto[0]
+        descripcion = proyecto[1]
+        listaActividades = proyecto[2]
+
+        btn_siguiente = tk.Button(frame3, text="Abrir", command=lambda: limpiar_Pantalla(framePrincipal, 0))
         btn_siguiente.grid(row=0, column=6, sticky="ns")
         boton.destroy()
+        seleccionar_id(framePrincipal, tabla)
+        # abrirProyecto()
+
+
+def seleccionar_id(frame, tabla):
+    r = tabla.item(tabla.selection())['text']
+    print(r)
 
 
 def guardar_Actividad(framePrincipal, nombre, duracion, dependencias, fechaInicio, fechaFinal):
@@ -132,7 +150,7 @@ class ventana_Proyecto(tk.Frame):
         espacio = tk.Label(frame3, text="\t\t\t\t")
         espacio.grid(row=0, column=4)
 
-        btn_elimi = tk.Button(frame3, text="Elimine uno ", command=lambda: eliminar_item(self.tabla))
+        btn_elimi = tk.Button(frame3, text="Eliminar", command=lambda: eliminar_item(self.tabla))
         btn_elimi.grid(row=0, column=5)
 
         btn_salir = tk.Button(frame3, text="Salir", command=quit)
@@ -258,7 +276,7 @@ class ventana_Actividad(tk.Frame):
         tabla.heading("#4", text="Fecha Inicio Temprano")
         tabla.heading("#5", text="Fecha Inicio Tardio")
 
-        #self.colocarActividadesEnTabla(tabla)
+        # self.colocarActividadesEnTabla(tabla)
 
     def __frame3__(self, frame):
         # Lista de opciones
@@ -301,16 +319,18 @@ class ventana_Actividad(tk.Frame):
                 # Mostrar camino crítico
                 pass
 
-    '''def colocarActividadesEnTabla(self, tabla):
-        actividades = leerActividades()
+    """
+    def colocarActividadesEnTabla(self, tabla):
+        global listaActividades
         # Llena la tabla de actividades
-        for actividad in actividades:
+        for actividad in listaActividades: # ignorar error
             # Converite sus dependencias en formato string para poder visualizar
             stringDependencias = convertirArregloDependenciasAString(actividad.dependencias)
             tabla.insert('', END,
                          values=(actividad.identificador, actividad.nombre, actividad.duracion,
                                  stringDependencias, actividad.fechaInicioTemprano,
-                                 actividad.fechaInicioTardio))'''
+                                 actividad.fechaInicioTardio))
+        """
 
     # Actualiza la tabla
     def actualizar(self):
@@ -321,7 +341,7 @@ class ventana_Actividad(tk.Frame):
         curItem = tabla.focus()
         actividadEliminada = tabla.item(curItem)['values']
         print(actividadEliminada[0])
-        eliminarActividad(actividadEliminada[0])
+        eliminarActividad(conexion, actividadEliminada[0])
 
     # Editar alguna actividad
     def editar(self):
