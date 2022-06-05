@@ -16,5 +16,7 @@ class Proyecto:
         self.finTardio = -1
         self.holgura = 0
 
-    
+        self.fechaFinTemprano = ''
+        self.fechaInicioTardio = ''
+        self.fechaFinTardio = ''
 
