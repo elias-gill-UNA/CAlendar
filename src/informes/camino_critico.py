@@ -4,6 +4,9 @@ from clases.proyecto import Proyecto
 from datetime import date, datetime, timedelta
 import utilidades.calendario as calendario
 
+
+conexion = 1
+feriados = 1
 # carga o dibuja el camino critico y lo guarda en la matriz
 def cargarCriticos(objCritico, inicio, indice):
     bandera = False
@@ -211,35 +214,53 @@ def inicializarFechaInicio(listaActividades,listaCopia,proyect):
         listaActividades[i].fechaInicioTemprano = suma(proyect.fechaInicioTemprano, actividad.inicioTemprano)
 
 def resta(fecha, cantidad):
-    fecha = fecha.split("/")
-    restando = timedelta(cantidad)
-    aux = date(int(fecha[2]),int(fecha[1]),int(fecha[0]))
-    resultado = aux-restando
-    final = str(resultado)
-    final = final.split("-")
-    final= final[2] +"/"+ final[1] + "/" + final[0]
-    return final
+    final = fecha
+    contador = 1
+    while(contador <= cantidad):
+        # pasar las fechas a formate datetime
+        final = final.split("/")
+        if calendario.diaLaboral(conexion, int(final[0]), int(final[1]), int(final[2])):
+            contador += 1
 
-def calcularFeriados(fecha):
-    return
+        fecha2 = timedelta(1) 
+        aux = date(int(fecha[2]),int(fecha[1]),int(fecha[0]))
+
+        # transformar el resultado
+        resultado = aux - fecha2
+        final = str(resultado)
+        final = final.split("-")
+        final= final[2] +"/"+ final[1] + "/" + final[0]
+
+    return final
 
 
 def suma(fecha, cantidad):
-    # pasar las fechas a formate datetime
-    fecha = fecha.split("/")
-    fecha2 = timedelta(cantidad) 
-    aux = date(int(fecha[2]),int(fecha[1]),int(fecha[0]))
+    final = fecha
+    contador = 1
+    while(contador <= cantidad):
+        # pasar las fechas a formate datetime
+        final = final.split("/")
+        if calendario.diaLaboral(conexion, int(final[0]), int(final[1]), int(final[2])):
+            contador += 1
 
-    # transformar el resultado
-    resultado = aux+fecha2
-    final = str(resultado)
-    final = final.split("-")
-    final= final[2] +"/"+ final[1] + "/" + final[0]
+        fecha2 = timedelta(1) 
+        aux = date(int(fecha[2]),int(fecha[1]),int(fecha[0]))
 
-    return calcularFeriados(final)
+        # transformar el resultado
+        resultado = aux+fecha2
+        final = str(resultado)
+        final = final.split("-")
+        final= final[2] +"/"+ final[1] + "/" + final[0]
+        
+    return final
 
 
-def funcionFinalYSuperpoderosa(listaActvsAutoref, listaFinalFinal, objeCrit, proyectoOriginal):
+def funcionFinalYSuperpoderosa(conection, listaActvsAutoref, listaFinalFinal, objeCrit, proyectoOriginal):
+    global conexion 
+    global feriados 
+
+    feriados = calendario.getListaFeriados(conection)
+    conexion = conection
     listaCopia = []
     objeCritCopia = ObjetoCritico()
     proyCopia = Proyecto(0,0, proyectoOriginal.fechaFinTemprano)
