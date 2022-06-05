@@ -2,7 +2,7 @@
 def getFeriado(conexion, id): 
     cursor = conexion.cursor()
     cursor.execute(f'SELECT * FROM Feriados WHERE id={id}')
-    data = conexion.fetchone()
+    data = cursor.fetchone()
     cursor.close()
     return data
 
@@ -10,7 +10,7 @@ def getFeriado(conexion, id):
 def getListaFeriados(conexion): 
     cursor = conexion.cursor()
     cursor.execute('SELECT * FROM Feriados')
-    data = conexion.fetchall()
+    data = cursor.fetchall()
     cursor.close()
     return data
 
@@ -24,7 +24,7 @@ def eliminarFeriado(conexion, id):
 def nuevoFeriado(conexion, feriado):
     cursor = conexion.cursor()
     cursor.execute("INSERT INTO Feriados (dia, mes, descripcion) VALUES (?, ?, ?)",
-              (feriado.dia, feriado.mes, feriado.descripcion)) # insertar nueva actividad
+              (feriado.dia, feriado.mes, feriado.descripcion)) # insertar nuevo feriado
     conexion.commit() # guardar cambios
     cursor.close()
     return True

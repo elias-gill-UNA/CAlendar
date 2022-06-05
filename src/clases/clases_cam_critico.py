@@ -21,4 +21,9 @@ class ActividadCaminoCritico:
         self.finTardio = -1
         self.holgura = -1
 
+        self.fechaInicioTemprano = ''
+        self.fechaInicioTardio = ''
+        self.fechaFinTemprano = ''
+        self.fechaFinTardio = ''
+
 
