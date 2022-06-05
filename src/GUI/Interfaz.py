@@ -54,8 +54,7 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
 def cargar_tabla_Actividad(tabla,conexion):
     activities=activitiesManager.getListaActividades(conexion)
     for i in activities:
-        tabla.insert('', tk.END, text=idem values=(i.nombre, i.fechaInicio, i.descripcion))
-
+        tabla.insert('',tk.END,text=idem,values=(i.nombre,i.fechaInicio,i.descripcion))
 def cargar_Tabla(tabla):
     proyectos = proyectManager.getProyectListsWithInfo()
     for i in proyectos:
