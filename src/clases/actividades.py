@@ -1,11 +1,7 @@
 class Actividad:
-    def __init__(self, identificador, nombre, duracion, dependencias, finalizo):
-        self.identificador = identificador
+    def __init__(self, nombre, duracion, dependencias):
+        self.identificador = 0
         self.nombre = nombre
         self.duracion = duracion
         self.dependencias = dependencias
-        self.finalizado = finalizo # ENTERO    1: finalizado  0: aun no
 
-        # calcula el camino critico
-        self.fechaInicioTemprano = '' 
-        self.fechaInicioTardio = ''

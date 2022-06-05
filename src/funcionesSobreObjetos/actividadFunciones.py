@@ -9,14 +9,14 @@ def leerActividades(conexion):
     return activitiesManager.getListaActividades(conexion) # y si, esto nomas es :)
 
 #Asegurarte de actualizar la tabla al crear una actividad nueva
-def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio):
+def crearActividad(conexion, nombre, duracion, dependenciasString):
     if dependenciasString != '':
         deps = dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString))
     else:
         deps = False
 
     contadorDependencias = 0
-    nuevaActividad = Actividad(0, nombre, duracion, dependenciasString, fechaInicioTemprano, fechaInicioTardio, 0)
+    nuevaActividad = Actividad(nombre, duracion, dependenciasString)
 
     lista = activitiesManager.getListaActividades(conexion)
     if deps:
@@ -30,12 +30,6 @@ def crearActividad(conexion, nombre, duracion, dependenciasString, fechaInicioTe
     except ValueError:
         return ValueError
 
-
-def editarActividad(conexion, id, nuevosDatos): 
-    # TODO  consultar a Ric que pedo
-    # usar db.modificarActividad(conexion, actividadModificada). Pasarle la actividad ya modificada y la conexion
-    # ATENCION: NO toquen el id por lo que mas quieran en sus vidas
-    pass
 
 #Eliminar actividad de la base de datos y sus relaciones
 def eliminarActividad(conexion, actividadID):

@@ -15,8 +15,9 @@ listaGeneral=[]
 names=["A","B","C","D","E","F","G","H"]
 duraciones=[4,10,5,15,12,4,8,7]
 for i in range(len(names)):
-    actividad=Actividad(i,names[i],duraciones[i],[],0)
+    actividad=Actividad(names[i],duraciones[i],[])
     listaGeneral.append(actividad)
+    
 listaGeneral[2].dependencias=[0]#c
 listaGeneral[3].dependencias=[1,2]#d
 listaGeneral[4].dependencias=[1]#e
@@ -43,6 +44,22 @@ def prepararGantt(listaActividades, duracionProyectoSinFeriados):
     global filas
     global columnas
 
+    contador=0
+    for actividad in listaActividades:
+        nombres.append(actividad.nombre)
+        duracion.append(actividad.duracion)
+        if(len(actividad.dependencias)==0):
+            dependencias.append("-")
+        else:
+            aux=[]
+            for dependencia in actividad.dependencias:
+                aux.append(listaActividades[dependencia].nombre)
+            dependencias.append(aux)
+        contador=contador+1
+
+    columnas = duracionProyectoSinFeriados
+    filas = len(nombres)
+    
     contador=0
     for actividad in listaActividades:
         nombres.append(actividad.nombre)
