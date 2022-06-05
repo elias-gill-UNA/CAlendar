@@ -1,98 +1,66 @@
-from camino_critico import *
-from clases.clases_cam_critico import *
+from clases.actividades import Actividad
+from clases.clases_cam_critico import ObjetoCritico
+from clases.proyecto import Proyecto
+from backend.dataBase import proyectManager
+from informes.camino_critico import funcionFinalYSuperpoderosa
 
 # crea el proyecto y cargar actividades
-proyect = Proyecto()
-objCrit = Criticos()
+proyectManager.crearProyecto(Proyecto("Nombre del proyecto", "ohala que funciones", "27/05/2022" ))
+conexion = proyectManager.abrirProyecto(1)
+
+objCrit = ObjetoCritico()
+listaGeneral = []
 listaacts = []
+proyect = Proyecto("Nombre del proyecto", "ohala que funciones", "27/05/2022")
+listaCopia = []
 
-# actividad 0
-anteriores = []
-actividad = Actividad("Inicio", 0, anteriores)
-listaacts.append(actividad)
+#para probar nms
+nombres=["A","B","C","D","E","F","G","H","I","J","K"]
+duraciones=[7,15,7,1,30,5,30,1,1,1,1]
+for i in range(len(nombres)):
+    actividad=Actividad(i,nombres[i],duraciones[i],[],0)
+    listaGeneral.append(actividad)
 
-# actividad 1
-anteriores = []
-anteriores.append(listaacts[0])
-actividad = Actividad("A", 5, anteriores)
-listaacts.append(actividad)
+listaGeneral[1].dependencias=[0]
+listaGeneral[2].dependencias=[0]
+listaGeneral[3].dependencias=[2]
+listaGeneral[4].dependencias=[1,3]
+listaGeneral[5].dependencias=[4]
+listaGeneral[6].dependencias=[5]
+listaGeneral[7].dependencias=[0]
+listaGeneral[8].dependencias=[4,7]
+listaGeneral[9].dependencias=[6,8]
+listaGeneral[10].dependencias=[6]
 
-# actividad 2
-anteriores = []
-anteriores.append(listaacts[0]) # dependencias supongo
-actividad = Actividad("B", 1, anteriores)
-listaacts.append(actividad)
+# super mega ultra funcion
+funcionFinalYSuperpoderosa(conexion, listaGeneral, listaCopia, objCrit, proyect)
 
-# actividad 3
-anteriores = []
-anteriores.append(listaacts[1])
-actividad = Actividad("C", 2, anteriores)
-listaacts.append(actividad)
 
-# actividad 4
-anteriores = []
-anteriores.append(listaacts[1])
-actividad = Actividad("D", 3, anteriores)
-listaacts.append(actividad)
-
-# actividad 5
-anteriores = []
-anteriores.append(listaacts[1])
-actividad = Actividad("E", 2, anteriores)
-listaacts.append(actividad)
-
-# actividad 6
-anteriores = []
-anteriores.append(listaacts[3])
-actividad = Actividad("F", 3, anteriores)
-listaacts.append(actividad)
-
-# actividad 7
-anteriores = []
-anteriores.append(listaacts[4])
-actividad = Actividad("G", 4, anteriores)
-listaacts.append(actividad)
-
-# actividad 8
-anteriores = []
-anteriores.append(listaacts[2])
-anteriores.append(listaacts[5])
-actividad = Actividad("H", 2, anteriores)
-listaacts.append(actividad)
-
-# actividad 9
-anteriores = []
-anteriores.append(listaacts[8])
-actividad = Actividad("I", 1, anteriores)
-listaacts.append(actividad)
-
-# actividad 10
-anteriores = []
-anteriores.append(listaacts[6])
-anteriores.append(listaacts[7])
-anteriores.append(listaacts[9])
-actividad = Actividad("J", 1, anteriores)
-listaacts.append(actividad)
-
-# actividad 11
-anteriores = []
-anteriores.append(listaacts[10])
-actividad = Actividad("Fin", 0, anteriores)
-listaacts.append(actividad)
-
-caminoCritico(listaacts,proyect, objCrit)
-cantidadCaminosCriticos(objCrit, listaacts[0])# siempre recibe como primer argumento la primera actividad
-inicializarCritico(objCrit, listaacts)
-cargarCriticos(objCrit, listaacts[0], 0)
-
-print("Las actividades son: ", end='')
+print("Las actividades criticas son: ", end='')
 for i in objCrit.actividadesCriticas:
     print(i.nombre, end=', ')
 print("\nCantidad de caminos:", objCrit.cantidadCritico)
-print("....")
 
 for j in range(objCrit.cantidadCritico):
     print("el camino critico numero "+str(j+1)+" es")
     for i in objCrit.caminosCriticos[j]:
         print(i.nombre)
 
+print("la duracion es "+str(proyect.finTardio-proyect.inicioTardio))
+
+
+print("los datos del proyecto son ")
+print("el inicio temprano es "+str(proyect.fechaInicioTemprano))
+print("el inicio tardio es "+str(proyect.fechaInicioTardio))
+print("el fin temprano es "+str(proyect.fechaFinTemprano))
+print("el fin tardio es "+str(proyect.fechaFinTardio))
+print("....")
+
+for actividad in listaacts:
+    print("actividad con nombre "+str(actividad.nombre))
+    print("su holgura es "+str(actividad.holgura))
+    print("el inicio temprano de la actividad es "+str(actividad.fechaInicioTemprano))
+    print("el inicio tardio de la actividad es "+str(actividad.fechaInicioTardio))
+    print("el fin temprano de la actividad es "+str(actividad.fechaFinTemprano))#
+    print("el fin tardio de la actividad es "+str(actividad.fechaFinTardio))
+    print("........")
