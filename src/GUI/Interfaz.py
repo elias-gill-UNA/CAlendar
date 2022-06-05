@@ -94,6 +94,7 @@ def cargar_Tabla_Actividad(tabla):
             tabla.insert("", tk.END, text=i.identificador, values=(i.nombre, i.duracion, i.dependencias))
 
 
+
 # Cuando da click a el boton Abrir viene aca
 def seleccionar_Proyecto(tabla, framePrincipal):
     try:
