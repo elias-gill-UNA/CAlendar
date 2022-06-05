@@ -1,10 +1,8 @@
 class Proyecto:
-    def __init__(self,nombre, descripcion, inicioPrevisto, diasLaborales, holgura):
+    def __init__(self,nombre, descripcion, fechaInicio):
         self.nombre = nombre
         self.descripcion = descripcion
-        self.fechaInicio = inicioPrevisto
-        self.holgura = holgura
-        self.diasLaborales = diasLaborales # cantidad de dias de trabajo contando del lunes
+        self.fechaInicio = fechaInicio
 
         # valores cargados y actualizados por la base de datos
         self.identificador = 0 # esto se sobreescribe en la base de datos, dejar en 0 al crear proyecto
@@ -16,6 +14,7 @@ class Proyecto:
         self.inicioTardio = -1
         self.finTemprano = -1
         self.finTardio = -1
+        self.holgura = 0
 
     
 

@@ -1,9 +1,6 @@
 class Actividad:
-    def __init__(self, identificador, nombre, duracion, dependencias, fechaInicioTemprano, fechaInicioTardio, finalizo):
-        self.identificador = identificador
+    def __init__(self, nombre, duracion, dependencias):
+        self.identificador = 0
         self.nombre = nombre
         self.duracion = duracion
         self.dependencias = dependencias
-        self.fechaInicioTemprano = fechaInicioTemprano
-        self.fechaInicioTardio = fechaInicioTardio
-        self.finalizado = finalizo # ENTERO    1: finalizado  0: aun no
