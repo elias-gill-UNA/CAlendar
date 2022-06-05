@@ -38,22 +38,13 @@ def validarInforme(opcion):
     return True
 
 
-def validar_Proyecto(DL, nombre, descripcion, fechaI, holgura):
+def validar_Proyecto(nombre, descripcion, fechaI):
     valido = True
-    if not DL.isdigit():
-        messagebox.showwarning("Mensaje", "Cantidad de dias laborales invalidos")
-        valido = False
-    elif  int(DL)<=0 or int(DL)>7:
-        messagebox.showwarning("Mensaje", "Cantidad de dias laborales invalidos")
-        valido = False
     if not 1 < len(nombre) <= 30:
         messagebox.showwarning("Mensaje", "Nombre de Actividad invalido")
         valido = False
     if not 1 < len(descripcion) <= 60:
         messagebox.showwarning("Mensaje", "Descripcion invalido")
-        valido = False
-    if not holgura.isdigit():
-        messagebox.showwarning("Mensaje", "Holgura invalida")
         valido = False
     if not validarFecha(fechaI):
         valido = False

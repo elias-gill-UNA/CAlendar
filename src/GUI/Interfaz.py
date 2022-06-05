@@ -25,16 +25,17 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
         ventana_Proyecto(root)
 
 
-def guardar_Proyecto(framePrincipal, tabla, DL, nombre, descrip, fechaI, holgura, frame3, boton):
+def guardar_Proyecto(framePrincipal, tabla, nombre, descrip, fechaI, frame3, boton):
     # Aca se debe crear el proyecto pero debe validar los datos
     global conexion
     global listaActividades
     global descripcion
 
-    if vp.validar_Proyecto(DL, nombre, descrip, fechaI, holgura):
-        Pr = Proyecto(nombre, descrip, fechaI, DL, holgura)
+    if vp.validar_Proyecto(nombre, descrip, fechaI):
+        Pr = Proyecto(nombre, descrip, fechaI)
         h = proyectManager.getProyectListsWithInfo()
         id=proyectManager.crearProyecto(Pr)
+        print(id)
         h = proyectManager.getProyectListsWithInfo()
         for i in h:
             tabla.insert('', tk.END, text=i.identificador, values=(i.nombre, i.fechaInicio, i.descripcion))
@@ -156,9 +157,9 @@ class ventana_Proyecto(tk.Frame):
         btn_salir = tk.Button(frame3, text="Salir", command=quit)
         btn_salir.grid(row=0, column=2)
         btn_guardar_proyecto = tk.Button(frame3, text="Guardar proyecto",
-                                         command=lambda: guardar_Proyecto(self, self.tabla, DL.get(), nombre.get(),
+                                         command=lambda: guardar_Proyecto(self, self.tabla, nombre.get(),
                                                                           descrip.get(1.0, "end"),
-                                                                          fechaI.get_date(), holgura.get(), frame3,
+                                                                          fechaI.get_date(), frame3,
                                                                           btn_guardar_proyecto))
         btn_guardar_proyecto.grid(row=0, column=4, sticky="ns")
 
