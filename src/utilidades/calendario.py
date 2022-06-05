@@ -5,7 +5,7 @@ from clases.feriados import Feriado
 def diaLaboral(feriados, año, mes, dia): 
     for feriado in feriados:
         if(dia == feriado.dia and mes == feriado.mes):
-            return False, feriado
+            return False
     return __fin_semana(año,mes,dia)
 
 # determina si un dia cae fin de semana
@@ -39,8 +39,8 @@ def cargarFeriadosNacionales(id):
         [8,12,"Dia de la Virgen de Caacupe"],
         [25,12,"Navidad"] 
     ]
-    for feriado in feriados: # cargar feriados en la db
-        aux = Feriado(feriado[0], feriado[1], feriado[2])
+    for i in feriados: # cargar feriados en la db
+        aux = Feriado(i[0], i[1], i[2])
         db_feriados.nuevoFeriado(conexion, aux)
 
     db_proyects.cerrarProyecto(conexion)

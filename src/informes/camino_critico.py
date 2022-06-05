@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta
 import utilidades.calendario as calendario
 
 conexion = 1
-feriados = 1
+feriados = []
 # carga o dibuja el camino critico y lo guarda en la matriz
 def cargarCriticos(objCritico, inicio, indice):
     bandera = False
@@ -219,11 +219,11 @@ def resta(fecha, cantidad):
     while(contador <= cantidad):
         # pasar las fechas a formate datetime
         final = final.split("/")
-        if calendario.diaLaboral(conexion, int(final[0]), int(final[1]), int(final[2])):
+        if calendario.diaLaboral(feriados, int(final[0]), int(final[1]), int(final[2])):
             contador += 1
 
         fecha2 = timedelta(1) 
-        aux = date(int(fecha[2]),int(fecha[1]),int(fecha[0]))
+        aux = date(int(final[2]), int(final[1]), int(final[0]))
 
         # transformar el resultado
         resultado = aux - fecha2
@@ -240,11 +240,11 @@ def suma(fecha, cantidad):
     while(contador <= cantidad):
         # pasar las fechas a formate datetime
         final = final.split("/")
-        if calendario.diaLaboral(conexion, int(final[0]), int(final[1]), int(final[2])):
+        if calendario.diaLaboral(feriados, int(final[0]), int(final[1]), int(final[2])):
             contador += 1
 
         fecha2 = timedelta(1) 
-        aux = date(int(fecha[2]),int(fecha[1]),int(fecha[0]))
+        aux = date(int(final[2]), int(final[1]), int(final[0]))
 
         # transformar el resultado
         resultado = aux+fecha2
