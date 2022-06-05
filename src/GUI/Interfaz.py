@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk
 
 import backend.comprobaciones.verificarEntradas as vp
-from backend.dataBase.proyectManager import *
+import backend.dataBase.proyectManager  as proyectManager
 from funcionesSobreObjetos.actividadFunciones import *
 from tkcalendar import *
 from diagrama_de_gantt import AbrirDiagrama
@@ -35,7 +35,7 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
     # global descripcion
     # Valida los datos antes de crear el Proyecto
     if vp.validar_Proyecto(nombre, descrip, fechaI):
-        Pr = Proyecto(nombre, descrip, fechaI)
+        Pr = Pr.Proyecto(nombre, descrip, fechaI)
         # Mejor si crear proyecto no retorna nada (Preguntar a Elias)
         # Crea el proyecto
         id = proyectManager.crearProyecto(Pr)
@@ -68,8 +68,7 @@ def seleccionar_id(tabla, framePrincipal):
     id = tabla.item(tabla.selection())['text']
     # abre el proyecto seleccionado o el recien creado?
     # abrir el proyecto recien creado y dar valor a las globales
-    conexion = abrirProyecto(id)
-    print(conexion[0])
+    conexion = proyectManager.abrirProyecto(id)
     # conexion = proyecto[0]
     # descripcion = proyecto[1]
     # listaActividades = proyecto[2]
