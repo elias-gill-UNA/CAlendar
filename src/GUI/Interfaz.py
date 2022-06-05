@@ -4,6 +4,10 @@ from tkinter import messagebox
 from tkinter import ttk
 
 import backend.comprobaciones.verificarEntradas as vp
+import backend.comprobaciones.verificarEntradas as va
+from backend.dataBase.activitiesManager import getInfoActividad
+from backend.dataBase.activitiesManager import *
+
 from backend.dataBase.proyectManager import *
 from funcionesSobreObjetos.actividadFunciones import *
 from tkcalendar import *
@@ -35,7 +39,6 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
         # Crea el proyecto
         id = proyectManager.crearProyecto(Pr)
         # Retorna todos los proyectos guardados
-
         # Elimina los datos de la tabla
         for item in tabla.get_children():
             tabla.delete(item)
@@ -48,6 +51,10 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
         # descripcion = proyecto[1]
         # listaActividades = proyecto[2]
 
+def cargar_tabla_Actividad(tabla,conexion):
+    activities=activitiesManager.getListaActividades(conexion)
+    for i in activities:
+        tabla.insert('', tk.END, text=idem values=(i.nombre, i.fechaInicio, i.descripcion))
 
 def cargar_Tabla(tabla):
     proyectos = proyectManager.getProyectListsWithInfo()
@@ -70,8 +77,27 @@ def seleccionar_id(tabla, framePrincipal):
     limpiar_Pantalla(framePrincipal, 0)
 
 
-def guardar_Actividad(framePrincipal, nombre, duracion, dependencias, fechaInicio, fechaFinal):
+def guardar_Actividad(framePrincipal,tabla, nombre, duracion, dependencias, fechaInicio, fechaFinal):
     # Se crea la actividad
+    global idem
+    idem=-1
+    idem=idem+1
+    #seleccionar_id(tabla,framePrincipal)
+    #getInfoActividad(id,conexion)
+    #id = tabla.item(tabla.selection())['text']
+    #antes se necesita el id
+    
+    if va.validar_Actividad(nombre,duracion,idem,fechaInicio):
+        Ac=Actividad(idem,nombre,duracion,dependencias,fechaFinal)
+        #conexion=abrirconexion(id)
+        actis=leerActividades(conexion)
+
+        for item in tabla.get_children():
+            tabla.delete(item)
+        # Vuelve a cargar los datos en la tabla agregandole el nuevo proyecto creado
+        cargar_tabla_Actividad(tabla,conexion)
+    
+
 
     # Falta validar los datos antes
     # actFunctions.crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
@@ -244,7 +270,7 @@ class ventana_Actividad(tk.Frame):
 
         # Botones
         btn_crear = tk.Button(frame, text="Crear Actividad",
-                              command=lambda: guardar_Actividad(self, self.nombre.get(),
+                              command=lambda: guardar_Actividad(self,tabla, self.nombre.get(),
                                                                 self.duracion.get(), self.dependencias.get(),
                                                                 self.fechaInicio.get(), self.fechaFinal.get())).grid(
             row=5, column=0)
