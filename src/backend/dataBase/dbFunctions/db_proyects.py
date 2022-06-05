@@ -12,7 +12,7 @@ def nuevoProyecto(proyecto, id): # nombre del proyecto
     cursor.execute("CREATE TABLE IF NOT EXISTS Feriados (id integer primary key, dia INT, mes INT, descripcion TEXT)") # tabla de Feriados
 
     # Llenado de los campos de identificacion del proyecto
-    cursor.execute("INSERT INTO Descripcion (id, nombre, descripcion, fechaInicio, actiCount, depCount, diasLaborales, holgura) VALUES (?, ?, ?, ?, ?, ?)", 
+    cursor.execute("INSERT INTO Descripcion (id, nombre, descripcion, fechaInicio, actiCount, depCount) VALUES (?, ?, ?, ?, ?, ?)", 
               (id, proyecto.nombre, proyecto.descripcion, proyecto.fechaInicio, 0, 0))
 
     # Proyecto creado satisfactoriamente
