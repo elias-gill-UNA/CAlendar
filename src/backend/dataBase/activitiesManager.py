@@ -57,7 +57,7 @@ def getInfoActividad(conexion, id):
     if not info: # no encontro la actividad
         raise ValueError("Activitie does not exist") 
     
-    activ = Actividad(info[0], info[1], info[2], info[3], info[4], info[5], info[6]) 
+    activ = Actividad(info[0], info[1], info[2], info[3], info[6]) 
     return activ
 
 
@@ -67,7 +67,7 @@ def getListaActividades(conexion): # retorna las dependencias como string
     actividades = []
     # cargar en objetos propios
     for i in aux: 
-        activ = Actividad(i[0], i[1], i[2], i[3], i[4], i[5], i[6]) 
+        activ = Actividad(i[0], i[1], i[2], i[3], i[6]) 
         actividades.append(activ)
     return actividades
 
