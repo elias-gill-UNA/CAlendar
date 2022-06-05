@@ -15,7 +15,7 @@ listaGeneral=[]
 names=["A","B","C","D","E","F","G","H"]
 duraciones=[4,10,5,15,12,4,8,7]
 for i in range(len(names)):
-    actividad=Actividad(i,names[i],duraciones[i],[],"12/02/2021","13/02/2021",0)
+    actividad=Actividad(names[i],duraciones[i],[])
     listaGeneral.append(actividad)
 listaGeneral[2].dependencias=[0]#c
 listaGeneral[3].dependencias=[1,2]#d

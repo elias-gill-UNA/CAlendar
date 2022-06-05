@@ -27,7 +27,7 @@ def zeller(año,mes,dia):
 # cargar los feriados nacionales
 def cargarFeriadosNacionales(id):
     conexion = db_proyects.abrirProyecto(id)
-    feriados = { 
+    feriados = [ 
         [1,1,"Año nuevo"],
         [1,3,"Dia de los heroes"],
         [1,5,"Dia del trabajador"],
@@ -37,11 +37,11 @@ def cargarFeriadosNacionales(id):
         [15,8,"Fundacion de Asuncion"],
         [29,9,"Batalla de Boqueron"],
         [8,12,"Dia de la Virgen de Caacupe"],
-        [25,12,"Navidad"]
-    }
+        [25,12,"Navidad"] 
+    ]
     for feriado in feriados: # cargar feriados en la db
-        feriado = Feriado(feriado[0], feriado[1], feriado[2])
-        db_feriados.nuevoFeriado(conexion, feriado)
+        aux = Feriado(feriado[0], feriado[1], feriado[2])
+        db_feriados.nuevoFeriado(conexion, aux)
 
     db_proyects.cerrarProyecto(conexion)
     return True
@@ -63,12 +63,14 @@ def leerFeriado(conexion, id):
     return feriado
 
 def getListaFeriados(conexion):
-    list = db_feriados.getListaFeriados(conexion)
-    for i in list:
-        feriado = Feriado(i[1], i[2], i[3])
+    aux = db_feriados.getListaFeriados(conexion)
+    feriados = []
+    # cargar en objetos propios
+    for i in aux: 
+        feriado = Feriado(i[1], i[2], i[3]) 
         feriado.identificador = i[0]
-        list.append(feriado)
-    return list
+        feriados.append(feriado)
+    return feriados
 
 # elimina el feriado si es que existe
 def eliminarFeriado(conexion, id):
