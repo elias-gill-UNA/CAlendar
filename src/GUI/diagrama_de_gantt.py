@@ -37,10 +37,10 @@ def CrearDiagrama():
 def agregar_actividad(inicio, duracion, color,numActividad):
     eje.broken_barh([(inicio, duracion)], (altura * numActividad, altura), facecolors=(color))
 
-def AgregarActividades():
+def AgregarActividades(conexion):
     global ndatos
 
-    arregloGUI = ConseguirDataParaGUI()
+    arregloGUI = ConseguirDataParaGUI(conexion)
 
     ndatos = len(arregloGUI)
 
@@ -55,6 +55,7 @@ def AgregarActividades():
 
 # duaracion: cuantos dias se establecio para esa actividad
 #Ej: agregar_actividad(20, 120, "blue",2)
-AgregarActividades()
-CrearDiagrama()
-plt.show()  # Muestra la figura
+def AbrirDiagrama(conexion):
+    AgregarActividades(conexion)
+    CrearDiagrama()
+    plt.show()  # Muestra la figura

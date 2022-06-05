@@ -1,12 +1,12 @@
 from clases.actividades import *;
 import backend.dataBase.activitiesManager as actiManager
-import camino_critico 
+#import camino_critico 
 
 dependencias=[]
 nombres=[]
 duracion=[]
 columnas=37 # en columnas va la duracion del proyecto
-colores = ["red","green","yellow","pink","purple","orange","black","blue","orange"]
+colores = ["blue","red"]
 filas = 0
 matriz=[]
 
@@ -15,7 +15,7 @@ listaGeneral=[]
 names=["A","B","C","D","E","F","G","H"]
 duraciones=[4,10,5,15,12,4,8,7]
 for i in range(len(names)):
-    actividad=Actividad(i,names[i],duraciones[i],[],"12/02/2021","13/02/2021",0)
+    actividad=Actividad(i,names[i],duraciones[i],[],0)
     listaGeneral.append(actividad)
 listaGeneral[2].dependencias=[0]#c
 listaGeneral[3].dependencias=[1,2]#d
@@ -72,7 +72,6 @@ def calcularPosi(matriz, dependencias, nombres, columnas):
 
     return definitivo
 
-
 def DiagramaGantt(nombres, dependencias, duracion, matriz, columnas):
     # creacion de matriz
     for i in range(filas):
@@ -97,7 +96,7 @@ def ConseguirDataParaGUI(conexion):
     lista = actiManager.getListaActividadesAutoreferenciada(conexion)
     aux = lista
    # camino_critico.
-    camino_critico.cantidadCaminosCriticos
+   # camino_critico.cantidadCaminosCriticos
 
     prepararGantt(lista, 37)
     DiagramaGantt(nombres,dependencias,duracion,matriz,columnas)
@@ -117,7 +116,7 @@ def ConseguirDataParaGUI(conexion):
                 break
             tareaEmpiezaIndice += 1
 
-        tareaGUI = TareaEnFormatoGUI(tareaEmpiezaIndice, duracion[i], colores[i], i, nombres[i])
+        tareaGUI = TareaEnFormatoGUI(tareaEmpiezaIndice, duracion[i], colores[0], i, nombres[i])
         arregloTareasGUI.append(tareaGUI)
 
     return arregloTareasGUI
