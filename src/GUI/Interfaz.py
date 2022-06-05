@@ -9,8 +9,8 @@ from funcionesSobreObjetos.actividadFunciones import *
 from tkcalendar import *
 from diagrama_de_gantt import AbrirDiagrama
 
-conexion = 0  # id del proyecto cuando se selecciona
-descripcion = 0  # descripcion del proyecto cuando se selecciona
+conexion = None  # id del proyecto cuando se selecciona
+objProyecto = 0  # objeto proyecto cuando se selecciona
 listaActividades = 0  # lista de actividades del proyecto cuando se selecciona
 
 
@@ -60,6 +60,16 @@ def cargar_Tabla(tabla):
         tabla.insert('', tk.END, text=i.identificador, values=(i.nombre, i.fechaInicio, i.descripcion))
 
 
+# Carga las actividades en el proyecto
+def cargar_Tabla_Actividad(tabla):
+    if conexion!=None:
+        global idem
+        print("Cone:",conexion)
+        actividades=actividadFunciones.leerActividades(conexion)
+        for i in actividades:
+            tabla.insert('', tk.END, text=idem, values=(i.nombre, i.fechaInicio, i.descripcion))
+
+
 # Cuando da click a el boton Abrir viene aca
 def seleccionar_id(tabla, framePrincipal):
     global conexion
@@ -75,14 +85,21 @@ def seleccionar_id(tabla, framePrincipal):
     limpiar_Pantalla(framePrincipal, 0)
 
 
-def guardar_Actividad(framePrincipal, nombre, duracion, dependencias, fechaInicio, fechaFinal):
+def guardar_Actividad(framePrincipal,nombre, duracion, dependencia,tabla):
     # Se crea la actividad
+    #global idem
+    #idem = -1
+    #idem = idem + 1
 
-    # Falta validar los datos antes
-    # actFunctions.crearActividad(nombre, duracion, dependencias, fechaInicio, fechaFinal)
-    # if vp.validar_Proyecto()
-
-    limpiar_Pantalla(framePrincipal, 1)
+    if verificarInput.validar_Actividad(nombre, duracion):
+        actividad = Actividad(nombre, duracion, dependencia)
+        # Crea la actividad
+        AC=actividadFunciones.crearActividad(conexion, actividad.nombre,actividad.duracion,actividad.dependencias)
+        # Limpia la tabla
+        for item in tabla.get_children():
+           tabla.delete(item)
+        # Vuelve a cargar los datos en la tabla agregandole la actividad creada
+        cargar_Tabla_Actividad(tabla)
 
 
 class ventana_Proyecto(tk.Frame):
@@ -250,8 +267,7 @@ class ventana_Actividad(tk.Frame):
         # Botones
         btn_crear = tk.Button(frame, text="Crear Actividad",
                               command=lambda: guardar_Actividad(self, self.nombre.get(),
-                                                                self.duracion.get(), self.dependencias.get(),
-                                                                self.fechaInicio.get(), self.fechaFinal.get())).grid(
+                                                                self.duracion.get(), self.dependencias.get(),tabla)).grid(
             row=5, column=0)
 
         btn_editar = tk.Button(frame, text="Editar Actividad").grid(row=5, column=2)
@@ -307,6 +323,22 @@ class ventana_Actividad(tk.Frame):
                                                                                                              column=4)                                                                                          
 
         btn_salir = tk.Button(frame, text="Salir", command=quit).grid(row=0, column=6)
+
+    cargar_Tabla_Actividad(tabla)
+    # Muestra el informe seleccionado
+    def __informe__(self):
+        opcion = self.opcion.get()
+        # hay que enviar esta opcion a la funcion de validacion
+        if True:
+            if opcion == "Diagrama de Gantt":
+                # Mostrar diagrama
+                pass
+            elif opcion == "Mapa de Dependencias":
+                # Mostrar mapa
+                pass
+            else:
+                # Mostrar camino crítico
+                pass
 
     def colocarActividadesEnTabla(self, tabla):
         global listaActividades
