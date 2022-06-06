@@ -12,17 +12,25 @@ def modificarActividad(conexion, id, nuevaActividad):
     if nuevaActividad.dependencias != '':
         deps = dependenciasAEnteros(decifrarDependenciasDelInput(nuevaActividad.dependencias))
     else:
-        deps = False
+        deps = []
 
+    # tirar error si una dependencia no existe
     lista = activitiesManager.getListaActividades(conexion)
     if deps:
-        for i in deps: # tirar error si una dependencia no existe
-            if not i in lista:
-                raise ValueError("La activida de la que dependencia no existe. No puedes asignar estas dependencias")
+        for i in deps: 
+            error = True
+            for actv in lista:
+                if i == actv.identificador:
+                    error = False
+                    break
+            if error:
+                raise ValueError("La activida de la que depende no existe")
 
-    try: # comprueba si es posible crear la actividad
+    # peticion a la base de datos
+    try: 
         activitiesManager.modificarActividad(conexion, id, nuevaActividad)
-        return True
+        return nuevaActividad
+
     except ValueError:
         return ValueError
     
@@ -33,20 +41,26 @@ def crearActividad(conexion, nombre, duracion, dependenciasString):
     if dependenciasString != '':
         deps = dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString))
     else:
-        deps = False
+        deps = []
 
-    contadorDependencias = 0
-    nuevaActividad = Actividad(nombre, duracion, dependenciasString)
-
+    # tirar error si una dependencia no existe
     lista = activitiesManager.getListaActividades(conexion)
     if deps:
-        for i in deps: # tirar error si una dependencia no existe
-            if not i in lista:
+        for i in deps: 
+            error = True
+            for actv in lista:
+                if i == actv.identificador:
+                    error = False
+                    break
+            if error:
                 raise ValueError("La activida de la que depende no existe")
 
-    try: # comprueba si es posible crear la actividad
-        activitiesManager.anadirActividad(conexion, nuevaActividad, contadorDependencias)
+    # peticion a la base de datos
+    try: 
+        nuevaActividad = Actividad(nombre, duracion, dependenciasString)
+        activitiesManager.anadirActividad(conexion, nuevaActividad, len(deps))
         return nuevaActividad
+
     except ValueError:
         return ValueError
 

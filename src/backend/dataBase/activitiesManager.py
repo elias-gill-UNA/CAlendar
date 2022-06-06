@@ -43,11 +43,11 @@ def modificarActividad(conexion, id, actividadModificada):
         raise ValueError("Activitie does not exist")
 
     # modificar la actividad
-    nuevasDeps = len(actividadModificada.dependencias.split())
+    contNUevasDeps = len(actividadModificada.dependencias.split())
     db.modificarActividad(conexion, id, actividadModificada) 
 
     #actualizar el contador de dependencias
-    contadorNuevo = dpesProy - len(actVieja.dependencias) + nuevasDeps
+    contadorNuevo = dpesProy - len(actVieja.dependencias) + contNUevasDeps
     actualizarContador(conexion, 'depCount', contadorNuevo)
     return True
     
