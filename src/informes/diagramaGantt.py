@@ -45,22 +45,6 @@ def prepararGantt(listaActividades, duracionProyectoSinFeriados):
 
     columnas = duracionProyectoSinFeriados
     filas = len(nombres)
-    
-    contador=0
-    for actividad in listaActividades:
-        nombres.append(actividad.nombre)
-        duracion.append(actividad.duracion)
-        if(len(actividad.dependencias)==0):
-            dependencias.append("-")
-        else:
-            aux=[]
-            for dependencia in actividad.dependencias:
-                aux.append(listaActividades[dependencia].nombre)
-            dependencias.append(aux)
-        contador=contador+1
-
-    columnas = duracionProyectoSinFeriados
-    filas = len(nombres)
 
 def calcularPosi(matriz, dependencias, nombres, columnas):
     contador = 0
@@ -107,9 +91,6 @@ def ConseguirDataParaGUI(conexion):
 
     arregloTareasGUI = []
 
-    for i in range(filas):
-       print(matriz[i])
-
     for i in range(0, len(nombres)):
 
         tareaEmpiezaIndice = 0
@@ -119,8 +100,17 @@ def ConseguirDataParaGUI(conexion):
             if (matriz[i][j] == 1):
                 break
             tareaEmpiezaIndice += 1
+        
+        color = 0
 
-        tareaGUI = TareaEnFormatoGUI(tareaEmpiezaIndice, duracion[i], colores[0], i, nombres[i])
+        print(nombres[i])
+
+        for actividad in objetoCritico.actividadesCriticas:        
+            if(listaActividades[i].identificador == actividad.identificador):
+                color = 1
+                break
+
+        tareaGUI = TareaEnFormatoGUI(tareaEmpiezaIndice, duracion[i], colores[color], i, nombres[i])
         arregloTareasGUI.append(tareaGUI)
 
     return arregloTareasGUI

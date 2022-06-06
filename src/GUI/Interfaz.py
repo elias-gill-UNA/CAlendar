@@ -48,15 +48,17 @@ def centrar_Ventana(root, num_Ventana):
 
 def limpiar_Pantalla(framePrincipal, num_Ventana):
     global conexion
-    if (num_Ventana != 2):
-        framePrincipal.destroy()
 
     if num_Ventana == 0:
         ventana_Actividad(root)
+        framePrincipal.destroy()
     elif num_Ventana == 1:
         ventana_Proyecto(root)
+        framePrincipal.destroy()
     elif num_Ventana == 2:
         AbrirDiagrama(conexion)
+    elif num_Ventana == 3:
+        iniciar_Camino_Critico()
 
 
 def guardar_Proyecto(tabla, nombre, descrip, fechaI):
@@ -97,6 +99,11 @@ def cargar_Tabla_Proyecto(tabla):
 # Carga las actividades en el proyecto
 def cargar_Tabla_Actividad(tabla):
     global conexion
+
+    # Limpia la tabla
+    for item in tabla.get_children():
+        tabla.delete(item)
+
     if conexion != None:
         actividades = actividadFunciones.leerActividades(conexion)
         for i in actividades:
@@ -135,7 +142,7 @@ def mostrar_Actividades_Criticas(objcritico):
     lbl_critico = tk.Label(frame, text="Lista de actividades del Camino Crítico").grid(row=0, column=0)
 
     # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
-    tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1", "2"))
+    tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2"))
     tabla1.place(x=90, y=180)
     tabla1.grid(row=1, column=0)
 
@@ -148,7 +155,7 @@ def mostrar_Actividades_Criticas(objcritico):
     tabla1.column("#0", width=150, anchor=CENTER)
     tabla1.column("#1", width=250, anchor=CENTER)
     tabla1.column("#2", width=250, anchor=CENTER)
-    tabla1.column("3", width=250, anchor=CENTER)
+    tabla1.column("#3", width=250, anchor=CENTER)
 
     # Titulos
     tabla1.heading("#0", text="Fecha Fin Temprano")
@@ -428,7 +435,7 @@ class ventana_Actividad(tk.Frame):
         btn_gantt = tk.Button(frame, text="Diagram de Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
                                                                                                               column=2)
 
-        btn_Acti_critic = tk.Button(frame, text="Actividades Criticas", command=iniciar_Camino_Critico).grid(row=0,
+        btn_Acti_critic = tk.Button(frame, text="Actividades Criticas", command= lambda: limpiar_Pantalla(self, 3)).grid(row=0,
                                                                                                              column=4)
 
     # Elimina el proyecto seleccionado de la tabla y de la base de datos
@@ -439,6 +446,7 @@ class ventana_Actividad(tk.Frame):
             id = tabla.item(tabla.selection())['text']
             tabla.delete(x)
             actividadFunciones.eliminarActividad(conexion, id)
+            cargar_Tabla_Actividad(self.tabla)
         except IndexError:
             messagebox.showwarning("Advertencia", "Seleccione una Actividad para eliminar!")
 

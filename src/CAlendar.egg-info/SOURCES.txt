@@ -27,6 +27,7 @@ backend/dataBase/dbFunctions/db_feriados.py
 backend/dataBase/dbFunctions/db_proyects.py
 backend/dataBase/tests/test_acts.py
 backend/dataBase/tests/test_compl.py
+backend/dataBase/tests/test_feriados.py
 backend/dataBase/tests/test_proy.py
 clases/__init__.py
 clases/actividades.py
@@ -40,5 +41,7 @@ informes/__init__.py
 informes/camino_critico.py
 informes/diagramaGantt.py
 informes/tests/cam_critico.py
+informes/tests/funcion_fecha.py
+informes/tests/pruebaFacil.py
 utilidades/__init__.py
 utilidades/calendario.py
