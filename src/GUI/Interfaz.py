@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk
 
 import backend.comprobaciones.verificarEntradas as verificarInput
+import backend.dataBase.activitiesManager as activitiesManager
 import backend.dataBase.proyectManager as proyectManager
 import funcionesSobreObjetos.actividadFunciones as actividadFunciones
 import funcionesSobreObjetos.proyectoFunciones as funcProyectos
@@ -58,8 +59,6 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
 
 
 def guardar_Actividad(framePrincipal, nombre, duracion, dependencia, tabla):
-
-
     if verificarInput.validar_Actividad(nombre, duracion):
         actividad = Actividad(nombre, duracion, dependencia)
         # Crea la actividad
@@ -82,7 +81,8 @@ def cargar_Tabla_Proyecto(tabla):
 def cargar_Tabla_Actividad(tabla):
     global conexion
     if conexion != None:
-        for i in listaActividades:
+        actividades = actividadFunciones.leerActividades(conexion)
+        for i in actividades:
             tabla.insert("", tk.END, text=i.identificador, values=(i.nombre, i.duracion, i.dependencias))
 
 
@@ -231,6 +231,7 @@ class ventana_Actividad(tk.Frame):
     def __frame1__(self, frame):
         # Etiquetas
         lbl_nombre = tk.Label(frame, text="Nombre de la actividad:", font=("Times New Roman", 12)).grid(row=0, column=0,
+
                                                                                                         sticky="w")
         self.nombre = tk.Entry(frame, width=20)
         self.nombre.grid(row=0, column=1)
@@ -260,6 +261,7 @@ class ventana_Actividad(tk.Frame):
         separador = tk.Label(frame, text="").grid(row=2, column=0)
         # Crea espacios entre los botones
         tk.Label(frame, text="\t\t").grid(row=5, column=1)
+        tk.Label(frame, text="\t\t").grid(row=5, column=2)
         tk.Label(frame, text="\t\t").grid(row=5, column=3)
 
         # Botones
@@ -268,8 +270,6 @@ class ventana_Actividad(tk.Frame):
                                                                 self.duracion.get(), self.dependencias.get(),
                                                                 self.tabla)).grid(
             row=5, column=0)
-
-        btn_editar = tk.Button(frame, text="Editar Actividad").grid(row=5, column=2)
 
         btn_eliminar = tk.Button(frame, text="Eliminar Actividad",
                                  command=lambda: self.eliminar_Actividad(self.tabla)).grid(row=5,
@@ -303,7 +303,53 @@ class ventana_Actividad(tk.Frame):
         self.tabla.heading("#3", text="Dependencia")
 
         cargar_Tabla_Actividad(self.tabla)
+
         # self.colocarActividadesEnTabla(tabla)
+        def editar_Actividad(event):
+            id = self.tabla.item(self.tabla.selection())['text']
+            editar = Toplevel()
+
+            lbl_nombre = tk.Label(editar, text="Nombre de la actividad:", font=("Times New Roman", 12)).grid(row=0,
+                                                                                                             column=0,
+
+                                                                                                             sticky="w")
+            nombre = tk.Entry(editar, width=20)
+            nombre.grid(row=0, column=1)
+
+            lbl_dependencias = tk.Label(editar, text="Dependencias:", font=("Times New Roman", 12)).grid(row=1,
+                                                                                                         column=0,
+                                                                                                         sticky="w")
+            dependencias = tk.Entry(editar, width=20)
+            dependencias.grid(row=1, column=1)
+
+            lbl_duracion = tk.Label(editar, text="Duración:", font=("Times New Roman", 12)).grid(row=2, column=0,
+                                                                                                 sticky="w")
+            duracion = tk.Entry(editar, width=20)
+            duracion.grid(row=2, column=1)
+
+            btn_cancelar = tk.Button(editar, text="Cancelar", command=editar.destroy).grid(row=3, column=0)
+            btn_guardar = tk.Button(editar, text="Guadar Cambios", command=lambda: guardar_Cambios(nombre.get(),
+                                                                                                   duracion.get(),
+                                                                                                   dependencias.get(),
+                                                                                                   self.tabla, id,
+                                                                                                   editar)).grid(
+                row=3, column=1)
+
+            editar.mainloop()
+
+        def guardar_Cambios(nombre, duracion, dependencia, tabla, id, editar):
+            global conexion
+            if verificarInput.validar_Actividad(nombre, duracion):
+                actividad = Actividad(nombre, duracion, dependencia)
+                activitiesManager.modificarActividad(conexion, id, actividad)
+                # Limpia la tabla
+                for item in tabla.get_children():
+                    tabla.delete(item)
+                # Vuelve a cargar los datos en la tabla agregandole la actividad creada
+                editar.destroy()
+                cargar_Tabla_Actividad(tabla)
+
+        self.tabla.bind("<Double-1>", editar_Actividad)
 
     def __frame3__(self, frame):
         # Crea espacios entre los botones
@@ -332,9 +378,6 @@ class ventana_Actividad(tk.Frame):
             actividadFunciones.eliminarActividad(conexion, id)
         except IndexError:
             messagebox.showwarning("Advertencia", "Seleccione una Actividad para eliminar!")
-
-    def editar_Actividad(self, tabla):
-        pass
 
 
 root = tk.Tk()
