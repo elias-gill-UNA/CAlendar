@@ -29,9 +29,12 @@ def centrar_Ventana(root, num_Ventana):
     elif num_Ventana == 1:
         ancho_ventana = 1050
         alto_ventana = 500
-    else:
+    elif num_Ventana== 2:
         ancho_ventana = 400
         alto_ventana = 150
+    elif num_Ventana ==3:
+        ancho_ventana = 1000
+        alto_ventana = 400
     x_ventana = root.winfo_screenwidth() // 2 - ancho_ventana // 2
     y_ventana = root.winfo_screenheight() // 2 - alto_ventana // 2
     posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
@@ -124,12 +127,38 @@ def seleccionar_Proyecto(tabla, framePrincipal):
 def mostrar_Actividades_Criticas(objcritico):
     ventana = tk.Toplevel()
     ventana.title("Actividades Criticas")
+    centrar_Ventana(ventana,3)
     lbl_critico = tk.Label(ventana, text="Cantidad de Caminos Criticos").grid(row=0, column=0)
-    tk.Label(ventana, text=objcritico.cantidadCritico).grid(row=0, column=1)
-    lbl_critico = tk.Label(ventana, text="Lista de actividades del Camino Crítico").grid(row=1, column=0)
-    tk.Label(ventana, text=objcritico.actividadesCriticas).grid(row=1, column=1)
-    lbl_caminos = tk.Label(ventana, text="Caminos Críticos").grid(row=2, column=0)
-    tk.Label(ventana, text=objcritico.caminosCriticos).grid(row=2, column=1)
+    tk.Label(ventana,text=objcritico.cantidadCritico).grid(row=0,column=1)
+    frame=tk.Frame(ventana)
+    frame.grid(row=1,column=0)
+    lbl_critico = tk.Label(frame, text="Lista de actividades del Camino Crítico").grid(row=0, column=0)
+
+    # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
+    tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1"))
+    tabla1.place(x=90, y=180)
+    tabla1.grid(row=1, column=0)
+
+    # Barra de desplazamiento
+    barraDesplazamiento = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=tabla1.yview)
+    tabla1.configure(yscrollcommand=barraDesplazamiento.set)
+    barraDesplazamiento.grid(row=1, column=1, sticky="ns")
+
+    # Tamaño de las columnas
+    tabla1.column("#0", width=150, anchor=CENTER)
+    tabla1.column("#1", width=250, anchor=CENTER)
+    tabla1.column("#2", width=250, anchor=CENTER)
+
+    # Titulos
+    tabla1.heading("#0", text="Nombre")
+    tabla1.heading("#1", text="Fecha Inicio Temprano")
+    tabla1.heading("#2", text="Fecha Fin Temprano")
+    for item in tabla1.get_children():
+        tabla1.delete(item)
+    for i in objcritico.actividadesCriticas:
+        if i.nombre!="Fin" and i.nombre!="Inicio":
+            tabla1.insert("", tk.END,text=i.nombre,values=(i.fechaInicioTemprano, i.fechaFinTemprano))
+
     ventana.mainloop()
 
 
@@ -329,8 +358,6 @@ class ventana_Actividad(tk.Frame):
 
         cargar_Tabla_Actividad(self.tabla)
 
-        cargar_Tabla_Actividad(self.tabla)
-        # self.colocarActividadesEnTabla(tabla)
         def editar_Actividad(event):
 
             id = self.tabla.item(self.tabla.selection())['text']
