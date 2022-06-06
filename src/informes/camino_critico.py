@@ -146,6 +146,7 @@ def __inicializarLista(listaActividades):
 def convertirLista(listaGeneral,listaacts):
     for i in listaGeneral: #inicializa cada actividad con antecedentes en vacio
         actividad = ActividadCaminoCritico(i.nombre,i.duracion,[])
+        actividad.identificador = i.identificador
         listaacts.append(actividad)
 
     for i in listaGeneral:
