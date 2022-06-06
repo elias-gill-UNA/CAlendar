@@ -4,7 +4,6 @@ from tkinter import messagebox
 from tkinter import ttk
 
 import backend.comprobaciones.verificarEntradas as verificarInput
-import backend.dataBase.activitiesManager as activitiesManager
 import backend.dataBase.proyectManager as proyectManager
 import funcionesSobreObjetos.actividadFunciones as actividadFunciones
 import funcionesSobreObjetos.proyectoFunciones as funcProyectos
@@ -302,6 +301,7 @@ class ventana_Actividad(tk.Frame):
 
         cargar_Tabla_Actividad(self.tabla)
 
+        cargar_Tabla_Actividad(self.tabla)
         # self.colocarActividadesEnTabla(tabla)
         def editar_Actividad(event):
             id = self.tabla.item(self.tabla.selection())['text']
