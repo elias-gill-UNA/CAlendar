@@ -11,6 +11,7 @@ import funcionesSobreObjetos.proyectoFunciones as funcProyectos
 from clases.actividades import Actividad
 from clases.proyecto import Proyecto
 from tkcalendar import *
+
 from diagrama_de_gantt import AbrirDiagrama
 
 conexion = None  # id del proyecto cuando se selecciona
@@ -18,13 +19,32 @@ objProyecto = 0  # objeto proyecto cuando se selecciona
 listaActividades = 0  # lista de actividades del proyecto cuando se selecciona
 
 
+def centrar_Ventana(root, num_Ventana):
+    if num_Ventana == 0:
+        ancho_ventana = 850
+        alto_ventana = 550
+
+    elif num_Ventana == 1:
+        ancho_ventana = 1050
+        alto_ventana = 500
+    else:
+        ancho_ventana = 400
+        alto_ventana = 150
+    x_ventana = root.winfo_screenwidth() // 2 - ancho_ventana // 2
+    y_ventana = root.winfo_screenheight() // 2 - alto_ventana // 2
+    posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
+    root.geometry(posicion)
+    # La ventana no puede cambiar de tamaño
+    root.resizable(False, False)
+
+
 # 0 indica que viene de la ventana de Proyectos
 # 1 indica que viene de la ventana de Actividades
 
 def limpiar_Pantalla(framePrincipal, num_Ventana):
-    if(num_Ventana != 2):
-       framePrincipal.destroy()
-       
+    if (num_Ventana != 2):
+        framePrincipal.destroy()
+
     if num_Ventana == 0:
         ventana_Actividad(root)
     elif num_Ventana == 1:
@@ -34,28 +54,16 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
 
 
 def guardar_Proyecto(tabla, nombre, descrip, fechaI):
-    # global conexion
-    # global listaActividades
-    # global descripcion
     # Valida los datos antes de crear el Proyecto
-    if vp.validar_Proyecto(nombre, descrip, fechaI):
-        Pr = Pr.Proyecto(nombre, descrip, fechaI)
-        # Mejor si crear proyecto no retorna nada (Preguntar a Elias)
+    if verificarInput.validar_Proyecto(nombre, descrip, fechaI):
+        Pr = Proyecto(nombre, descrip, fechaI)
         # Crea el proyecto
         id = proyectManager.crearProyecto(Pr)
-        # Retorna todos los proyectos guardados
-
         # Elimina los datos de la tabla
         for item in tabla.get_children():
             tabla.delete(item)
         # Vuelve a cargar los datos en la tabla agregandole el nuevo proyecto creado
-        cargar_Tabla(tabla)
-
-        # abrir proyecto
-        # conexion = abrirProyecto(id)
-        # conexion = proyecto[0]
-        # descripcion = proyecto[1]
-        # listaActividades = proyecto[2]
+        cargar_Tabla_Proyecto(tabla)
 
 
 def guardar_Actividad(framePrincipal, nombre, duracion, dependencia, tabla):
@@ -111,9 +119,9 @@ class ventana_Proyecto(tk.Frame):
         super().__init__(root)  # indica la ventana contenedora del frame principal
         self.root = root
         self.root.title("PROYECTOS")
-        self.root.geometry("850x500")
         self.pack()
         self.__frame_Principal__()
+        centrar_Ventana(root, 0)
 
     def __frame_Principal__(self):
         frame1 = tk.Frame(self)
@@ -143,7 +151,7 @@ class ventana_Proyecto(tk.Frame):
 
         # Crea un espacio entre frame y frame2
         lbl_lista = tk.Label(frame1, text="\n\t\tLISTA DE PROYECTOS CREADOS", anchor=CENTER,
-                             font=("Times New Roman", 12)).grid(row=4, column=0)
+                             font=("Courier", 12)).grid(row=4, column=0)
 
         frame2 = tk.Frame(self)
         frame2.grid(row=2, column=0)
@@ -193,7 +201,7 @@ class ventana_Proyecto(tk.Frame):
 
         btn_elimi = tk.Button(frame3, text="Eliminar", command=lambda: eliminar_item(self.tabla)).grid(row=0, column=7)
 
-        cargar_Tabla(self.tabla)
+        cargar_Tabla_Proyecto(self.tabla)
 
         # Elimina el proyecto seleccionado de la tabla y de la base de datos
         def eliminar_item(tabla):
@@ -201,7 +209,7 @@ class ventana_Proyecto(tk.Frame):
                 x = tabla.selection()[0]
                 id = tabla.item(tabla.selection())['text']
                 tabla.delete(x)
-                eliminarProyecto(id)
+                proyectManager.eliminarProyecto(id)
             except IndexError:
                 messagebox.showwarning("Mensaje", "Seleccione un Proyecto para eliminar!")
 
@@ -211,7 +219,6 @@ class ventana_Actividad(tk.Frame):
         super().__init__(root)  # indica la ventana contenedora del frame principal
         self.root = root
         self.root.title("ACTIVIDADES")
-        self.root.geometry("1050x500")
         self.pack()  # ubica los elementos
         # Crea los frames a usar
         f1 = tk.Frame(self)
@@ -227,6 +234,7 @@ class ventana_Actividad(tk.Frame):
         self.__frame1__(f1)
         self.__frame2__(f2)
         self.__frame3__(f3)
+        centrar_Ventana(root, 1)
 
     def __frame1__(self, frame):
         # Etiquetas
@@ -241,21 +249,9 @@ class ventana_Actividad(tk.Frame):
         self.dependencias = tk.Entry(frame, width=20)
         self.dependencias.grid(row=0, column=3)
 
-        self.fechaInicio = tk.StringVar()
-        lbl_fechaInicio = tk.Label(frame, text="Fecha de Inicio:", font=("Times New Roman", 12)).grid(row=1, column=0,
-                                                                                                      sticky="w")
-        fechaI = DateEntry(frame, selectmode="day", textvariable=self.fechaInicio, width=17)
-        fechaI.grid(row=1, column=1)
-
-        self.fechaFinal = tk.StringVar()
-        lbl_fechaFinal = tk.Label(frame, text="Fecha de Final:", font=("Times New Roman", 12)).grid(row=1, column=2,
-                                                                                                    sticky="w")
-        fechaF = DateEntry(frame, selectmode="day", textvariable=self.fechaFinal, width=17)
-        fechaF.grid(row=1, column=3)
-
-        lbl_duracion = tk.Label(frame, text="Duración:", font=("Times New Roman", 12)).grid(row=1, column=4, sticky="w")
+        lbl_duracion = tk.Label(frame, text="Duración:", font=("Times New Roman", 12)).grid(row=0, column=4, sticky="w")
         self.duracion = tk.Entry(frame, width=20)
-        self.duracion.grid(row=1, column=5)
+        self.duracion.grid(row=0, column=5)
 
         # Crea un espacio entre frame1 y frame2
         separador = tk.Label(frame, text="").grid(row=2, column=0)
@@ -277,7 +273,7 @@ class ventana_Actividad(tk.Frame):
 
     def __frame2__(self, frame):
 
-        lbl_lista = tk.Label(frame, text="\nLISTA DE ACTIVIDADES DEL PROYECTO", font=("Times New Roman", 12)).grid(
+        lbl_lista = tk.Label(frame, text="\nLISTA DE ACTIVIDADES DEL PROYECTO", font=("Courier", 12)).grid(
             row=0,
             column=0)
         # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
@@ -307,8 +303,9 @@ class ventana_Actividad(tk.Frame):
         # self.colocarActividadesEnTabla(tabla)
         def editar_Actividad(event):
             id = self.tabla.item(self.tabla.selection())['text']
-            editar = Toplevel()
 
+            editar = Toplevel()
+            centrar_Ventana(editar, 3)
             lbl_nombre = tk.Label(editar, text="Nombre de la actividad:", font=("Times New Roman", 12)).grid(row=0,
                                                                                                              column=0,
 
@@ -363,7 +360,8 @@ class ventana_Actividad(tk.Frame):
 
         btn_salir = tk.Button(frame, text="Salir", command=quit).grid(row=0, column=6)
 
-        btn_gantt = tk.Button(frame, text="Diagram de Gantt").grid(row=0, column=2)
+        btn_gantt = tk.Button(frame, text="Diagram de Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
+                                                                                                              column=2)
 
         btn_Acti_critic = tk.Button(frame, text="Actividades Criticas").grid(row=0, column=4)
 
@@ -373,7 +371,6 @@ class ventana_Actividad(tk.Frame):
             global conexion
             x = tabla.selection()[0]
             id = tabla.item(tabla.selection())['text']
-            print("ID:", id)
             tabla.delete(x)
             actividadFunciones.eliminarActividad(conexion, id)
         except IndexError:
