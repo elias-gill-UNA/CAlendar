@@ -59,13 +59,13 @@ def eliminarActividad(conexion, actividadID):
 #  # Funciones de trasnformacion de dependencias #  # 
 def decifrarDependenciasDelInput(dependenciasString):
     arregloDependencias = dependenciasString.split(",")
-    return arregloDependencias;
+    return arregloDependencias
 
 def dependenciasAEnteros(arregloDependencias):
     arregloEnteros = []
     for dependencia in arregloDependencias:
         arregloEnteros.append(int(dependencia))
-    return arregloEnteros;
+    return arregloEnteros
 
 #Esta funcion se usar para el display de dependencias en el GUI
 def convertirArregloDependenciasAString(arregloDependencias):

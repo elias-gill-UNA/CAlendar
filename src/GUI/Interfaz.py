@@ -3,9 +3,12 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 
-import backend.comprobaciones.verificarEntradas as vp
-import backend.dataBase.proyectManager  as proyectManager
-from funcionesSobreObjetos.actividadFunciones import *
+import backend.comprobaciones.verificarEntradas as verificarInput
+import backend.dataBase.proyectManager as proyectManager
+import funcionesSobreObjetos.actividadFunciones as actividadFunciones
+import funcionesSobreObjetos.proyectoFunciones as funcProyectos
+from clases.actividades import Actividad
+from clases.proyecto import Proyecto
 from tkcalendar import *
 from diagrama_de_gantt import AbrirDiagrama
 
@@ -54,7 +57,22 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
         # listaActividades = proyecto[2]
 
 
-def cargar_Tabla(tabla):
+def guardar_Actividad(framePrincipal, nombre, duracion, dependencia, tabla):
+
+
+    if verificarInput.validar_Actividad(nombre, duracion):
+        actividad = Actividad(nombre, duracion, dependencia)
+        # Crea la actividad
+        AC = actividadFunciones.crearActividad(conexion, actividad.nombre, actividad.duracion, actividad.dependencias)
+        # Limpia la tabla
+        for item in tabla.get_children():
+            tabla.delete(item)
+        # Vuelve a cargar los datos en la tabla agregandole la actividad creada
+        cargar_Tabla_Actividad(tabla)
+
+
+# Carga los proyectos en la tabla
+def cargar_Tabla_Proyecto(tabla):
     proyectos = proyectManager.getProyectListsWithInfo()
     for i in proyectos:
         tabla.insert('', tk.END, text=i.identificador, values=(i.nombre, i.fechaInicio, i.descripcion))
@@ -62,44 +80,29 @@ def cargar_Tabla(tabla):
 
 # Carga las actividades en el proyecto
 def cargar_Tabla_Actividad(tabla):
-    if conexion!=None:
-        global idem
-        print("Cone:",conexion)
-        actividades=actividadFunciones.leerActividades(conexion)
-        for i in actividades:
-            tabla.insert('', tk.END, text=idem, values=(i.nombre, i.fechaInicio, i.descripcion))
+    global conexion
+    if conexion != None:
+        for i in listaActividades:
+            tabla.insert("", tk.END, text=i.identificador, values=(i.nombre, i.duracion, i.dependencias))
 
 
 # Cuando da click a el boton Abrir viene aca
-def seleccionar_id(tabla, framePrincipal):
-    global conexion
-    global listaActividades
-    global descripcion
-    id = tabla.item(tabla.selection())['text']
-    # abre el proyecto seleccionado o el recien creado?
-    # abrir el proyecto recien creado y dar valor a las globales
-    proyecto = funcProyectos.abrirProyecto(id)
-    conexion = proyecto[0]
-    descripcion = proyecto[1]
-    listaActividades = proyecto[2]
-    limpiar_Pantalla(framePrincipal, 0)
-
-
-def guardar_Actividad(framePrincipal,nombre, duracion, dependencia,tabla):
-    # Se crea la actividad
-    #global idem
-    #idem = -1
-    #idem = idem + 1
-
-    if verificarInput.validar_Actividad(nombre, duracion):
-        actividad = Actividad(nombre, duracion, dependencia)
-        # Crea la actividad
-        AC=actividadFunciones.crearActividad(conexion, actividad.nombre,actividad.duracion,actividad.dependencias)
-        # Limpia la tabla
-        for item in tabla.get_children():
-           tabla.delete(item)
-        # Vuelve a cargar los datos en la tabla agregandole la actividad creada
-        cargar_Tabla_Actividad(tabla)
+def seleccionar_Proyecto(tabla, framePrincipal):
+    try:
+        global conexion
+        global listaActividades
+        global objProyecto
+        id = tabla.item(tabla.selection())['text']
+        # Si este tira error es porque no selecciono nada
+        x = tabla.selection()[0]
+        # abrir el proyecto recien creado y dar valor a las globales
+        proyecto = funcProyectos.abrirProyecto(id)
+        conexion = proyecto[0]
+        objProyecto = proyecto[1]
+        listaActividades = proyecto[2]
+        limpiar_Pantalla(framePrincipal, 0)
+    except IndexError:
+        messagebox.showwarning("Advertencia", "Seleccione un Proyecto para abrir!")
 
 
 class ventana_Proyecto(tk.Frame):
@@ -139,8 +142,8 @@ class ventana_Proyecto(tk.Frame):
         descrip.grid(row=3, column=1)
 
         # Crea un espacio entre frame y frame2
-        espacio = tk.Label(frame1, text="\t\tLISTA DE PROYECTOS CREADOS", anchor=CENTER, font=("Times New Roman", 12))
-        espacio.grid(row=4, column=0)
+        lbl_lista = tk.Label(frame1, text="\n\t\tLISTA DE PROYECTOS CREADOS", anchor=CENTER,
+                             font=("Times New Roman", 12)).grid(row=4, column=0)
 
         frame2 = tk.Frame(self)
         frame2.grid(row=2, column=0)
@@ -184,9 +187,9 @@ class ventana_Proyecto(tk.Frame):
                                                                           fechaI.get_date())).grid(row=0, column=2,
                                                                                                    sticky="ns")
 
-        btn_abrir = tk.Button(frame3, text="Abrir", command=lambda: seleccionar_id(self.tabla, self)).grid(row=0,
-                                                                                                           column=4,
-                                                                                                           sticky="ns")
+        btn_abrir = tk.Button(frame3, text="Abrir", command=lambda: seleccionar_Proyecto(self.tabla, self)).grid(row=0,
+                                                                                                                 column=4,
+                                                                                                                 sticky="ns")
 
         btn_elimi = tk.Button(frame3, text="Eliminar", command=lambda: eliminar_item(self.tabla)).grid(row=0, column=7)
 
@@ -203,9 +206,6 @@ class ventana_Proyecto(tk.Frame):
                 messagebox.showwarning("Mensaje", "Seleccione un Proyecto para eliminar!")
 
 
-tabla = 0
-
-
 class ventana_Actividad(tk.Frame):
     def __init__(self, root):
         super().__init__(root)  # indica la ventana contenedora del frame principal
@@ -213,7 +213,6 @@ class ventana_Actividad(tk.Frame):
         self.root.title("ACTIVIDADES")
         self.root.geometry("1050x500")
         self.pack()  # ubica los elementos
-
         # Crea los frames a usar
         f1 = tk.Frame(self)
         f1.grid(row=1, column=0)
@@ -262,108 +261,79 @@ class ventana_Actividad(tk.Frame):
         # Crea espacios entre los botones
         tk.Label(frame, text="\t\t").grid(row=5, column=1)
         tk.Label(frame, text="\t\t").grid(row=5, column=3)
-        tk.Label(frame, text="\t\t").grid(row=5, column=5)
 
         # Botones
         btn_crear = tk.Button(frame, text="Crear Actividad",
                               command=lambda: guardar_Actividad(self, self.nombre.get(),
-                                                                self.duracion.get(), self.dependencias.get(),tabla)).grid(
+                                                                self.duracion.get(), self.dependencias.get(),
+                                                                self.tabla)).grid(
             row=5, column=0)
 
         btn_editar = tk.Button(frame, text="Editar Actividad").grid(row=5, column=2)
 
-        btn_eliminar = tk.Button(frame, text="Eliminar Actividad", command=lambda: self.eliminar(tabla)).grid(row=5,
-                                                                                                              column=4)
-
-        btn_mostrar = tk.Button(frame, text="Actualizar Tabla").grid(row=5, column=6)
+        btn_eliminar = tk.Button(frame, text="Eliminar Actividad",
+                                 command=lambda: self.eliminar_Actividad(self.tabla)).grid(row=5,
+                                                                                           column=4)
 
     def __frame2__(self, frame):
-        global tabla
-        separador = tk.Label(frame, text="LISTA DE ACTIVIDADES DEL PROYECTO", font=("Times New Roman", 12)).grid(row=0,
-                                                                                                                column=0)
+
+        lbl_lista = tk.Label(frame, text="\nLISTA DE ACTIVIDADES DEL PROYECTO", font=("Times New Roman", 12)).grid(
+            row=0,
+            column=0)
         # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
-        tabla = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2", "#3", "#4"))
-        tabla.place(x=90, y=180)
-        tabla.grid(row=1, column=0)
+        self.tabla = ttk.Treeview(frame, height=10, columns=("#0", "#1", "2"))
+        self.tabla.place(x=90, y=180)
+        self.tabla.grid(row=1, column=0)
 
         # Barra de desplazamiento
-        barraDesplazamiento = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=tabla.yview())
-        tabla.configure(yscrollcommand=barraDesplazamiento)
+        barraDesplazamiento = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=self.tabla.yview)
+        self.tabla.configure(yscrollcommand=barraDesplazamiento.set)
         barraDesplazamiento.grid(row=1, column=1, sticky="ns")
 
         # Tamaño de las columnas
-        tabla.column("#0", width=40, anchor=CENTER)
-        tabla.column("#1", width=200, anchor=CENTER)
-        tabla.column("#2", width=100, anchor=CENTER)
-        tabla.column("#3", width=200, anchor=CENTER)
-        tabla.column("#4", width=200, anchor=CENTER)
-        tabla.column("#5", width=200, anchor=CENTER)
+        self.tabla.column("#0", width=40, anchor=CENTER)
+        self.tabla.column("#1", width=200, anchor=CENTER)
+        self.tabla.column("#2", width=100, anchor=CENTER)
+        self.tabla.column("#3", width=200, anchor=CENTER)
 
         # Titulos
-        tabla.heading("#0", text="Id")
-        tabla.heading("#1", text="Titulo")
-        tabla.heading("#2", text="Duración")
-        tabla.heading("#3", text="Dependencias")
-        tabla.heading("#4", text="Fecha Inicio Temprano")
-        tabla.heading("#5", text="Fecha Inicio Tardio")
+        self.tabla.heading("#0", text="Id")
+        self.tabla.heading("#1", text="Nombre")
+        self.tabla.heading("#2", text="Duración")
+        self.tabla.heading("#3", text="Dependencia")
 
+        cargar_Tabla_Actividad(self.tabla)
         # self.colocarActividadesEnTabla(tabla)
 
     def __frame3__(self, frame):
         # Crea espacios entre los botones
         tk.Label(frame, text="\t").grid(row=0, column=1)
-        tk.Label(frame, text="\t\t").grid(row=0, column=5)
+        tk.Label(frame, text="\t").grid(row=0, column=3)
+        tk.Label(frame, text="\t").grid(row=0, column=5)
 
         # Botones
-        # Tiene que ir a la funcion informe que esta en comprobaciones
         btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command=lambda: limpiar_Pantalla(self, 1)).grid(row=0,
                                                                                                              column=0)
 
-        btn_gantt = tk.Button(frame, text="Abrir Diagrama Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
-                                                                                                             column=4)                                                                                          
-
         btn_salir = tk.Button(frame, text="Salir", command=quit).grid(row=0, column=6)
 
-    cargar_Tabla_Actividad(tabla)
-    # Muestra el informe seleccionado
-    def __informe__(self):
-        opcion = self.opcion.get()
-        # hay que enviar esta opcion a la funcion de validacion
-        if True:
-            if opcion == "Diagrama de Gantt":
-                # Mostrar diagrama
-                pass
-            elif opcion == "Mapa de Dependencias":
-                # Mostrar mapa
-                pass
-            else:
-                # Mostrar camino crítico
-                pass
+        btn_gantt = tk.Button(frame, text="Diagram de Gantt").grid(row=0, column=2)
 
-    def colocarActividadesEnTabla(self, tabla):
-        global listaActividades
-        # Llena la tabla de actividades
-        for actividad in listaActividades:  # ignorar error
-            # Converite sus dependencias en formato string para poder visualizar
-            stringDependencias = convertirArregloDependenciasAString(actividad.dependencias)
-            tabla.insert('', END,
-                         values=(actividad.identificador, actividad.nombre, actividad.duracion,
-                                 stringDependencias, actividad.fechaInicioTemprano,
-                                 actividad.fechaInicioTardio))
+        btn_Acti_critic = tk.Button(frame, text="Actividades Criticas").grid(row=0, column=4)
 
-    # Actualiza la tabla
-    def actualizar(self):
-        pass
+    # Elimina el proyecto seleccionado de la tabla y de la base de datos
+    def eliminar_Actividad(self, tabla):
+        try:
+            global conexion
+            x = tabla.selection()[0]
+            id = tabla.item(tabla.selection())['text']
+            print("ID:", id)
+            tabla.delete(x)
+            actividadFunciones.eliminarActividad(conexion, id)
+        except IndexError:
+            messagebox.showwarning("Advertencia", "Seleccione una Actividad para eliminar!")
 
-    # Elimina una actividad de la tabla
-    def eliminar(self, tabla):
-        curItem = tabla.focus()
-        actividadEliminada = tabla.item(curItem)['values']
-        print(actividadEliminada[0])
-        eliminarActividad(conexion, actividadEliminada[0])
-
-    # Editar alguna actividad
-    def editar(self):
+    def editar_Actividad(self, tabla):
         pass
 
 
