@@ -42,6 +42,7 @@ def centrar_Ventana(root, num_Ventana):
 # 1 indica que viene de la ventana de Actividades
 
 def limpiar_Pantalla(framePrincipal, num_Ventana):
+    global conexion
     if (num_Ventana != 2):
         framePrincipal.destroy()
 
