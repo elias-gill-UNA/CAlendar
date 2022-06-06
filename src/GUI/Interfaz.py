@@ -120,7 +120,14 @@ def seleccionar_Proyecto(tabla, framePrincipal):
 def mostrar_Actividades_Criticas(objcritico):
     ventana= tk.Toplevel()
     ventana.title("Actividades Criticas")
-    print(objcritico.cantidadCritico)
+    lbl_critico = tk.Label(ventana, text="Cantidad de Caminos Criticos").grid(row=0, column=0)
+    tk.Label(ventana, text=objcritico.cantidadCritico).grid(row=0, column=1)
+    lbl_critico = tk.Label(ventana, text="Lista de actividades del Camino Crítico").grid(row=1, column=0)
+    tk.Label(ventana, text=objcritico.actividadesCriticas).grid(row=1, column=1)
+    lbl_caminos= tk.Label(ventana, text="Caminos Críticos").grid(row=2, column=0)
+    tk.Label(ventana, text=objcritico.caminosCriticos).grid(row=2, column=1)
+    ventana.mainloop()
+
 
 
 
