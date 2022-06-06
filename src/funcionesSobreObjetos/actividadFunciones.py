@@ -16,8 +16,8 @@ def modificarActividad(conexion, id, nuevaActividad):
 
     lista = activitiesManager.getListaActividades(conexion)
     if deps:
-        for i in lista: # tirar error si una dependencia no existe
-            if not i in deps:
+        for i in deps: # tirar error si una dependencia no existe
+            if not i in lista:
                 raise ValueError("La activida de la que dependencia no existe. No puedes asignar estas dependencias")
 
     try: # comprueba si es posible crear la actividad
@@ -40,8 +40,8 @@ def crearActividad(conexion, nombre, duracion, dependenciasString):
 
     lista = activitiesManager.getListaActividades(conexion)
     if deps:
-        for i in lista: # tirar error si una dependencia no existe
-            if not i in deps:
+        for i in deps: # tirar error si una dependencia no existe
+            if not i in lista:
                 raise ValueError("La activida de la que depende no existe")
 
     try: # comprueba si es posible crear la actividad

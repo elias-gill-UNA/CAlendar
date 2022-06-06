@@ -13,7 +13,8 @@ from clases.proyecto import Proyecto
 from tkcalendar import *
 
 from diagrama_de_gantt import AbrirDiagrama
-
+from informes.camino_critico import funcionFinalYSuperpoderosa
+from clases.clases_cam_critico import ObjetoCritico
 conexion = None  # id del proyecto cuando se selecciona
 objProyecto = 0  # objeto proyecto cuando se selecciona
 listaActividades = 0  # lista de actividades del proyecto cuando se selecciona
@@ -115,6 +116,22 @@ def seleccionar_Proyecto(tabla, framePrincipal):
     except IndexError:
         messagebox.showwarning("Advertencia", "Seleccione un Proyecto para abrir!")
 
+
+def mostrar_Actividades_Criticas(objcritico):
+    ventana= tk.Toplevel()
+    ventana.title("Actividades Criticas")
+    print(objcritico.cantidadCritico)
+
+
+
+def iniciar_Camino_Critico():
+    global conexion
+    global objProyecto
+    listaautoref=activitiesManager.getListaActividadesAutoreferenciada(conexion)
+    listaFinal=[]
+    objcritico= ObjetoCritico()
+    funcionFinalYSuperpoderosa(conexion,listaautoref,listaFinal,objcritico,objProyecto)
+    mostrar_Actividades_Criticas(objcritico)
 
 class ventana_Proyecto(tk.Frame):
     # Crea la ventana principal
@@ -367,7 +384,8 @@ class ventana_Actividad(tk.Frame):
         btn_gantt = tk.Button(frame, text="Diagram de Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
                                                                                                               column=2)
 
-        btn_Acti_critic = tk.Button(frame, text="Actividades Criticas").grid(row=0, column=4)
+        btn_Acti_critic = tk.Button(frame, text="Actividades Criticas", command=iniciar_Camino_Critico).grid(row=0,
+                                                                                                             column=4)
 
     # Elimina el proyecto seleccionado de la tabla y de la base de datos
     def eliminar_Actividad(self, tabla):
