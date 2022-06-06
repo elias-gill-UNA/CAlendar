@@ -43,11 +43,11 @@ def modificarActividad(conexion, id, actividadModificada):
         raise ValueError("Activitie does not exist")
 
     # modificar la actividad
-    nuevasDeps = len(actividadModificada.dependencias.split())
+    contNUevasDeps = len(actividadModificada.dependencias.split())
     db.modificarActividad(conexion, id, actividadModificada) 
 
     #actualizar el contador de dependencias
-    contadorNuevo = dpesProy - len(actVieja.dependencias) + nuevasDeps
+    contadorNuevo = dpesProy - len(actVieja.dependencias) + contNUevasDeps
     actualizarContador(conexion, 'depCount', contadorNuevo)
     return True
     
@@ -77,7 +77,7 @@ def getListaActividades(conexion): # retorna las dependencias como string
 
 def depesEnteros(deps):
     aux = deps.split(',')
-    for i, valor in aux:
+    for i, valor in enumerate(aux):
         aux[i] = int(valor)
     return aux
 
@@ -87,14 +87,17 @@ def getListaActividadesAutoreferenciada(conexion):
 
     # trasnformar las dependencias a una lista de enteros
     for i in lista:
-        i.dependencias = depesEnteros(i.dependencias)
+        if i.dependencias != "": # si contiene dependencias
+            i.dependencias = depesEnteros(i.dependencias)
+        else:
+            i.dependencias = []
 
     # buscar entre las dependencias de cada actividad y reemplazar los id por las posiciones que ocupan en el array
     for actividad in lista: 
-        for i, dependencia in actividad.dependencias:
-            for index, aux in actividad:
+        for i, dependencia in enumerate(actividad.dependencias):
+            for index, aux in enumerate(lista):
                 if dependencia == aux.identificador:
-                    actividad.dependencia[i] = index # cambia por el indice en vez del id
+                    actividad.dependencias[i] = index # cambia por el indice en vez del id
         
     return lista
 

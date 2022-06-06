@@ -3,8 +3,8 @@
 
 def nuevaActividad(conexion, actividad):
     cursor = conexion.cursor()
-    cursor.execute("INSERT INTO Actividades (nombre, duracion, dependencias, finalizado) VALUES (?, ?, ?, ?)",
-              (actividad.nombre, actividad.duracion, actividad.dependencias, actividad.finalizado)) # insertar nueva actividad
+    cursor.execute("INSERT INTO Actividades (nombre, duracion, dependencias) VALUES (?, ?, ?)",
+              (actividad.nombre, actividad.duracion, actividad.dependencias)) # insertar nueva actividad
     conexion.commit() # guardar cambios
     cursor.close()
     return True
@@ -32,8 +32,8 @@ def getInfoActividad(conexion, id): # si la actividad no existe retorna un array
 
 def modificarActividad(conexion, id, actividad): # requiere conexion, nueva acti y id
     cursor = conexion.cursor()
-    cursor.execute(f"UPDATE Actividades SET nombre = ?, duracion = ?, dependencias = ?, finalizado = ? WHERE id={id}",
-              (f"{actividad.nombre}", actividad.duracion, f"{actividad.dependencias}", actividad.finalizado)) 
+    cursor.execute(f"UPDATE Actividades SET nombre = ?, duracion = ?, dependencias = ? WHERE id={id}",
+              (f"{actividad.nombre}", actividad.duracion, f"{actividad.dependencias}")) 
     conexion.commit() # guardar cambios
     cursor.close()
     return True

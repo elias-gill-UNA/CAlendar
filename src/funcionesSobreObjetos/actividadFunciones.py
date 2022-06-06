@@ -8,25 +8,59 @@ from backend.dataBase.dbFunctions import db_proyects
 def leerActividades(conexion):
     return activitiesManager.getListaActividades(conexion) # y si, esto nomas es :)
 
+def modificarActividad(conexion, id, nuevaActividad):
+    if nuevaActividad.dependencias != '':
+        deps = dependenciasAEnteros(decifrarDependenciasDelInput(nuevaActividad.dependencias))
+    else:
+        deps = []
+
+    # tirar error si una dependencia no existe
+    lista = activitiesManager.getListaActividades(conexion)
+    if deps:
+        for i in deps: 
+            error = True
+            for actv in lista:
+                if i == actv.identificador:
+                    error = False
+                    break
+            if error:
+                raise ValueError("La activida de la que depende no existe")
+
+    # peticion a la base de datos
+    try: 
+        activitiesManager.modificarActividad(conexion, id, nuevaActividad)
+        return nuevaActividad
+
+    except ValueError:
+        return ValueError
+    
+
+
 #Asegurarte de actualizar la tabla al crear una actividad nueva
 def crearActividad(conexion, nombre, duracion, dependenciasString):
     if dependenciasString != '':
         deps = dependenciasAEnteros(decifrarDependenciasDelInput(dependenciasString))
     else:
-        deps = False
+        deps = []
 
-    contadorDependencias = 0
-    nuevaActividad = Actividad(nombre, duracion, dependenciasString)
-
+    # tirar error si una dependencia no existe
     lista = activitiesManager.getListaActividades(conexion)
     if deps:
-        for i in lista: # tirar error si una dependencia no existe
-            if not i in deps:
+        for i in deps: 
+            error = True
+            for actv in lista:
+                if i == actv.identificador:
+                    error = False
+                    break
+            if error:
                 raise ValueError("La activida de la que depende no existe")
 
-    try: # comprueba si es posible crear la actividad
-        activitiesManager.anadirActividad(conexion, nuevaActividad, contadorDependencias)
+    # peticion a la base de datos
+    try: 
+        nuevaActividad = Actividad(nombre, duracion, dependenciasString)
+        activitiesManager.anadirActividad(conexion, nuevaActividad, len(deps))
         return nuevaActividad
+
     except ValueError:
         return ValueError
 
@@ -59,13 +93,13 @@ def eliminarActividad(conexion, actividadID):
 #  # Funciones de trasnformacion de dependencias #  # 
 def decifrarDependenciasDelInput(dependenciasString):
     arregloDependencias = dependenciasString.split(",")
-    return arregloDependencias;
+    return arregloDependencias
 
 def dependenciasAEnteros(arregloDependencias):
     arregloEnteros = []
     for dependencia in arregloDependencias:
         arregloEnteros.append(int(dependencia))
-    return arregloEnteros;
+    return arregloEnteros
 
 #Esta funcion se usar para el display de dependencias en el GUI
 def convertirArregloDependenciasAString(arregloDependencias):
