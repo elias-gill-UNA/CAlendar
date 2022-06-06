@@ -221,18 +221,16 @@ def resta(fecha, cantidad):
     contador = 1
     while(contador <= cantidad):
         # pasar las fechas a formate datetime
-        final = final.split("/")
+        final = final.split("-")
         if calendario.diaLaboral(feriados, int(final[0]), int(final[1]), int(final[2])):
             contador += 1
 
         fecha2 = timedelta(1) 
-        aux = date(int(final[2]), int(final[1]), int(final[0]))
+        aux = date(int(final[0]), int(final[1]), int(final[2]))
 
         # transformar el resultado
         resultado = aux - fecha2
         final = str(resultado)
-        final = final.split("-")
-        final= final[2] +"/"+ final[1] + "/" + final[0]
 
     return final
 
@@ -242,18 +240,16 @@ def suma(fecha, cantidad):
     contador = 1
     while(contador <= cantidad):
         # pasar las fechas a formate datetime
-        final = final.split("/")
+        final = final.split("-")
         if calendario.diaLaboral(feriados, int(final[0]), int(final[1]), int(final[2])):
             contador += 1
 
         fecha2 = timedelta(1) 
-        aux = date(int(final[2]), int(final[1]), int(final[0]))
+        aux = date(int(final[0]), int(final[1]), int(final[2]))
 
         # transformar el resultado
-        resultado = aux+fecha2
+        resultado = aux + fecha2
         final = str(resultado)
-        final = final.split("-")
-        final= final[2] +"/"+ final[1] + "/" + final[0]
         
     return final
 

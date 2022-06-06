@@ -19,7 +19,7 @@ def __fin_semana(año, mes, dia):
 
 # determina que dia cae una fecha especifica
 def zeller(ano,mes,dia): 
-    d = date(dia, mes, ano)
+    d = date(ano, mes, dia)
     a = d.weekday()
     if (a == 5 or a == 6):
         return False
