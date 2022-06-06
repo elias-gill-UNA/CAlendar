@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt # instalar : pip install matplotlib
 import numpy as np
 from informes.diagramaGantt import ConseguirDataParaGUI
+import tkinter as tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # Datos
 horizonte = 365  # Simula 1 año
@@ -11,9 +13,9 @@ meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
          "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
 # Crea el diagrama
-figura, eje = plt.subplots()  # Retorna una figura y un eje
 
-def CrearDiagrama():
+
+def CrearDiagrama(eje):
     # Etiquetas
     eje.set_title("Actividades del Proyecto")
     eje.set_yticks(np.arange(altura / 2, altura * ndatos - altura / 2 + altura, altura))
@@ -34,12 +36,13 @@ def CrearDiagrama():
     eje.set_yticks(range(altura, ndatos * altura, altura), minor=True)
     eje.grid(True, axis="y", which="minor")
 
-def agregar_actividad(inicio, duracion, color,numActividad):
+def agregar_actividad(inicio, duracion, color,numActividad, eje):
     eje.broken_barh([(inicio, duracion)], (altura * numActividad, altura), facecolors=(color))
 
-def AgregarActividades(conexion):
+def AgregarActividades(conexion, eje):
     global ndatos
-
+    global actividades
+    actividades = []
     arregloGUI = ConseguirDataParaGUI(conexion)
 
     ndatos = len(arregloGUI)
@@ -47,15 +50,19 @@ def AgregarActividades(conexion):
     arregloGUI.reverse()
 
     for i in range(0, len(arregloGUI)):
+        
         tareaGUI = arregloGUI[i]
         actividades.append(tareaGUI.nombre)
         # "len(arregloGUI) - tareaGUI.numActividad - 1" Invierte la tabla del lado correcto
-        agregar_actividad(tareaGUI.indiceInicio, tareaGUI.duracion, tareaGUI.color, len(arregloGUI) - tareaGUI.numActividad - 1)
+        agregar_actividad(tareaGUI.indiceInicio, tareaGUI.duracion, tareaGUI.color, len(arregloGUI) - tareaGUI.numActividad - 1, eje)
 
 
 # duaracion: cuantos dias se establecio para esa actividad
 #Ej: agregar_actividad(20, 120, "blue",2)
+
 def AbrirDiagrama(conexion):
-    AgregarActividades(conexion)
-    CrearDiagrama()
-    plt.show()  # Muestra la figura
+    figura, eje = plt.subplots()  # Retorna una figura y un eje\
+
+    AgregarActividades(conexion, eje)
+    CrearDiagrama(eje)
+    plt.show()

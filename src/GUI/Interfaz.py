@@ -18,7 +18,7 @@ from diagrama_de_gantt import AbrirDiagrama
 
 conexion = None  # id del proyecto cuando se selecciona
 objProyecto = 0  # objeto proyecto cuando se selecciona
-listaActividades = 0  # lista de actividades del proyecto cuando se selecciona
+listActividades = 0  # lista de actividades del proyecto cuando se selecciona
 
 
 def centrar_Ventana(root, num_Ventana):
@@ -29,15 +29,16 @@ def centrar_Ventana(root, num_Ventana):
     elif num_Ventana == 1:
         ancho_ventana = 1050
         alto_ventana = 500
-    elif num_Ventana== 2:
+    elif num_Ventana == 2:
         ancho_ventana = 400
         alto_ventana = 150
-    elif num_Ventana ==3:
-        ancho_ventana = 1000
+    elif num_Ventana == 3:
+        ancho_ventana = 1200
         alto_ventana = 400
     x_ventana = root.winfo_screenwidth() // 2 - ancho_ventana // 2
     y_ventana = root.winfo_screenheight() // 2 - alto_ventana // 2
-    posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
+    posicion = str(ancho_ventana) + "x" + str(alto_ventana) + \
+        "+" + str(x_ventana) + "+" + str(y_ventana)
     root.geometry(posicion)
     # La ventana no puede cambiar de tamaño
     root.resizable(False, False)
@@ -79,7 +80,8 @@ def guardar_Actividad(nombre, duracion, dependencia, tabla):
         if verificarInput.validar_Actividad(nombre, duracion):
             actividad = Actividad(nombre, duracion, dependencia)
             # Crea la actividad
-            AC = actividadFunciones.crearActividad(conexion, actividad.nombre, actividad.duracion, actividad.dependencias)
+            AC = actividadFunciones.crearActividad(
+                conexion, actividad.nombre, actividad.duracion, actividad.dependencias)
             # Limpia la tabla
             for item in tabla.get_children():
                 tabla.delete(item)
@@ -93,7 +95,8 @@ def guardar_Actividad(nombre, duracion, dependencia, tabla):
 def cargar_Tabla_Proyecto(tabla):
     proyectos = proyectManager.getProyectListsWithInfo()
     for i in proyectos:
-        tabla.insert('', tk.END, text=i.identificador, values=(i.nombre, i.fechaInicio, i.descripcion))
+        tabla.insert('', tk.END, text=i.identificador, values=(
+            i.nombre, i.fechaInicio, i.descripcion))
 
 
 # Carga las actividades en el proyecto
@@ -107,16 +110,15 @@ def cargar_Tabla_Actividad(tabla):
     if conexion != None:
         actividades = actividadFunciones.leerActividades(conexion)
         for i in actividades:
-            tabla.insert("", tk.END, text=i.identificador, values=(i.nombre, i.duracion, i.dependencias))
-
-
+            tabla.insert("", tk.END, text=i.identificador,
+                         values=(i.nombre, i.duracion, i.dependencias))
 
 
 # Cuando da click a el boton Abrir viene aca
 def seleccionar_Proyecto(tabla, framePrincipal):
     try:
         global conexion
-        global listaActividades
+        global listActividades
         global objProyecto
         id = tabla.item(tabla.selection())['text']
         # Si este tira error es porque no selecciono nada
@@ -125,21 +127,24 @@ def seleccionar_Proyecto(tabla, framePrincipal):
         proyecto = funcProyectos.abrirProyecto(id)
         conexion = proyecto[0]
         objProyecto = proyecto[1]
-        listaActividades = proyecto[2]
+        listActividades = proyecto[2]
         limpiar_Pantalla(framePrincipal, 0)
     except IndexError:
-        messagebox.showwarning("Advertencia", "Seleccione un Proyecto para abrir!")
+        messagebox.showwarning(
+            "Advertencia", "Seleccione un Proyecto para abrir!")
 
 
 def mostrar_Actividades_Criticas(objcritico):
-    ventana = tk.Toplevel()
-    ventana.title("Actividades Criticas")
-    centrar_Ventana(ventana,3)
-    lbl_critico = tk.Label(ventana, text="Cantidad de Caminos Criticos").grid(row=0, column=0)
-    tk.Label(ventana,text=objcritico.cantidadCritico).grid(row=0,column=1)
-    frame=tk.Frame(ventana)
-    frame.grid(row=1,column=0)
-    lbl_critico = tk.Label(frame, text="Lista de actividades del Camino Crítico").grid(row=0, column=0)
+    ventana = tk.Toplevel(root)
+    ventana.title("Actividades Críticas")
+    centrar_Ventana(ventana, 3)
+    frame = tk.Frame(ventana)
+    lbl_critico = tk.Label(
+        ventana, text="Cantidad de Caminos Críticos:"+" "+str(objcritico.cantidadCritico),font=("Courier", 14)).grid(row=0, column=0)
+    
+    frame.grid(row=1, column=0)
+    lbl_critico = tk.Label(
+        frame, text="Lista de actividades del Camino Crítico").grid(row=0, column=0)
 
     # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
     tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2"))
@@ -147,7 +152,8 @@ def mostrar_Actividades_Criticas(objcritico):
     tabla1.grid(row=1, column=0)
 
     # Barra de desplazamiento
-    barraDesplazamiento = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=tabla1.yview)
+    barraDesplazamiento = ttk.Scrollbar(
+        frame, orient=tk.VERTICAL, command=tabla1.yview)
     tabla1.configure(yscrollcommand=barraDesplazamiento.set)
     barraDesplazamiento.grid(row=1, column=1, sticky="ns")
 
@@ -166,19 +172,48 @@ def mostrar_Actividades_Criticas(objcritico):
     for item in tabla1.get_children():
         tabla1.delete(item)
     for i in objcritico.actividadesCriticas:
-        if i.nombre!="Fin" and i.nombre!="Inicio":
-            tabla1.insert("", tk.END,text=i.identificador,values=(i.nombre,i.fechaInicioTemprano, i.fechaFinTemprano))
+        if i.nombre != "Fin" and i.nombre != "Inicio":
+            tabla1.insert("", tk.END, text=i.identificador, values=(
+                i.nombre, i.fechaInicioTemprano, i.fechaFinTemprano))
+    
+    lbl_critico = tk.Label(
+        frame, text="Caminos Críticos").grid(row=0, column=2)
+    
+    tabla2 = ttk.Treeview(frame, height=10, columns=())
 
+    tabla2.place(x=90, y=180)
+    tabla2.grid(row=1, column=2)
+
+    # Barra de desplazamiento
+    barraDesplazamiento = ttk.Scrollbar(
+        frame, orient=tk.VERTICAL, command=tabla2.yview)
+    tabla2.configure(yscrollcommand=barraDesplazamiento.set)
+    barraDesplazamiento.grid(row=1, column=3, sticky="ns")
+
+    # Tamaño de las columnas
+    tabla2.column("#0", width=150, anchor=CENTER)
+
+    # Titulos
+    tabla2.heading("#0", text="Caminos")
+
+    for camino in objcritico.caminosCriticos:
+        for actividad in camino:
+            if actividad.identificador == 0:
+                tabla2.insert("", tk.END, text="----")
+            else:
+                tabla2.insert("", tk.END, text=actividad.nombre)
     ventana.mainloop()
 
 
 def iniciar_Camino_Critico():
     global conexion
     global objProyecto
-    listaautoref = activitiesManager.getListaActividadesAutoreferenciada(conexion)
+    listaautoref = activitiesManager.getListaActividadesAutoreferenciada(
+        conexion)
     listaFinal = []
     objcritico = ObjetoCritico()
-    funcionFinalYSuperpoderosa(conexion, listaautoref, listaFinal, objcritico, objProyecto)
+    funcionFinalYSuperpoderosa(
+        conexion, listaautoref, listaFinal, objcritico, objProyecto)
     mostrar_Actividades_Criticas(objcritico)
 
 
@@ -201,15 +236,15 @@ class ventana_Proyecto(tk.Frame):
 
         lbl_nombre = tk.Label(frame1, text="Nombre del Proyecto:", font=("Times New Roman", 12)).grid(row=1, column=0,
                                                                                                       sticky="w")
-        contenedor_name = StringVar()
-        nombre = tk.Entry(frame1, width=20, textvariable=contenedor_name)
+        nombre = tk.Entry(frame1, width=20)
         nombre.grid(row=1, column=1)
 
         fechaInicio = tk.StringVar()
         lbl_fechaInicio = tk.Label(frame1, text="Fecha de Inicio dd/mm/aa:", font=("Times New Roman", 12)).grid(row=2,
                                                                                                                 column=0,
                                                                                                                 sticky="w")
-        fechaI = DateEntry(frame1, selectmode="day", textvariable=fechaInicio, width=17)
+        fechaI = DateEntry(frame1, selectmode="day",
+                           textvariable=fechaInicio, width=17)
         fechaI.grid(row=2, column=1)
 
         lbl_descripcion = tk.Label(frame1, text="Descripción:", font=("Times New Roman", 12)).grid(row=3, column=0,
@@ -226,12 +261,14 @@ class ventana_Proyecto(tk.Frame):
         frame2.grid(row=2, column=0)
 
         # Crea la tabla donde se vera la lista de Proyectos
-        self.tabla = ttk.Treeview(frame2, height=10, columns=("#0", "#1", "#2"))
+        self.tabla = ttk.Treeview(
+            frame2, height=10, columns=("#0", "#1", "#2"))
         self.tabla.place(x=90, y=180)
         self.tabla.grid(row=0, column=0)
 
         # Barra de desplazamiento
-        barraDesplazamiento = ttk.Scrollbar(frame2, orient=tk.VERTICAL, command=self.tabla.yview)
+        barraDesplazamiento = ttk.Scrollbar(
+            frame2, orient=tk.VERTICAL, command=self.tabla.yview)
         self.tabla.configure(yscrollcommand=barraDesplazamiento.set)
         barraDesplazamiento.grid(row=0, column=2, sticky="nsew")
 
@@ -256,11 +293,13 @@ class ventana_Proyecto(tk.Frame):
         tk.Label(frame3, text="\t\t").grid(row=0, column=5)
 
         # Botones
-        btn_salir = tk.Button(frame3, text="Salir", command=quit).grid(row=0, column=0)
+        btn_salir = tk.Button(frame3, text="Salir",
+                              command=quit).grid(row=0, column=0)
 
         btn_guardar_proyecto = tk.Button(frame3, text="Guardar proyecto",
                                          command=lambda: guardar_Proyecto(self.tabla, nombre.get(),
-                                                                          descrip.get(1.0, "end"),
+                                                                          descrip.get(
+                                                                              1.0, "end"),
                                                                           fechaI.get_date())).grid(row=0, column=2,
                                                                                                    sticky="ns")
 
@@ -268,7 +307,8 @@ class ventana_Proyecto(tk.Frame):
                                                                                                                  column=4,
                                                                                                                  sticky="ns")
 
-        btn_elimi = tk.Button(frame3, text="Eliminar", command=lambda: eliminar_item(self.tabla)).grid(row=0, column=7)
+        btn_elimi = tk.Button(frame3, text="Eliminar", command=lambda: eliminar_item(
+            self.tabla)).grid(row=0, column=7)
 
         cargar_Tabla_Proyecto(self.tabla)
 
@@ -280,7 +320,8 @@ class ventana_Proyecto(tk.Frame):
                 tabla.delete(x)
                 proyectManager.eliminarProyecto(id)
             except IndexError:
-                messagebox.showwarning("Mensaje", "Seleccione un Proyecto para eliminar!")
+                messagebox.showwarning(
+                    "Mensaje", "Seleccione un Proyecto para eliminar!")
 
 
 class ventana_Actividad(tk.Frame):
@@ -298,7 +339,8 @@ class ventana_Actividad(tk.Frame):
         f3.grid(row=3, column=0)
 
         # Titulo de la ventana
-        lbl_titulo = tk.Label(self, text="CREAR O EDITAR ACTIVIDADES", font=("Courier", 20)).grid(row=0, column=0)
+        lbl_titulo = tk.Label(self, text="CREAR O EDITAR ACTIVIDADES", font=(
+            "Courier", 20)).grid(row=0, column=0)
 
         self.__frame1__(f1)
         self.__frame2__(f2)
@@ -313,12 +355,13 @@ class ventana_Actividad(tk.Frame):
         self.nombre = tk.Entry(frame, width=20)
         self.nombre.grid(row=0, column=1)
 
-        lbl_dependencias = tk.Label(frame, text="Dependencias:", font=("Times New Roman", 12)).grid(row=0, column=2,
+        lbl_dependencias = tk.Label(frame, text="Dependencias: id,id,...", font=("Times New Roman", 12)).grid(row=0, column=2,
                                                                                                     sticky="w")
         self.dependencias = tk.Entry(frame, width=20)
         self.dependencias.grid(row=0, column=3)
 
-        lbl_duracion = tk.Label(frame, text="Duración:", font=("Times New Roman", 12)).grid(row=0, column=4, sticky="w")
+        lbl_duracion = tk.Label(frame, text="Duración:", font=(
+            "Times New Roman", 12)).grid(row=0, column=4, sticky="w")
         self.duracion = tk.Entry(frame, width=20)
         self.duracion.grid(row=0, column=5)
 
@@ -350,7 +393,8 @@ class ventana_Actividad(tk.Frame):
         self.tabla.grid(row=1, column=0)
 
         # Barra de desplazamiento
-        barraDesplazamiento = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=self.tabla.yview)
+        barraDesplazamiento = ttk.Scrollbar(
+            frame, orient=tk.VERTICAL, command=self.tabla.yview)
         self.tabla.configure(yscrollcommand=barraDesplazamiento.set)
         barraDesplazamiento.grid(row=1, column=1, sticky="ns")
 
@@ -374,7 +418,7 @@ class ventana_Actividad(tk.Frame):
 
             editar = Toplevel()
             editar.title("Editar Actividad")
-            centrar_Ventana(editar, 3)
+            centrar_Ventana(editar, 2)
             lbl_nombre = tk.Label(editar, text="Nombre de la actividad:", font=("Times New Roman", 12)).grid(row=0,
                                                                                                              column=0,
 
@@ -393,7 +437,8 @@ class ventana_Actividad(tk.Frame):
             duracion = tk.Entry(editar, width=20)
             duracion.grid(row=2, column=1)
 
-            btn_cancelar = tk.Button(editar, text="Cancelar", command=editar.destroy).grid(row=3, column=0)
+            btn_cancelar = tk.Button(
+                editar, text="Cancelar", command=editar.destroy).grid(row=3, column=0)
             btn_guardar = tk.Button(editar, text="Guadar Cambios", command=lambda: guardar_Cambios(nombre.get(),
                                                                                                    duracion.get(),
                                                                                                    dependencias.get(),
@@ -408,7 +453,8 @@ class ventana_Actividad(tk.Frame):
                 global conexion
                 if verificarInput.validar_Actividad(nombre, duracion):
                     actividad = Actividad(nombre, duracion, dependencia)
-                    actividadFunciones.modificarActividad(conexion, id, actividad)
+                    actividadFunciones.modificarActividad(
+                        conexion, id, actividad)
                     # Limpia la tabla
                     for item in tabla.get_children():
                         tabla.delete(item)
@@ -430,13 +476,14 @@ class ventana_Actividad(tk.Frame):
         btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command=lambda: limpiar_Pantalla(self, 1)).grid(row=0,
                                                                                                              column=0)
 
-        btn_salir = tk.Button(frame, text="Salir", command=quit).grid(row=0, column=6)
+        btn_salir = tk.Button(frame, text="Salir",
+                              command=quit).grid(row=0, column=6)
 
         btn_gantt = tk.Button(frame, text="Diagram de Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
                                                                                                               column=2)
 
-        btn_Acti_critic = tk.Button(frame, text="Actividades Criticas", command= lambda: limpiar_Pantalla(self, 3)).grid(row=0,
-                                                                                                             column=4)
+        btn_Acti_critic = tk.Button(frame, text="Actividades Críticas", command=lambda: limpiar_Pantalla(self, 3)).grid(row=0,
+                                                                                                                        column=4)
 
     # Elimina el proyecto seleccionado de la tabla y de la base de datos
     def eliminar_Actividad(self, tabla):
@@ -448,7 +495,8 @@ class ventana_Actividad(tk.Frame):
             actividadFunciones.eliminarActividad(conexion, id)
             cargar_Tabla_Actividad(self.tabla)
         except IndexError:
-            messagebox.showwarning("Advertencia", "Seleccione una Actividad para eliminar!")
+            messagebox.showwarning(
+                "Advertencia", "Seleccione una Actividad para eliminar!")
 
 
 root = tk.Tk()

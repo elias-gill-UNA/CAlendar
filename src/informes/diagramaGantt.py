@@ -30,6 +30,12 @@ def prepararGantt(listaActividades, duracionProyectoSinFeriados):
     global filas
     global columnas
 
+    dependencias=[]
+    nombres=[]
+    duracion=[]
+    columnas=0
+    filas = 0
+
     contador=0
     for actividad in listaActividades:
         nombres.append(actividad.nombre)
@@ -80,6 +86,8 @@ def DiagramaGantt(nombres, dependencias, duracion, matriz, columnas):
 
 def ConseguirDataParaGUI(conexion):
     #Lista de actividades y duracion sin contar feriados
+    global listaActividades
+    listaActividades=[]
     listaActividades = actiManager.getListaActividadesAutoreferenciada(conexion)
     listaVacia = []
     objetoCritico = ObjetoCritico()
@@ -107,6 +115,7 @@ def ConseguirDataParaGUI(conexion):
 
         for actividad in objetoCritico.actividadesCriticas:        
             if(listaActividades[i].identificador == actividad.identificador):
+                print(listaActividades[i].identificador)
                 color = 1
                 break
 
