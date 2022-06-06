@@ -1,6 +1,8 @@
+from backend.dataBase import proyectManager
 from clases.actividades import *;
 import backend.dataBase.activitiesManager as actiManager
-#import camino_critico 
+from clases.clases_cam_critico import ObjetoCritico
+import informes.camino_critico as camCritico 
 
 dependencias=[]
 nombres=[]
@@ -9,22 +11,6 @@ columnas=37 # en columnas va la duracion del proyecto
 colores = ["blue","red"]
 filas = 0
 matriz=[]
-
-##################Fake Data
-listaGeneral=[]
-names=["A","B","C","D","E","F","G","H"]
-duraciones=[4,10,5,15,12,4,8,7]
-for i in range(len(names)):
-    actividad=Actividad(names[i],duraciones[i],[])
-    listaGeneral.append(actividad)
-    
-listaGeneral[2].dependencias=[0]#c
-listaGeneral[3].dependencias=[1,2]#d
-listaGeneral[4].dependencias=[1]#e
-listaGeneral[5].dependencias=[3]#f
-listaGeneral[6].dependencias=[4]#h
-listaGeneral[7].dependencias=[5,6]#i
-#######################################
 
 class TareaEnFormatoGUI:
     def __init__(self, indiceInicio, duracion, color, arregloNro, nombre):
@@ -110,12 +96,13 @@ def DiagramaGantt(nombres, dependencias, duracion, matriz, columnas):
 
 def ConseguirDataParaGUI(conexion):
     #Lista de actividades y duracion sin contar feriados
-    lista = actiManager.getListaActividadesAutoreferenciada(conexion)
-    aux = lista
-   # camino_critico.
-   # camino_critico.cantidadCaminosCriticos
+    listaActividades = actiManager.getListaActividadesAutoreferenciada(conexion)
+    listaVacia = []
+    objetoCritico = ObjetoCritico()
+    proyecto = proyectManager.getProyectInfo(None, conexion)
+    camCritico.funcionFinalYSuperpoderosa(conexion, listaActividades, listaVacia,objetoCritico, proyecto)
 
-    prepararGantt(lista, 37)
+    prepararGantt(listaActividades, proyecto.finTemprano)
     DiagramaGantt(nombres,dependencias,duracion,matriz,columnas)
 
     arregloTareasGUI = []
