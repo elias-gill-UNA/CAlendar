@@ -9,12 +9,13 @@ import backend.dataBase.proyectManager as proyectManager
 import funcionesSobreObjetos.actividadFunciones as actividadFunciones
 import funcionesSobreObjetos.proyectoFunciones as funcProyectos
 from clases.actividades import Actividad
+from clases.clases_cam_critico import ObjetoCritico
 from clases.proyecto import Proyecto
+from informes.camino_critico import funcionFinalYSuperpoderosa
 from tkcalendar import *
 
 from diagrama_de_gantt import AbrirDiagrama
-from informes.camino_critico import funcionFinalYSuperpoderosa
-from clases.clases_cam_critico import ObjetoCritico
+
 conexion = None  # id del proyecto cuando se selecciona
 objProyecto = 0  # objeto proyecto cuando se selecciona
 listaActividades = 0  # lista de actividades del proyecto cuando se selecciona
@@ -68,7 +69,7 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
         cargar_Tabla_Proyecto(tabla)
 
 
-def guardar_Actividad(framePrincipal, nombre, duracion, dependencia, tabla):
+def guardar_Actividad(nombre, duracion, dependencia, tabla):
     if verificarInput.validar_Actividad(nombre, duracion):
         actividad = Actividad(nombre, duracion, dependencia)
         # Crea la actividad
@@ -118,27 +119,26 @@ def seleccionar_Proyecto(tabla, framePrincipal):
 
 
 def mostrar_Actividades_Criticas(objcritico):
-    ventana= tk.Toplevel()
+    ventana = tk.Toplevel()
     ventana.title("Actividades Criticas")
     lbl_critico = tk.Label(ventana, text="Cantidad de Caminos Criticos").grid(row=0, column=0)
     tk.Label(ventana, text=objcritico.cantidadCritico).grid(row=0, column=1)
     lbl_critico = tk.Label(ventana, text="Lista de actividades del Camino Crítico").grid(row=1, column=0)
     tk.Label(ventana, text=objcritico.actividadesCriticas).grid(row=1, column=1)
-    lbl_caminos= tk.Label(ventana, text="Caminos Críticos").grid(row=2, column=0)
+    lbl_caminos = tk.Label(ventana, text="Caminos Críticos").grid(row=2, column=0)
     tk.Label(ventana, text=objcritico.caminosCriticos).grid(row=2, column=1)
     ventana.mainloop()
-
-
 
 
 def iniciar_Camino_Critico():
     global conexion
     global objProyecto
-    listaautoref=activitiesManager.getListaActividadesAutoreferenciada(conexion)
-    listaFinal=[]
-    objcritico= ObjetoCritico()
-    funcionFinalYSuperpoderosa(conexion,listaautoref,listaFinal,objcritico,objProyecto)
+    listaautoref = activitiesManager.getListaActividadesAutoreferenciada(conexion)
+    listaFinal = []
+    objcritico = ObjetoCritico()
+    funcionFinalYSuperpoderosa(conexion, listaautoref, listaFinal, objcritico, objProyecto)
     mostrar_Actividades_Criticas(objcritico)
+
 
 class ventana_Proyecto(tk.Frame):
     # Crea la ventana principal
@@ -289,10 +289,9 @@ class ventana_Actividad(tk.Frame):
 
         # Botones
         btn_crear = tk.Button(frame, text="Crear Actividad",
-                              command=lambda: guardar_Actividad(self, self.nombre.get(),
+                              command=lambda: guardar_Actividad(self.nombre.get(),
                                                                 self.duracion.get(), self.dependencias.get(),
-                                                                self.tabla)).grid(
-            row=5, column=0)
+                                                                self.tabla)).grid(row=5, column=0)
 
         btn_eliminar = tk.Button(frame, text="Eliminar Actividad",
                                  command=lambda: self.eliminar_Actividad(self.tabla)).grid(row=5,
@@ -301,8 +300,7 @@ class ventana_Actividad(tk.Frame):
     def __frame2__(self, frame):
 
         lbl_lista = tk.Label(frame, text="\nLISTA DE ACTIVIDADES DEL PROYECTO", font=("Courier", 12)).grid(
-            row=0,
-            column=0)
+            row=0, column=0)
         # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
         self.tabla = ttk.Treeview(frame, height=10, columns=("#0", "#1", "2"))
         self.tabla.place(x=90, y=180)
