@@ -25,6 +25,9 @@ backend/dataBase/dbFunctions/__init__.py
 backend/dataBase/dbFunctions/db_activities.py
 backend/dataBase/dbFunctions/db_feriados.py
 backend/dataBase/dbFunctions/db_proyects.py
+backend/dataBase/tests/test_acts.py
+backend/dataBase/tests/test_compl.py
+backend/dataBase/tests/test_proy.py
 clases/__init__.py
 clases/actividades.py
 clases/clases_cam_critico.py

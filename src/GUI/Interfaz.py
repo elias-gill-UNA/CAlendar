@@ -7,6 +7,7 @@ import backend.comprobaciones.verificarEntradas as vp
 from backend.dataBase.proyectManager import *
 from funcionesSobreObjetos.actividadFunciones import *
 from tkcalendar import *
+from diagrama_de_gantt import AbrirDiagrama
 
 conexion = 0  # id del proyecto cuando se selecciona
 descripcion = 0  # descripcion del proyecto cuando se selecciona
@@ -17,11 +18,15 @@ listaActividades = 0  # lista de actividades del proyecto cuando se selecciona
 # 1 indica que viene de la ventana de Actividades
 
 def limpiar_Pantalla(framePrincipal, num_Ventana):
-    framePrincipal.destroy()
+    if(num_Ventana != 2):
+       framePrincipal.destroy()
+       
     if num_Ventana == 0:
         ventana_Actividad(root)
-    else:
+    elif num_Ventana == 1:
         ventana_Proyecto(root)
+    elif num_Ventana == 2:
+        AbrirDiagrama(conexion)
 
 
 def guardar_Proyecto(tabla, nombre, descrip, fechaI):
@@ -289,15 +294,6 @@ class ventana_Actividad(tk.Frame):
         # self.colocarActividadesEnTabla(tabla)
 
     def __frame3__(self, frame):
-        # Lista de opciones
-        self.opcion = tk.StringVar()
-        combo = ttk.Combobox(frame, values=["Diagrama de Gantt", "Mapa de Dependencias"], textvariable=self.opcion)
-        combo.place(x=50, y=50)
-        combo.grid(row=0, column=3)
-
-        # Etiquetas
-        lbl_opciones = tk.Label(frame, text="Opciones:").grid(row=0, column=2)
-
         # Crea espacios entre los botones
         tk.Label(frame, text="\t").grid(row=0, column=1)
         tk.Label(frame, text="\t\t").grid(row=0, column=5)
@@ -307,24 +303,10 @@ class ventana_Actividad(tk.Frame):
         btn_newPro = tk.Button(frame, text="Nuevo Proyecto", command=lambda: limpiar_Pantalla(self, 1)).grid(row=0,
                                                                                                              column=0)
 
-        btn_informe = tk.Button(frame, text="Informe", command=self.__informe__).grid(row=0, column=4)
+        btn_gantt = tk.Button(frame, text="Abrir Diagrama Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
+                                                                                                             column=4)                                                                                          
 
         btn_salir = tk.Button(frame, text="Salir", command=quit).grid(row=0, column=6)
-
-    # Muestra el informe seleccionado
-    def __informe__(self):
-        opcion = self.opcion.get()
-        # hay que enviar esta opcion a la funcion de validacion
-        if True:
-            if opcion == "Diagrama de Gantt":
-                # Mostrar diagrama
-                pass
-            elif opcion == "Mapa de Dependencias":
-                # Mostrar mapa
-                pass
-            else:
-                # Mostrar camino crítico
-                pass
 
     def colocarActividadesEnTabla(self, tabla):
         global listaActividades

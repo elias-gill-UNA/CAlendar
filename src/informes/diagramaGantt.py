@@ -1,12 +1,12 @@
 from clases.actividades import *;
 import backend.dataBase.activitiesManager as actiManager
-import camino_critico 
+#import camino_critico 
 
 dependencias=[]
 nombres=[]
 duracion=[]
 columnas=37 # en columnas va la duracion del proyecto
-colores = ["red","green","yellow","pink","purple","orange","black","blue","orange"]
+colores = ["blue","red"]
 filas = 0
 matriz=[]
 
@@ -89,7 +89,6 @@ def calcularPosi(matriz, dependencias, nombres, columnas):
 
     return definitivo
 
-
 def DiagramaGantt(nombres, dependencias, duracion, matriz, columnas):
     # creacion de matriz
     for i in range(filas):
@@ -114,7 +113,7 @@ def ConseguirDataParaGUI(conexion):
     lista = actiManager.getListaActividadesAutoreferenciada(conexion)
     aux = lista
    # camino_critico.
-    camino_critico.cantidadCaminosCriticos
+   # camino_critico.cantidadCaminosCriticos
 
     prepararGantt(lista, 37)
     DiagramaGantt(nombres,dependencias,duracion,matriz,columnas)
@@ -134,7 +133,7 @@ def ConseguirDataParaGUI(conexion):
                 break
             tareaEmpiezaIndice += 1
 
-        tareaGUI = TareaEnFormatoGUI(tareaEmpiezaIndice, duracion[i], colores[i], i, nombres[i])
+        tareaGUI = TareaEnFormatoGUI(tareaEmpiezaIndice, duracion[i], colores[0], i, nombres[i])
         arregloTareasGUI.append(tareaGUI)
 
     return arregloTareasGUI
