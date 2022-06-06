@@ -77,7 +77,7 @@ def getListaActividades(conexion): # retorna las dependencias como string
 
 def depesEnteros(deps):
     aux = deps.split(',')
-    for i, valor in aux:
+    for i, valor in enumerate(aux):
         aux[i] = int(valor)
     return aux
 
@@ -94,10 +94,10 @@ def getListaActividadesAutoreferenciada(conexion):
 
     # buscar entre las dependencias de cada actividad y reemplazar los id por las posiciones que ocupan en el array
     for actividad in lista: 
-        for i, dependencia in actividad.dependencias:
-            for index, aux in actividad:
+        for i, dependencia in enumerate(actividad.dependencias):
+            for index, aux in enumerate(lista):
                 if dependencia == aux.identificador:
-                    actividad.dependencia[i] = index # cambia por el indice en vez del id
+                    actividad.dependencias[i] = index # cambia por el indice en vez del id
         
     return lista
 

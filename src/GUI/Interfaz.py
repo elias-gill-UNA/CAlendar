@@ -70,15 +70,18 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
 
 
 def guardar_Actividad(nombre, duracion, dependencia, tabla):
-    if verificarInput.validar_Actividad(nombre, duracion):
-        actividad = Actividad(nombre, duracion, dependencia)
-        # Crea la actividad
-        AC = actividadFunciones.crearActividad(conexion, actividad.nombre, actividad.duracion, actividad.dependencias)
-        # Limpia la tabla
-        for item in tabla.get_children():
-            tabla.delete(item)
-        # Vuelve a cargar los datos en la tabla agregandole la actividad creada
-        cargar_Tabla_Actividad(tabla)
+    try:
+        if verificarInput.validar_Actividad(nombre, duracion):
+            actividad = Actividad(nombre, duracion, dependencia)
+            # Crea la actividad
+            AC = actividadFunciones.crearActividad(conexion, actividad.nombre, actividad.duracion, actividad.dependencias)
+            # Limpia la tabla
+            for item in tabla.get_children():
+                tabla.delete(item)
+            # Vuelve a cargar los datos en la tabla agregandole la actividad creada
+            cargar_Tabla_Actividad(tabla)
+    except ValueError as Error:
+        messagebox.showwarning("Advertencia", str(Error))
 
 
 # Carga los proyectos en la tabla
@@ -286,6 +289,7 @@ class ventana_Actividad(tk.Frame):
         tk.Label(frame, text="\t\t").grid(row=5, column=1)
         tk.Label(frame, text="\t\t").grid(row=5, column=2)
         tk.Label(frame, text="\t\t").grid(row=5, column=3)
+        tk.Label(frame, text="\t\t").grid(row=5, column=4)
 
         # Botones
         btn_crear = tk.Button(frame, text="Crear Actividad",
@@ -295,7 +299,7 @@ class ventana_Actividad(tk.Frame):
 
         btn_eliminar = tk.Button(frame, text="Eliminar Actividad",
                                  command=lambda: self.eliminar_Actividad(self.tabla)).grid(row=5,
-                                                                                           column=4)
+                                                                                           column=5)
 
     def __frame2__(self, frame):
 
@@ -328,9 +332,11 @@ class ventana_Actividad(tk.Frame):
         cargar_Tabla_Actividad(self.tabla)
         # self.colocarActividadesEnTabla(tabla)
         def editar_Actividad(event):
+
             id = self.tabla.item(self.tabla.selection())['text']
 
             editar = Toplevel()
+            editar.title("Editar Actividad")
             centrar_Ventana(editar, 3)
             lbl_nombre = tk.Label(editar, text="Nombre de la actividad:", font=("Times New Roman", 12)).grid(row=0,
                                                                                                              column=0,
@@ -361,16 +367,19 @@ class ventana_Actividad(tk.Frame):
             editar.mainloop()
 
         def guardar_Cambios(nombre, duracion, dependencia, tabla, id, editar):
-            global conexion
-            if verificarInput.validar_Actividad(nombre, duracion):
-                actividad = Actividad(nombre, duracion, dependencia)
-                activitiesManager.modificarActividad(conexion, id, actividad)
-                # Limpia la tabla
-                for item in tabla.get_children():
-                    tabla.delete(item)
-                # Vuelve a cargar los datos en la tabla agregandole la actividad creada
-                editar.destroy()
-                cargar_Tabla_Actividad(tabla)
+            try:
+                global conexion
+                if verificarInput.validar_Actividad(nombre, duracion):
+                    actividad = Actividad(nombre, duracion, dependencia)
+                    actividadFunciones.modificarActividad(conexion, id, actividad)
+                    # Limpia la tabla
+                    for item in tabla.get_children():
+                        tabla.delete(item)
+                    # Vuelve a cargar los datos en la tabla agregandole la actividad creada
+                    editar.destroy()
+                    cargar_Tabla_Actividad(tabla)
+            except ValueError as Error:
+                messagebox.showwarning("Advertencia", str(Error))
 
         self.tabla.bind("<Double-1>", editar_Actividad)
 
