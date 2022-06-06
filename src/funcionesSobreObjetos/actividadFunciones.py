@@ -8,6 +8,26 @@ from backend.dataBase.dbFunctions import db_proyects
 def leerActividades(conexion):
     return activitiesManager.getListaActividades(conexion) # y si, esto nomas es :)
 
+def modificarActividad(conexion, id, nuevaActividad):
+    if nuevaActividad.dependencias != '':
+        deps = dependenciasAEnteros(decifrarDependenciasDelInput(nuevaActividad.dependencias))
+    else:
+        deps = False
+
+    lista = activitiesManager.getListaActividades(conexion)
+    if deps:
+        for i in lista: # tirar error si una dependencia no existe
+            if not i in deps:
+                raise ValueError("La activida de la que dependencia no existe. No puedes asignar estas dependencias")
+
+    try: # comprueba si es posible crear la actividad
+        activitiesManager.modificarActividad(conexion, id, nuevaActividad)
+        return True
+    except ValueError:
+        return ValueError
+    
+
+
 #Asegurarte de actualizar la tabla al crear una actividad nueva
 def crearActividad(conexion, nombre, duracion, dependenciasString):
     if dependenciasString != '':
