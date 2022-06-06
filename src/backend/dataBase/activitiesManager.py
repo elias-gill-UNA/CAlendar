@@ -87,7 +87,10 @@ def getListaActividadesAutoreferenciada(conexion):
 
     # trasnformar las dependencias a una lista de enteros
     for i in lista:
-        i.dependencias = depesEnteros(i.dependencias)
+        if i.dependencias != "": # si contiene dependencias
+            i.dependencias = depesEnteros(i.dependencias)
+        else:
+            i.dependencias = []
 
     # buscar entre las dependencias de cada actividad y reemplazar los id por las posiciones que ocupan en el array
     for actividad in lista: 
