@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk
 
 import backend.comprobaciones.verificarEntradas as verificarInput
+import backend.dataBase.activitiesManager as activitiesManager
 import backend.dataBase.proyectManager as proyectManager
 import funcionesSobreObjetos.actividadFunciones as actividadFunciones
 import funcionesSobreObjetos.proyectoFunciones as funcProyectos
