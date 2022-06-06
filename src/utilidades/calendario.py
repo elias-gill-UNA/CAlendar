@@ -1,5 +1,6 @@
 from backend.dataBase.dbFunctions import db_feriados, db_proyects
 from clases.feriados import Feriado
+from datetime import date
 
 # retorna si es dia laboral, feriado o fin de semana 
 def diaLaboral(feriados, año, mes, dia): 
@@ -12,17 +13,17 @@ def diaLaboral(feriados, año, mes, dia):
 def __fin_semana(año, mes, dia): 
     d = zeller(año, mes, dia)
     if d == 6 or d == 0:
-        return False, "Fin de semana"
+        return False
     else:
-        return True, "Dia normal"
+        return True
 
 # determina que dia cae una fecha especifica
-def zeller(año,mes,dia): 
-    a = int((14-mes)/12)
-    y = año-a
-    m = mes+ 12*a - 2
-    d = int((dia+y+int(y/4)-int(y/100)+int(y/400)+int((31*m)/12)) % 7)
-    return d
+def zeller(ano,mes,dia): 
+    d = date(dia, mes, ano)
+    a = d.weekday()
+    if (a == 5 or a == 6):
+        return False
+    return True
 
 # cargar los feriados nacionales
 def cargarFeriadosNacionales(id):

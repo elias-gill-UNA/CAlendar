@@ -34,6 +34,7 @@ def inicializarCritico(objCritico, listaActividades):
 # funcion principal que busca el camino critico
 def caminoCritico(listaActividades, proyecto, objCritico):
     __inicializarLista(listaActividades)
+
     actividad = listaActividades[0] # actividad inicio
     actividad.inicioTemprano = 0
     cola = [actividad]
@@ -41,56 +42,58 @@ def caminoCritico(listaActividades, proyecto, objCritico):
     while len(cola) > 0: # carga de inicios temprano, etc
         actividad = cola.pop(0)
 
-        # calcular el fin temprano de actividad
+        #1
         actividad.finTemprano = actividad.inicioTemprano + actividad.duracion#valor numerico
         actividad.fechaFinTemprano = suma(actividad.fechaInicioTemprano,actividad.duracion)#valor fecha
-
+        # ya esta calculado el fin temprano
         if (proyecto.finTemprano < actividad.finTemprano):
+            #2
             proyecto.finTemprano = actividad.finTemprano # valor
             proyecto.fechaFinTemprano = actividad.fechaFinTemprano # fecha
 
         for descendiente in actividad.siguientes:
             if descendiente.inicioTemprano < actividad.finTemprano: #comparar cadenas
+                #3
                 descendiente.inicioTemprano = actividad.finTemprano#valor
                 descendiente.fechaInicioTemprano = actividad.fechaFinTemprano # fecha
 
             descendiente.anterioresPendientes -= 1
             if descendiente.anterioresPendientes == 0:
                 cola.append(descendiente) # sigue operando con la cola
-    
-    # calcular el nuevo fin e inicio tardio del proyecto y su fecha
+    #4
     proyecto.finTardio = proyecto.finTemprano + proyecto.holgura#valor
-    proyecto.fechaFinTardio = suma(proyecto.fechaFinTemprano, proyecto.holgura) # fecha
-    
+    proyecto.fechaFinTardio = suma(proyecto.fechaFinTemprano,proyecto.holgura) # fecha
+    #5
     proyecto.inicioTardio = proyecto.finTardio # actualizar los tiempos de inicio y fin del proyecto
-    proyecto.fechaInicioTardio = proyecto.fechaFinTardio 
+    proyecto.fechaInicioTardio = proyecto.fechaFinTardio #fecha
 
     actividad = listaActividades[-1] # quitar ultimo elemento
-    
-    actividad.finTardio = proyecto.finTardio 
-    actividad.fechaFinTardio = proyecto.fechaFinTardio 
-    cola = [actividad] 
+    #6
+    actividad.finTardio = proyecto.finTardio # valor
+    actividad.fechaFinTardio = proyecto.fechaFinTardio #fecha
+    cola = [actividad] # algo
 
-    # calcula las fechas tardias
-    while len(cola) > 0: 
+    while len(cola) > 0: # calcula las fechas tardias
         actividad = cola.pop(0)
 
-        actividad.inicioTardio = actividad.finTardio - actividad.duracion # actualizar los tiempos de las actividades
-        actividad.fechaInicioTardio = resta(actividad.fechaFinTardio, actividad.duracion)
+        #7
+        actividad.inicioTardio = actividad.finTardio - actividad.duracion # actualizar los tiempos de las actividades, es el valor numerico del de arriba
+        actividad.fechaInicioTardio = resta(actividad.fechaFinTardio,actividad.duracion)#fecha
         actividad.holgura = actividad.inicioTardio - actividad.inicioTemprano
 
         if (actividad.holgura == proyecto.holgura):
             objCritico.actividadesCriticas.append(actividad) # si es una actividad critica entonces la anade a la lista 
 
         if (proyecto.inicioTardio > actividad.inicioTardio): # actualiza los tiempos de inicio tardio del proyecto
-            proyecto.inicioTardio = actividad.inicioTardio 
-            proyecto.fechaInicioTardio = actividad.fechaInicioTardio 
+            #8
+            proyecto.inicioTardio = actividad.inicioTardio # valor
+            proyecto.fechaInicioTardio = actividad.fechaInicioTardio # fecha
 
         for antecesor in actividad.anteriores:
             if antecesor.finTardio == -1 or antecesor.finTardio > actividad.inicioTardio:
-                antecesor.finTardio = actividad.inicioTardio 
-                antecesor.fechaFinTardio = actividad.fechaInicioTardio 
-
+                #9
+                antecesor.finTardio = actividad.inicioTardio # valor
+                antecesor.fechaFinTardio = actividad.fechaInicioTardio # fecha
             antecesor.siguientesPendientes -= 1 
             if antecesor.siguientesPendientes == 0:
                 cola.append(antecesor) # agrega algo en algun lugar
