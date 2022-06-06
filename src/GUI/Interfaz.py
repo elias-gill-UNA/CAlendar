@@ -135,7 +135,7 @@ def mostrar_Actividades_Criticas(objcritico):
     lbl_critico = tk.Label(frame, text="Lista de actividades del Camino Crítico").grid(row=0, column=0)
 
     # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
-    tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1"))
+    tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1", "2"))
     tabla1.place(x=90, y=180)
     tabla1.grid(row=1, column=0)
 
@@ -148,16 +148,19 @@ def mostrar_Actividades_Criticas(objcritico):
     tabla1.column("#0", width=150, anchor=CENTER)
     tabla1.column("#1", width=250, anchor=CENTER)
     tabla1.column("#2", width=250, anchor=CENTER)
+    tabla1.column("3", width=250, anchor=CENTER)
 
     # Titulos
-    tabla1.heading("#0", text="Nombre")
-    tabla1.heading("#1", text="Fecha Inicio Temprano")
-    tabla1.heading("#2", text="Fecha Fin Temprano")
+    tabla1.heading("#0", text="Fecha Fin Temprano")
+    tabla1.heading("#1", text="Nombre")
+    tabla1.heading("#2", text="Fecha Inicio Temprano")
+    tabla1.heading("#3", text="Fecha Fin Temprano")
+
     for item in tabla1.get_children():
         tabla1.delete(item)
     for i in objcritico.actividadesCriticas:
         if i.nombre!="Fin" and i.nombre!="Inicio":
-            tabla1.insert("", tk.END,text=i.nombre,values=(i.fechaInicioTemprano, i.fechaFinTemprano))
+            tabla1.insert("", tk.END,text=i.identificador,values=(i.nombre,i.fechaInicioTemprano, i.fechaFinTemprano))
 
     ventana.mainloop()
 
