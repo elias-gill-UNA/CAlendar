@@ -7,3 +7,8 @@ def abrirProyecto(idProyecto):
     listaActividades = activitiesManager.getListaActividades(conexion)
     proyecto = [conexion, descripcion, listaActividades] # este objeto es el que deberia de circular por el frontend
     return proyecto
+
+
+def exportarProyecto(id):
+    return proyectManager.exportarProyecto(id)
+

@@ -1,134 +1,44 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import messagebox
-from tkinter import ttk
-from datetime import datetime
-import utilidades.calendario as calendar
-import backend.comprobaciones.verificarEntradas as verificarInput
-import backend.dataBase.activitiesManager as activitiesManager
-import backend.dataBase.proyectManager as proyectManager
-import funcionesSobreObjetos.actividadFunciones as actividadFunciones
-import funcionesSobreObjetos.proyectoFunciones as funcProyectos
-from clases.actividades import Actividad
-from clases.clases_cam_critico import ObjetoCritico
-from clases.proyecto import Proyecto
-from informes.camino_critico import funcionFinalYSuperpoderosa
+from tkinter import messagebox, ttk
 from tkcalendar import *
 
+import backend.comprobaciones.verificarEntradas as verificarInput
+import backend.dataBase.proyectManager as proyectManager
+
+import funcionesSobreObjetos.actividadFunciones as actividadFunciones
+import funcionesSobreObjetos.proyectoFunciones as funcProyectos
+
+from clases.actividades import Actividad
+from clases.proyecto import Proyecto
 from diagrama_de_gantt import AbrirDiagrama
+
+from GUI.actividades import *
+from GUI.feriados import *
+from GUI.cami_critico import *
+from GUI.centrar_ventana import *
+
 
 conexion = None  # id del proyecto cuando se selecciona
 objProyecto = 0  # objeto proyecto cuando se selecciona
 listActividades = 0  # lista de actividades del proyecto cuando se selecciona
 listaActvsconFecha = []
 
-def feriados():
-    def cargar_tabla(tabla):
-        for item in tabla.get_children():
-            tabla.delete(item)
-        feriados= calendar.getListaFeriados(conexion)
-        for feriado in feriados:
-            tabla.insert("", tk.END, text=feriado.identificador, values=(
-                    str(feriado.dia)+"/"+str(feriado.mes), feriado.descripcion))   
-    
-    global conexion
-    ventana=tk.Tk()
-    tabla= ttk.Treeview(ventana, height=10, columns=("#0","1"))
-    ventana.geometry("500x400")
-    ventana.resizable(False, False)
-
-    tabla.place(x=90, y=180)
-    tabla.grid(row=3, column=0)
-
-    # Barra de desplazamiento
-    barraDesplazamiento = ttk.Scrollbar(
-        ventana, orient=tk.VERTICAL, command=tabla.yview)
-    tabla.configure(yscrollcommand=barraDesplazamiento.set)
-    barraDesplazamiento.grid(row=3, column=1, sticky="ns")
-
-    # Tamaño de las columnas
-    tabla.column("#0", width=50, anchor=CENTER)
-    tabla.column("#1", width=150, anchor=CENTER)
-    tabla.column("#2", width=150, anchor=CENTER)
-
-    # Titulos
-    tabla.heading("#0", text="Id",anchor=CENTER)
-    tabla.heading("#1", text="Fecha",anchor=CENTER)
-    tabla.heading("#2", text="Acontecimiento",anchor=SW)
-    cargar_tabla(tabla)
-
-    fecha=tk.StringVar()
-    lbl_fecha = tk.Label(ventana, text="Fecha", font=("Times New Roman", 12)).grid(row=0,column=0,sticky="w")
-    fecha = DateEntry(ventana, selectmode="day",textvariable=fecha, width=17)
-    fecha.grid(row=0, column=1)
-
-    descri = tk.Label(ventana, text="Descripción:", font=("Times New Roman", 12)).grid(row=1, column=0,sticky="w")
-    descri = tk.Entry(ventana, width=20)
-    descri.grid(row=1, column=1)
-
-    # Botones
-    tk.Button(ventana, text="Eliminar",command=lambda: eliminar_Feriado(tabla)).grid(row=2, column=0)
-    tk.Button(ventana, text="Agregar",command=lambda: crear_Feriado(fecha.get(),descri.get(),tabla)).grid(row=2, column=1)
-
-    def crear_Feriado(fecha,descripcion,tabla):
-        global conexion
-        if descripcion!="":
-            calendar.anadirFeriado(conexion,fecha,descripcion)
-            cargar_tabla(tabla)
-    
-    def eliminar_Feriado(tabla):
-        try:
-            global conexion
-            x = tabla.selection()[0]
-            id = tabla.item(tabla.selection())['text']
-            tabla.delete(x)
-            calendar.eliminarFeriado(conexion, id)
-            cargar_tabla(tabla)
-        except IndexError:
-            messagebox.showwarning(
-                "Advertencia", "Seleccione una Actividad para eliminar!")
-
-
-def centrar_Ventana(root, num_Ventana):
-    if num_Ventana == 0:
-        ancho_ventana = 850
-        alto_ventana = 550
-    elif num_Ventana == 1:
-        ancho_ventana = 1050
-        alto_ventana = 500
-    elif num_Ventana == 2:
-        ancho_ventana = 400
-        alto_ventana = 150
-    elif num_Ventana == 3:
-        ancho_ventana = 1200
-        alto_ventana = 800
-    x_ventana = root.winfo_screenwidth() // 2 - ancho_ventana // 2
-    y_ventana = root.winfo_screenheight() // 2 - alto_ventana // 2
-    posicion = str(ancho_ventana) + "x" + str(alto_ventana) + \
-        "+" + str(x_ventana) + "+" + str(y_ventana)
-    root.geometry(posicion)
-    # La ventana no puede cambiar de tamaño
-    root.resizable(False, False)
-
 
 # 0 indica que viene de la ventana de Proyectos
 # 1 indica que viene de la ventana de Actividades
 
 def limpiar_Pantalla(framePrincipal, num_Ventana):
-    global conexion
-
     if num_Ventana == 0:
-        ventana_Actividad(root)
         framePrincipal.destroy()
+        ventana_Actividad(root)
     elif num_Ventana == 1:
         if conexion:
             proyectManager.cerrarProyecto(conexion)
-        ventana_Proyecto(root)
         framePrincipal.destroy()
+        ventana_Proyecto(root)
     elif num_Ventana == 2:
         AbrirDiagrama(conexion)
-    elif num_Ventana == 3:
-        iniciar_Camino_Critico()
 
 
 def guardar_Proyecto(tabla, nombre, descrip, fechaI):
@@ -136,28 +46,12 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
     if verificarInput.validar_Proyecto(nombre, descrip, fechaI):
         Pr = Proyecto(nombre, descrip, fechaI)
         # Crea el proyecto
-        id = proyectManager.crearProyecto(Pr)
+        proyectManager.crearProyecto(Pr)
         # Elimina los datos de la tabla
         for item in tabla.get_children():
             tabla.delete(item)
         # Vuelve a cargar los datos en la tabla agregandole el nuevo proyecto creado
         cargar_Tabla_Proyecto(tabla)
-
-
-def guardar_Actividad(nombre, duracion, dependencia, tabla):
-    try:
-        if verificarInput.validar_Actividad(nombre, duracion):
-            actividad = Actividad(nombre, duracion, dependencia)
-            # Crea la actividad
-            AC = actividadFunciones.crearActividad(
-                conexion, actividad.nombre, actividad.duracion, actividad.dependencias)
-            # Limpia la tabla
-            for item in tabla.get_children():
-                tabla.delete(item)
-            # Vuelve a cargar los datos en la tabla agregandole la actividad creada
-            cargar_Tabla_Actividad(tabla)
-    except ValueError as Error:
-        messagebox.showwarning("Advertencia", str(Error))
 
 
 # Carga los proyectos en la tabla
@@ -168,19 +62,17 @@ def cargar_Tabla_Proyecto(tabla):
             i.nombre, i.fechaInicio, i.descripcion))
 
 
-# Carga las actividades en el proyecto
-def cargar_Tabla_Actividad(tabla):
-    global conexion
+def exportarProyecto(tabla):
+    try:
+        id = tabla.item(tabla.selection())['text']
+        # Si este tira error es porque no selecciono nada
+        tabla.selection()[0]
+        # abrir el proyecto recien creado y dar valor a las globales
+        funcProyectos.exportarProyecto(id)
 
-    # Limpia la tabla
-    for item in tabla.get_children():
-        tabla.delete(item)
-
-    if conexion != None:
-        actividades = actividadFunciones.leerActividades(conexion)
-        for i in actividades:
-            tabla.insert("", tk.END, text=i.identificador,
-                         values=(i.nombre, i.duracion, i.dependencias))
+    except IndexError:
+        messagebox.showwarning(
+            "Advertencia", "Seleccione un Proyecto para exportar!")
 
 
 # Cuando da click a el boton Abrir viene aca
@@ -189,147 +81,20 @@ def seleccionar_Proyecto(tabla, framePrincipal):
         global conexion
         global listActividades
         global objProyecto
+
         id = tabla.item(tabla.selection())['text']
         # Si este tira error es porque no selecciono nada
-        x = tabla.selection()[0]
+        tabla.selection()[0]
         # abrir el proyecto recien creado y dar valor a las globales
         proyecto = funcProyectos.abrirProyecto(id)
         conexion = proyecto[0]
         objProyecto = proyecto[1]
         listActividades = proyecto[2]
         limpiar_Pantalla(framePrincipal, 0)
+
     except IndexError:
         messagebox.showwarning(
             "Advertencia", "Seleccione un Proyecto para abrir!")
-
-
-def mostrar_Actividades_Criticas(objcritico):
-    global listaActvsconFecha
-    ventana = tk.Toplevel(root)
-    ventana.title("Actividades Críticas")
-    centrar_Ventana(ventana, 3)
-    frame = tk.Frame(ventana)
-    tk.Label(ventana, text="Cantidad de Caminos Críticos:"+" "+str(objcritico.cantidadCritico),font=("Courier", 14)).grid(row=0, column=0)
-    
-    frame.grid(row=1, column=0)
-
-    inicio = datetime.strptime(objProyecto.fechaInicio, "%Y-%m-%d")
-    fin = datetime.strptime(objProyecto.fechaFinTemprano, "%Y-%m-%d")
-    diferencia = fin-inicio
-    
-    tk.Label(frame, text="Duración del Proyecto (en días laborales): "+ str(objProyecto.finTemprano)).grid(row=0, column=0)
-    tk.Label(frame, text="Fecha de Inicio del Proyecto: "+ str(objProyecto.fechaInicio)).grid(row=1, column=0)
-    tk.Label(frame, text="Fecha de Finalización prevista: "+ str(objProyecto.fechaFinTardio)).grid(row=2, column=0)
-    tk.Label(frame, text="Duración (contando días no laborales): "+ str(diferencia)).grid(row=3, column=0)
-
-
-    lbl_critico = tk.Label(
-        frame, text="\nLista de actividades del Camino Crítico").grid(row=4, column=0)
-
-    # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
-    tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2"))
-    tabla1.place(x=90, y=180)
-    tabla1.grid(row=5, column=0)
-
-    # Barra de desplazamiento
-    barraDesplazamiento = ttk.Scrollbar(
-        frame, orient=tk.VERTICAL, command=tabla1.yview)
-    tabla1.configure(yscrollcommand=barraDesplazamiento.set)
-    barraDesplazamiento.grid(row=5, column=1, sticky="ns")
-
-    # Tamaño de las columnas
-    tabla1.column("#0", width=50, anchor=CENTER)
-    tabla1.column("#1", width=250, anchor=CENTER)
-    tabla1.column("#2", width=250, anchor=CENTER)
-    tabla1.column("#3", width=250, anchor=CENTER)
-
-    # Titulos
-    tabla1.heading("#0", text="Id")
-    tabla1.heading("#1", text="Nombre")
-    tabla1.heading("#2", text="Fecha Inicio")
-    tabla1.heading("#3", text="Fecha Fin")
-
-    for item in tabla1.get_children():
-        tabla1.delete(item)
-    for acti in objcritico.actividadesCriticas:
-        if acti.nombre != "Fin" and acti.nombre != "Inicio":
-            tabla1.insert("", tk.END, text=acti.identificador, values=(
-                acti.nombre, acti.fechaInicioTemprano, acti.fechaFinTemprano))
-    
-    tk.Label(
-        frame, text="Caminos Críticos").grid(row=4, column=2)
-    
-    tabla2 = ttk.Treeview(frame, height=10, columns=())
-
-    tabla2.place(x=90, y=180)
-    tabla2.grid(row=5, column=2)
-
-    # Barra de desplazamiento
-    barraDesplazamiento = ttk.Scrollbar(
-        frame, orient=tk.VERTICAL, command=tabla2.yview)
-    tabla2.configure(yscrollcommand=barraDesplazamiento.set)
-    barraDesplazamiento.grid(row=5, column=3, sticky="ns")
-
-    # Tamaño de las columnas
-    tabla2.column("#0", width=150, anchor=CENTER)
-
-    # Titulos
-    tabla2.heading("#0", text="Caminos")
-
-    for camino in objcritico.caminosCriticos:
-        for actividad in camino:
-            if actividad.identificador == 0:
-                tabla2.insert("", tk.END, text="----")
-            else:
-                tabla2.insert("", tk.END, text=actividad.nombre)
-    
-    frame2= tk.Frame(ventana)
-    frame2.grid(row=2, column=0)
-    tk.Label(frame2, text="\nLista de Actividades").grid(row=0, column=0)
-    # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
-    tabla3 = ttk.Treeview(frame2, height=10, columns=("#0", "#1", "#2"))
-    tabla3.place(x=90, y=180)
-    tabla3.grid(row=1, column=0)
-
-    # Barra de desplazamiento
-    barraDesplazamiento = ttk.Scrollbar(
-        frame2, orient=tk.VERTICAL, command=tabla1.yview)
-    tabla3.configure(yscrollcommand=barraDesplazamiento.set)
-    barraDesplazamiento.grid(row=1, column=1, sticky="ns")
-
-    # Tamaño de las columnas
-    tabla3.column("#0", width=50, anchor=CENTER)
-    tabla3.column("#1", width=250, anchor=CENTER)
-    tabla3.column("#2", width=250, anchor=CENTER)
-    tabla3.column("#3", width=250, anchor=CENTER)
-
-    # Titulos
-    tabla3.heading("#0", text="Id")
-    tabla3.heading("#1", text="Nombre")
-    tabla3.heading("#2", text="Fecha Inicio")
-    tabla3.heading("#3", text="Fecha Fin")
-
-    for item in tabla3.get_children():
-        tabla3.delete(item)
-    for acti in listaActvsconFecha:
-        if acti.nombre != "Fin" and acti.nombre != "Inicio":
-            tabla3.insert("", tk.END, text=acti.identificador, values=(
-                acti.nombre, acti.fechaInicioTemprano, acti.fechaFinTemprano))
-    
-    ventana.mainloop()
-
-
-def iniciar_Camino_Critico():
-    global conexion
-    global objProyecto
-    global listaActvsconFecha
-    listaautoref = activitiesManager.getListaActividadesAutoreferenciada(
-        conexion)
-    listaActvsconFecha = []
-    objcritico = ObjetoCritico()
-    funcionFinalYSuperpoderosa(
-        conexion, listaautoref, listaActvsconFecha, objcritico, objProyecto)
-    mostrar_Actividades_Criticas(objcritico)
 
 
 class ventana_Proyecto(tk.Frame):
@@ -425,6 +190,10 @@ class ventana_Proyecto(tk.Frame):
         btn_elimi = tk.Button(frame3, text="Eliminar", command=lambda: eliminar_item(
             self.tabla)).grid(row=0, column=7)
 
+        btn_exportar = tk.Button(frame3, text="Exportar", command=lambda: exportarProyecto(self.tabla)).grid(row=0,
+                                                                                                                 column=6,
+                                                                                                                 sticky="ns")
+
         cargar_Tabla_Proyecto(self.tabla)
 
         # Elimina el proyecto seleccionado de la tabla y de la base de datos
@@ -490,7 +259,7 @@ class ventana_Actividad(tk.Frame):
 
         # Botones
         btn_crear = tk.Button(frame, text="Crear Actividad",
-                              command=lambda: guardar_Actividad(self.nombre.get(),
+                              command=lambda: guardar_Actividad(conexion, self.nombre.get(),
                                                                 self.duracion.get(), self.dependencias.get(),
                                                                 self.tabla)).grid(row=5, column=0)
 
@@ -525,7 +294,7 @@ class ventana_Actividad(tk.Frame):
         self.tabla.heading("#2", text="Duración")
         self.tabla.heading("#3", text="Dependencia")
 
-        cargar_Tabla_Actividad(self.tabla)
+        cargar_Tabla_Actividad(conexion, self.tabla)
 
         def editar_Actividad(event):
 
@@ -574,7 +343,7 @@ class ventana_Actividad(tk.Frame):
                         tabla.delete(item)
                     # Vuelve a cargar los datos en la tabla agregandole la actividad creada
                     editar.destroy()
-                    cargar_Tabla_Actividad(tabla)
+                    cargar_Tabla_Actividad(conexion, tabla)
             except ValueError as Error:
                 messagebox.showwarning("Advertencia", str(Error))
 
@@ -595,10 +364,11 @@ class ventana_Actividad(tk.Frame):
         btn_gantt = tk.Button(frame, text="Diagram de Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
                                                                                                               column=2)
 
-        btn_Acti_critic = tk.Button(frame, text="Actividades Críticas", command=lambda: limpiar_Pantalla(self, 3)).grid(row=0,
+        btn_Acti_critic = tk.Button(frame, text="Actividades Críticas",
+        command=lambda:iniciar_Camino_Critico(conexion)).grid(row=0,
                                                                                                                         column=4)
 
-        btn_calendar = tk.Button(frame, text="Feriados",command=feriados).grid(row=0, column=5)
+        btn_calendar = tk.Button(frame, text="Feriados",command=lambda:feriados(conexion)).grid(row=0, column=5)
     # Elimina el proyecto seleccionado de la tabla y de la base de datos
     def eliminar_Actividad(self, tabla):
         try:
@@ -607,7 +377,7 @@ class ventana_Actividad(tk.Frame):
             id = tabla.item(tabla.selection())['text']
             tabla.delete(x)
             actividadFunciones.eliminarActividad(conexion, id)
-            cargar_Tabla_Actividad(self.tabla)
+            cargar_Tabla_Actividad(conexion, self.tabla)
         except IndexError:
             messagebox.showwarning(
                 "Advertencia", "Seleccione una Actividad para eliminar!")

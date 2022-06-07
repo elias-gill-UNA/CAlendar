@@ -5,6 +5,7 @@ import utilidades.calendario as calendario
 
 conexion = 1
 feriados = []
+
 # carga o dibuja el camino critico y lo guarda en la matriz
 def cargarCriticos(objCritico, inicio, indice):
     bandera = False
@@ -260,6 +261,7 @@ def funcionFinalYSuperpoderosa(conection, listaActvsAutoref, listaFinalFinal, ob
     global feriados 
 
     feriados = calendario.getListaFeriados(conection)
+
     conexion = conection
     listaCopia = []
     objeCritCopia = ObjetoCritico()

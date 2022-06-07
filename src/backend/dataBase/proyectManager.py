@@ -2,6 +2,7 @@ import backend.dataBase.dbFunctions.db_proyects as dataBase
 import os
 from clases.proyecto import Proyecto
 from utilidades.calendario import cargarFeriadosNacionales
+import shutil
 
 
 path = os.path.expanduser("~") + '/CAlendar-database/proyects/'
@@ -15,6 +16,11 @@ def __getProyectsList():
     
     return file_list # retorna la lista de id's del proyecto
 
+
+def exportarProyecto(id):
+    os.system(f'cp {path}/{id}.db ~/{id}.db')
+    print("si")
+    return True
 
 # automatiza eleccion de ID para el proyecto
 def __nuevoID():
