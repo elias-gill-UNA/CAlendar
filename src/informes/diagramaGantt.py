@@ -50,19 +50,12 @@ def prepararGantt(listaActividades, duracionProyectoSinFeriados):
         contador=contador+1
 
     columnas = duracionProyectoSinFeriados
-    print("DURACION",columnas)
     filas = len(nombres)
-    print("FILAS",filas)
+
 
 def calcularPosi(matriz, dependencias, nombres, columnas):
     contador = 0
     definitivo = -1
-    #print("len dependencias",len(dependencias))
-    #print("len matriz[0]",len(matriz[0]))
-    '''for f in range(0,len(nombres)):
-        for c in range(0,columnas):
-            print(matriz[f][c],end=" ")
-        print("\n")'''
     for k in range(len(dependencias)):
         indice = nombres.index(dependencias[k])
         for j in range(columnas):
@@ -70,7 +63,6 @@ def calcularPosi(matriz, dependencias, nombres, columnas):
                 contador=j
         if(definitivo<contador):
             definitivo=contador
-    #print("SEPARADOR")
     return definitivo
 
 def DiagramaGantt(nombres, dependencias, duracion, columnas):
