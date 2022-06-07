@@ -1,0 +1,13 @@
+explicacion de las funciones del camino critico
+La funcion cargarCriticos se encarga de cargar la matriz que esta como atributo en el objetoCritico, esta se vale de la cantidad de caminos criticos
+la cantidad de caminos criticos esta determinada por la funcion cantidadCaminosCriticos, que determina la cantidad de caminos criticos que hay, recorriendo
+el "grafo" del camino critico buscando coincidencias con las actividades criticas, una vez esa matriz esta inicializada con la cantidad de filas que le corresponde
+con la funcion inicializarCritico, se ejecuta la funcion cargarCriticos.
+
+La funcion caminoCritico se encarga de cargar los valores numericos de cada actividad, su inicioTemprano, inicioTardio, finTemprano y finTardio, para poder
+calcular la holgura de cada actividad
+
+inicializarLista se encarga de que cada actividad sepa cuales son sus siguientes, asi como introducir a la lista de actividades las actividades "fantasmas" "inicio" y 
+"fin"
+
+actividad.fechaInicioTemprano = suma(proyecto.fechaInicioTemprano, actividad.inicioTemprano)
