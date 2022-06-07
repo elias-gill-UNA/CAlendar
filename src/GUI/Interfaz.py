@@ -1,20 +1,22 @@
 import tkinter as tk
+from datetime import datetime
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-from datetime import datetime
-import utilidades.calendario as calendar
+
 import backend.comprobaciones.verificarEntradas as verificarInput
 import backend.dataBase.activitiesManager as activitiesManager
 import backend.dataBase.proyectManager as proyectManager
 import funcionesSobreObjetos.actividadFunciones as actividadFunciones
 import funcionesSobreObjetos.proyectoFunciones as funcProyectos
+import utilidades.calendario as calendar
 from clases.actividades import Actividad
 from clases.clases_cam_critico import ObjetoCritico
 from clases.proyecto import Proyecto
 from informes.camino_critico import funcionFinalYSuperpoderosa
 from tkcalendar import *
-
+import funcionesSobreProyecto as FSP
+from funcionesSobreActividad import *
 from diagrama_de_gantt import AbrirDiagrama
 
 conexion = None  # id del proyecto cuando se selecciona
@@ -22,18 +24,19 @@ objProyecto = 0  # objeto proyecto cuando se selecciona
 listActividades = 0  # lista de actividades del proyecto cuando se selecciona
 listaActvsconFecha = []
 
+
 def feriados():
     def cargar_tabla(tabla):
         for item in tabla.get_children():
             tabla.delete(item)
-        feriados= calendar.getListaFeriados(conexion)
+        feriados = calendar.getListaFeriados(conexion)
         for feriado in feriados:
             tabla.insert("", tk.END, text=feriado.identificador, values=(
-                    str(feriado.dia)+"/"+str(feriado.mes), feriado.descripcion))   
-    
+                str(feriado.dia) + "/" + str(feriado.mes), feriado.descripcion))
+
     global conexion
-    ventana=tk.Tk()
-    tabla= ttk.Treeview(ventana, height=10, columns=("#0","1"))
+    ventana = tk.Tk()
+    tabla = ttk.Treeview(ventana, height=10, columns=("#0", "1"))
     ventana.geometry("500x400")
     ventana.resizable(False, False)
 
@@ -52,30 +55,31 @@ def feriados():
     tabla.column("#2", width=150, anchor=CENTER)
 
     # Titulos
-    tabla.heading("#0", text="Id",anchor=CENTER)
-    tabla.heading("#1", text="Fecha",anchor=CENTER)
-    tabla.heading("#2", text="Acontecimiento",anchor=SW)
+    tabla.heading("#0", text="Id", anchor=CENTER)
+    tabla.heading("#1", text="Fecha", anchor=CENTER)
+    tabla.heading("#2", text="Acontecimiento", anchor=SW)
     cargar_tabla(tabla)
 
-    fecha=tk.StringVar()
-    lbl_fecha = tk.Label(ventana, text="Fecha", font=("Times New Roman", 12)).grid(row=0,column=0,sticky="w")
-    fecha = DateEntry(ventana, selectmode="day",textvariable=fecha, width=17)
+    fecha = tk.StringVar()
+    lbl_fecha = tk.Label(ventana, text="Fecha", font=("Times New Roman", 12)).grid(row=0, column=0, sticky="w")
+    fecha = DateEntry(ventana, selectmode="day", textvariable=fecha, width=17)
     fecha.grid(row=0, column=1)
 
-    descri = tk.Label(ventana, text="Descripción:", font=("Times New Roman", 12)).grid(row=1, column=0,sticky="w")
+    descri = tk.Label(ventana, text="Descripción:", font=("Times New Roman", 12)).grid(row=1, column=0, sticky="w")
     descri = tk.Entry(ventana, width=20)
     descri.grid(row=1, column=1)
 
     # Botones
-    tk.Button(ventana, text="Eliminar",command=lambda: eliminar_Feriado(tabla)).grid(row=2, column=0)
-    tk.Button(ventana, text="Agregar",command=lambda: crear_Feriado(fecha.get(),descri.get(),tabla)).grid(row=2, column=1)
+    tk.Button(ventana, text="Eliminar", command=lambda: eliminar_Feriado(tabla)).grid(row=2, column=0)
+    tk.Button(ventana, text="Agregar", command=lambda: crear_Feriado(fecha.get(), descri.get(), tabla)).grid(row=2,
+                                                                                                             column=1)
 
-    def crear_Feriado(fecha,descripcion,tabla):
+    def crear_Feriado(fecha, descripcion, tabla):
         global conexion
-        if descripcion!="":
-            calendar.anadirFeriado(conexion,fecha,descripcion)
+        if descripcion != "":
+            calendar.anadirFeriado(conexion, fecha, descripcion)
             cargar_tabla(tabla)
-    
+
     def eliminar_Feriado(tabla):
         try:
             global conexion
@@ -105,7 +109,7 @@ def centrar_Ventana(root, num_Ventana):
     x_ventana = root.winfo_screenwidth() // 2 - ancho_ventana // 2
     y_ventana = root.winfo_screenheight() // 2 - alto_ventana // 2
     posicion = str(ancho_ventana) + "x" + str(alto_ventana) + \
-        "+" + str(x_ventana) + "+" + str(y_ventana)
+               "+" + str(x_ventana) + "+" + str(y_ventana)
     root.geometry(posicion)
     # La ventana no puede cambiar de tamaño
     root.resizable(False, False)
@@ -131,7 +135,7 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
         iniciar_Camino_Critico()
 
 
-def guardar_Proyecto(tabla, nombre, descrip, fechaI):
+'''def guardar_Proyecto(tabla, nombre, descrip, fechaI):
     # Valida los datos antes de crear el Proyecto
     if verificarInput.validar_Proyecto(nombre, descrip, fechaI):
         Pr = Proyecto(nombre, descrip, fechaI)
@@ -141,10 +145,10 @@ def guardar_Proyecto(tabla, nombre, descrip, fechaI):
         for item in tabla.get_children():
             tabla.delete(item)
         # Vuelve a cargar los datos en la tabla agregandole el nuevo proyecto creado
-        cargar_Tabla_Proyecto(tabla)
+        cargar_Tabla_Proyecto(tabla)'''
 
 
-def guardar_Actividad(nombre, duracion, dependencia, tabla):
+'''def guardar_Actividad(nombre, duracion, dependencia, tabla):
     try:
         if verificarInput.validar_Actividad(nombre, duracion):
             actividad = Actividad(nombre, duracion, dependencia)
@@ -157,18 +161,18 @@ def guardar_Actividad(nombre, duracion, dependencia, tabla):
             # Vuelve a cargar los datos en la tabla agregandole la actividad creada
             cargar_Tabla_Actividad(tabla)
     except ValueError as Error:
-        messagebox.showwarning("Advertencia", str(Error))
+        messagebox.showwarning("Advertencia", str(Error))'''
 
 
-# Carga los proyectos en la tabla
+''''# Carga los proyectos en la tabla
 def cargar_Tabla_Proyecto(tabla):
     proyectos = proyectManager.getProyectListsWithInfo()
     for i in proyectos:
         tabla.insert('', tk.END, text=i.identificador, values=(
-            i.nombre, i.fechaInicio, i.descripcion))
+            i.nombre, i.fechaInicio, i.descripcion))'''
 
 
-# Carga las actividades en el proyecto
+'''# Carga las actividades en el proyecto
 def cargar_Tabla_Actividad(tabla):
     global conexion
 
@@ -180,10 +184,10 @@ def cargar_Tabla_Actividad(tabla):
         actividades = actividadFunciones.leerActividades(conexion)
         for i in actividades:
             tabla.insert("", tk.END, text=i.identificador,
-                         values=(i.nombre, i.duracion, i.dependencias))
+                         values=(i.nombre, i.duracion, i.dependencias))'''
 
 
-# Cuando da click a el boton Abrir viene aca
+''''# Cuando da click a el boton Abrir viene aca
 def seleccionar_Proyecto(tabla, framePrincipal):
     try:
         global conexion
@@ -201,7 +205,7 @@ def seleccionar_Proyecto(tabla, framePrincipal):
     except IndexError:
         messagebox.showwarning(
             "Advertencia", "Seleccione un Proyecto para abrir!")
-
+'''
 
 def mostrar_Actividades_Criticas(objcritico):
     global listaActvsconFecha
@@ -209,19 +213,20 @@ def mostrar_Actividades_Criticas(objcritico):
     ventana.title("Actividades Críticas")
     centrar_Ventana(ventana, 3)
     frame = tk.Frame(ventana)
-    tk.Label(ventana, text="Cantidad de Caminos Críticos:"+" "+str(objcritico.cantidadCritico),font=("Courier", 14)).grid(row=0, column=0)
-    
+    tk.Label(ventana, text="Cantidad de Caminos Críticos:" + " " + str(objcritico.cantidadCritico),
+             font=("Courier", 14)).grid(row=0, column=0)
+
     frame.grid(row=1, column=0)
 
     inicio = datetime.strptime(objProyecto.fechaInicio, "%Y-%m-%d")
     fin = datetime.strptime(objProyecto.fechaFinTemprano, "%Y-%m-%d")
-    diferencia = fin-inicio
-    
-    tk.Label(frame, text="Duración del Proyecto (en días laborales): "+ str(objProyecto.finTemprano)).grid(row=0, column=0)
-    tk.Label(frame, text="Fecha de Inicio del Proyecto: "+ str(objProyecto.fechaInicio)).grid(row=1, column=0)
-    tk.Label(frame, text="Fecha de Finalización prevista: "+ str(objProyecto.fechaFinTardio)).grid(row=2, column=0)
-    tk.Label(frame, text="Duración (contando días no laborales): "+ str(diferencia)).grid(row=3, column=0)
+    diferencia = fin - inicio
 
+    tk.Label(frame, text="Duración del Proyecto (en días laborales): " + str(objProyecto.finTemprano)).grid(row=0,
+                                                                                                            column=0)
+    tk.Label(frame, text="Fecha de Inicio del Proyecto: " + str(objProyecto.fechaInicio)).grid(row=1, column=0)
+    tk.Label(frame, text="Fecha de Finalización prevista: " + str(objProyecto.fechaFinTardio)).grid(row=2, column=0)
+    tk.Label(frame, text="Duración (contando días no laborales): " + str(diferencia)).grid(row=3, column=0)
 
     lbl_critico = tk.Label(
         frame, text="\nLista de actividades del Camino Crítico").grid(row=4, column=0)
@@ -255,10 +260,10 @@ def mostrar_Actividades_Criticas(objcritico):
         if acti.nombre != "Fin" and acti.nombre != "Inicio":
             tabla1.insert("", tk.END, text=acti.identificador, values=(
                 acti.nombre, acti.fechaInicioTemprano, acti.fechaFinTemprano))
-    
+
     tk.Label(
         frame, text="Caminos Críticos").grid(row=4, column=2)
-    
+
     tabla2 = ttk.Treeview(frame, height=10, columns=())
 
     tabla2.place(x=90, y=180)
@@ -282,11 +287,11 @@ def mostrar_Actividades_Criticas(objcritico):
                 tabla2.insert("", tk.END, text="----")
             else:
                 tabla2.insert("", tk.END, text=actividad.nombre)
-    
-    frame2= tk.Frame(ventana)
+
+    frame2 = tk.Frame(ventana)
     frame2.grid(row=2, column=0)
     tk.Label(frame2, text="\nLista de Actividades").grid(row=0, column=0)
-    # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
+    # Crea la tabla
     tabla3 = ttk.Treeview(frame2, height=10, columns=("#0", "#1", "#2"))
     tabla3.place(x=90, y=180)
     tabla3.grid(row=1, column=0)
@@ -315,7 +320,7 @@ def mostrar_Actividades_Criticas(objcritico):
         if acti.nombre != "Fin" and acti.nombre != "Inicio":
             tabla3.insert("", tk.END, text=acti.identificador, values=(
                 acti.nombre, acti.fechaInicioTemprano, acti.fechaFinTemprano))
-    
+
     ventana.mainloop()
 
 
@@ -412,20 +417,20 @@ class ventana_Proyecto(tk.Frame):
                               command=quit).grid(row=0, column=0)
 
         btn_guardar_proyecto = tk.Button(frame3, text="Guardar proyecto",
-                                         command=lambda: guardar_Proyecto(self.tabla, nombre.get(),
+                                         command=lambda: FSP.guardar_Proyecto(self.tabla, nombre.get(),
                                                                           descrip.get(
                                                                               1.0, "end"),
                                                                           fechaI.get_date())).grid(row=0, column=2,
                                                                                                    sticky="ns")
 
-        btn_abrir = tk.Button(frame3, text="Abrir", command=lambda: seleccionar_Proyecto(self.tabla, self)).grid(row=0,
+        btn_abrir = tk.Button(frame3, text="Abrir", command=lambda: FSP.seleccionar_Proyecto(self.tabla, self)).grid(row=0,
                                                                                                                  column=4,
                                                                                                                  sticky="ns")
 
         btn_elimi = tk.Button(frame3, text="Eliminar", command=lambda: eliminar_item(
             self.tabla)).grid(row=0, column=7)
 
-        cargar_Tabla_Proyecto(self.tabla)
+        FSP.cargar_Tabla_Proyecto(self.tabla)
 
         # Elimina el proyecto seleccionado de la tabla y de la base de datos
         def eliminar_item(tabla):
@@ -470,8 +475,9 @@ class ventana_Actividad(tk.Frame):
         self.nombre = tk.Entry(frame, width=20)
         self.nombre.grid(row=0, column=1)
 
-        lbl_dependencias = tk.Label(frame, text="Dependencias: id,id,...", font=("Times New Roman", 12)).grid(row=0, column=2,
-                                                                                                    sticky="w")
+        lbl_dependencias = tk.Label(frame, text="Dependencias: id,id,...", font=("Times New Roman", 12)).grid(row=0,
+                                                                                                              column=2,
+                                                                                                              sticky="w")
         self.dependencias = tk.Entry(frame, width=20)
         self.dependencias.grid(row=0, column=3)
 
@@ -595,10 +601,12 @@ class ventana_Actividad(tk.Frame):
         btn_gantt = tk.Button(frame, text="Diagram de Gantt", command=lambda: limpiar_Pantalla(self, 2)).grid(row=0,
                                                                                                               column=2)
 
-        btn_Acti_critic = tk.Button(frame, text="Actividades Críticas", command=lambda: limpiar_Pantalla(self, 3)).grid(row=0,
-                                                                                                                        column=4)
+        btn_Acti_critic = tk.Button(frame, text="Actividades Críticas", command=lambda: limpiar_Pantalla(self, 3)).grid(
+            row=0,
+            column=4)
 
-        btn_calendar = tk.Button(frame, text="Feriados",command=feriados).grid(row=0, column=5)
+        btn_calendar = tk.Button(frame, text="Feriados", command=feriados).grid(row=0, column=5)
+
     # Elimina el proyecto seleccionado de la tabla y de la base de datos
     def eliminar_Actividad(self, tabla):
         try:
