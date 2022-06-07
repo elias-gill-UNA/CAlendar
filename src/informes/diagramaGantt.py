@@ -73,12 +73,13 @@ def calcularPosi(matriz, dependencias, nombres, columnas):
     #print("SEPARADOR")
     return definitivo
 
-def DiagramaGantt(nombres, dependencias, duracion, matriz, columnas):
+def DiagramaGantt(nombres, dependencias, duracion, columnas):
     # creacion de matriz
+    global matriz
+    matriz = []
     for i in range(filas):
         matriz.append([0] * columnas)
-    print("MATRIZ COLUMNA",len(matriz[0]))
-    print("MATRIZ FILA",len(matriz))
+
     for i in range(len(nombres)):
         if dependencias[i][0]!="-":
             contador=calcularPosi(matriz,dependencias[i],nombres,columnas)
@@ -104,7 +105,7 @@ def ConseguirDataParaGUI(conexion):
     camCritico.funcionFinalYSuperpoderosa(conexion, listaActividades, listaVacia,objetoCritico, proyecto)
 
     prepararGantt(listaActividades, proyecto.finTemprano)
-    DiagramaGantt(nombres,dependencias,duracion,matriz,columnas)
+    DiagramaGantt(nombres,dependencias,duracion,columnas)
 
     arregloTareasGUI = []
 
