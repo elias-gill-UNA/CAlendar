@@ -9,8 +9,8 @@ horizonte = 365  # Simula 1 año
 ndatos = 20  # Cantidad de actividades
 altura = 10  # Altura de las barras
 actividades = []
-meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
-         "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+meses = ["0", "40", "70", "100", "130", "160", "190",
+         "220", "250", "280", "310", "340"]
 
 # Crea el diagrama
 
