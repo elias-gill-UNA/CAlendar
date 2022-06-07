@@ -73,17 +73,16 @@ def eliminarActividad(conexion, actividadID):
 
         # si una actividad contiene actividadID como dependencia entonces actualizarla
         for actividad in lista: 
-            infoProyecto = proyectManager.getProyectInfo(None, conexion)
-            if actividad.dependencias == '':
-                break
-            aux = dependenciasAEnteros(decifrarDependenciasDelInput(actividad.dependencias)) # dependencias a enteros
-            if actividadID in aux:  
-                index = aux.index(actividadID) 
-                aux.pop(index) 
-                actividad.dependencias = convertirArregloDependenciasAString(aux) # trasnformar dependencias nuevo a string 
+            if actividad.dependencias != "":
+                infoProyecto = proyectManager.getProyectInfo(None, conexion)
+                aux = dependenciasAEnteros(decifrarDependenciasDelInput(actividad.dependencias)) # dependencias a enteros
+                if actividadID in aux:  
+                    index = aux.index(actividadID) 
+                    aux.pop(index) 
+                    actividad.dependencias = convertirArregloDependenciasAString(aux) # trasnformar dependencias nuevo a string 
 
-                activitiesManager.modificarActividad(conexion, actividad.identificador, actividad) # actualizar la actividad
-                db_proyects.actualizarParametro(conexion, 'depCount', infoProyecto.contadorConexiones - 1) 
+                    activitiesManager.modificarActividad(conexion, actividad.identificador, actividad) # actualizar la actividad
+                    db_proyects.actualizarParametro(conexion, 'depCount', infoProyecto.contadorConexiones - 1) 
 
         return True
     except ValueError:
@@ -98,12 +97,13 @@ def decifrarDependenciasDelInput(dependenciasString):
 def dependenciasAEnteros(arregloDependencias):
     arregloEnteros = []
     for dependencia in arregloDependencias:
-        arregloEnteros.append(int(dependencia))
+        if dependencia != '':
+            arregloEnteros.append(int(dependencia))
     return arregloEnteros
 
 #Esta funcion se usar para el display de dependencias en el GUI
 def convertirArregloDependenciasAString(arregloDependencias):
     dependenciasString = ''
     for dependencia in arregloDependencias:
-        dependenciasString += dependencia + ', '
-    return  dependenciasString
+        dependenciasString += str(dependencia) + ','
+    return dependenciasString

@@ -76,10 +76,12 @@ def getListaActividades(conexion): # retorna las dependencias como string
 
 
 def depesEnteros(deps):
-    aux = deps.split(',')
-    for i, valor in enumerate(aux):
-        aux[i] = int(valor)
-    return aux
+    depes = deps.split(',')
+    final = []
+    for index, dep in enumerate(depes):
+        if dep != "":
+            final.append(int(dep))
+    return final
 
 # retorna un matriz con las dependencias autoreferenciadas en vez de id's
 def getListaActividadesAutoreferenciada(conexion):
