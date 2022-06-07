@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 from datetime import datetime
-
+import utilidades.calendario as calendar
 import backend.comprobaciones.verificarEntradas as verificarInput
 import backend.dataBase.activitiesManager as activitiesManager
 import backend.dataBase.proyectManager as proyectManager
@@ -23,17 +23,28 @@ listActividades = 0  # lista de actividades del proyecto cuando se selecciona
 listaActvsconFecha = []
 
 def feriados():
+    def cargar_tabla(tabla):
+        for item in tabla.get_children():
+            tabla.delete(item)
+        feriados= calendar.getListaFeriados(conexion)
+        for feriado in feriados:
+            tabla.insert("", tk.END, text=feriado.identificador, values=(
+                    str(feriado.dia)+"/"+str(feriado.mes), feriado.descripcion))   
+    
+    global conexion
     ventana=tk.Tk()
-    tabla= ttk.Treeview(frame, height=10, columns=("#0","1"))
+    tabla= ttk.Treeview(ventana, height=10, columns=("#0","1"))
+    ventana.geometry("500x400")
+    ventana.resizable(False, False)
 
     tabla.place(x=90, y=180)
-    tabla.grid(row=1, column=0)
+    tabla.grid(row=3, column=0)
 
     # Barra de desplazamiento
     barraDesplazamiento = ttk.Scrollbar(
         ventana, orient=tk.VERTICAL, command=tabla.yview)
     tabla.configure(yscrollcommand=barraDesplazamiento.set)
-    barraDesplazamiento.grid(row=1, column=1, sticky="ns")
+    barraDesplazamiento.grid(row=3, column=1, sticky="ns")
 
     # Tamaño de las columnas
     tabla.column("#0", width=50, anchor=CENTER)
@@ -41,26 +52,47 @@ def feriados():
     tabla.column("#2", width=150, anchor=CENTER)
 
     # Titulos
-    tabla.heading("#0", text="Id")
-    tabla.heading("#1", text="Fecha")
-    tabla.heading("#2", text="Acontecimiento")
+    tabla.heading("#0", text="Id",anchor=CENTER)
+    tabla.heading("#1", text="Fecha",anchor=CENTER)
+    tabla.heading("#2", text="Acontecimiento",anchor=SW)
+    cargar_tabla(tabla)
+
+    fecha=tk.StringVar()
+    lbl_fecha = tk.Label(ventana, text="Fecha", font=("Times New Roman", 12)).grid(row=0,column=0,sticky="w")
+    fecha = DateEntry(ventana, selectmode="day",textvariable=fecha, width=17)
+    fecha.grid(row=0, column=1)
+
+    descri = tk.Label(ventana, text="Descripción:", font=("Times New Roman", 12)).grid(row=1, column=0,sticky="w")
+    descri = tk.Entry(ventana, width=20)
+    descri.grid(row=1, column=1)
+
+    # Botones
+    tk.Button(ventana, text="Eliminar",command=lambda: eliminar_Feriado(tabla)).grid(row=2, column=0)
+    tk.Button(ventana, text="Agregar",command=lambda: crear_Feriado(fecha.get(),descri.get(),tabla)).grid(row=2, column=1)
+
+    def crear_Feriado(fecha,descripcion,tabla):
+        global conexion
+        if descripcion!="":
+            calendar.anadirFeriado(conexion,fecha,descripcion)
+            cargar_tabla(tabla)
     
-    for item in tabla.get_children():
-        tabla.delete(item)
-
-    for feriado in :
-        tabla.insert("", tk.END, text=feriado.identificador, values=(
-                acti.nombre, acti.fechaInicioTemprano))
-
-
-    pass
+    def eliminar_Feriado(tabla):
+        try:
+            global conexion
+            x = tabla.selection()[0]
+            id = tabla.item(tabla.selection())['text']
+            tabla.delete(x)
+            calendar.eliminarFeriado(conexion, id)
+            cargar_tabla(tabla)
+        except IndexError:
+            messagebox.showwarning(
+                "Advertencia", "Seleccione una Actividad para eliminar!")
 
 
 def centrar_Ventana(root, num_Ventana):
     if num_Ventana == 0:
         ancho_ventana = 850
         alto_ventana = 550
-
     elif num_Ventana == 1:
         ancho_ventana = 1050
         alto_ventana = 500
@@ -566,7 +598,7 @@ class ventana_Actividad(tk.Frame):
         btn_Acti_critic = tk.Button(frame, text="Actividades Críticas", command=lambda: limpiar_Pantalla(self, 3)).grid(row=0,
                                                                                                                         column=4)
 
-        btn_calendar = tk.Button(frame, text="Feriados").grid(row=0, column=5)
+        btn_calendar = tk.Button(frame, text="Feriados",command=feriados).grid(row=0, column=5)
     # Elimina el proyecto seleccionado de la tabla y de la base de datos
     def eliminar_Actividad(self, tabla):
         try:

@@ -1,3 +1,4 @@
+from numpy import spacing
 from backend.dataBase.dbFunctions import db_feriados, db_proyects
 from clases.feriados import Feriado
 from datetime import date
@@ -52,8 +53,9 @@ def cargarFeriadosNacionales(id):
 #  funciones sobre los dias feriados en conjunto con la DB  #
 ##############################################################
 
-def anadirFeriado(conexion, dia, mes, descripcion):
-    feriado = Feriado(dia, mes, descripcion)
+def anadirFeriado(conexion,fecha, descripcion):
+    fecha= fecha.split("/")
+    feriado = Feriado(fecha[0], fecha[1], descripcion)
     db_feriados.nuevoFeriado(conexion, feriado)
     return getListaFeriados(conexion)
 

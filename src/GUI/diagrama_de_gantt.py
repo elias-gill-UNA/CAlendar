@@ -1,3 +1,4 @@
+from glob import glob
 import matplotlib.pyplot as plt # instalar : pip install matplotlib
 import numpy as np
 from informes.diagramaGantt import ConseguirDataParaGUI
@@ -62,7 +63,19 @@ def AgregarActividades(conexion, eje):
 
 def AbrirDiagrama(conexion):
     figura, eje = plt.subplots()  # Retorna una figura y un eje\
-
+    
+    global ndatos
+    global actividades
+    global horizonte
+    global altura
+    
+    horizonte = 365  # Simula 1 año
+    ndatos = 20  # Cantidad de actividades
+    altura = 10  # Altura de las barras
+    actividades = []
+    
     AgregarActividades(conexion, eje)
     CrearDiagrama(eje)
     plt.show()
+
+    

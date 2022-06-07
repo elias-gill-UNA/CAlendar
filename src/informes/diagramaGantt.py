@@ -50,26 +50,35 @@ def prepararGantt(listaActividades, duracionProyectoSinFeriados):
         contador=contador+1
 
     columnas = duracionProyectoSinFeriados
+    print("DURACION",columnas)
     filas = len(nombres)
+    print("FILAS",filas)
 
 def calcularPosi(matriz, dependencias, nombres, columnas):
     contador = 0
     definitivo = -1
+    #print("len dependencias",len(dependencias))
+    #print("len matriz[0]",len(matriz[0]))
+    '''for f in range(0,len(nombres)):
+        for c in range(0,columnas):
+            print(matriz[f][c],end=" ")
+        print("\n")'''
     for k in range(len(dependencias)):
         indice = nombres.index(dependencias[k])
-        for l in range(columnas):
-            if matriz[indice][l]==1:
-                contador=l
+        for j in range(columnas):
+            if matriz[indice][j]==1:
+                contador=j
         if(definitivo<contador):
             definitivo=contador
-
+    #print("SEPARADOR")
     return definitivo
 
 def DiagramaGantt(nombres, dependencias, duracion, matriz, columnas):
     # creacion de matriz
     for i in range(filas):
         matriz.append([0] * columnas)
-
+    print("MATRIZ COLUMNA",len(matriz[0]))
+    print("MATRIZ FILA",len(matriz))
     for i in range(len(nombres)):
         if dependencias[i][0]!="-":
             contador=calcularPosi(matriz,dependencias[i],nombres,columnas)
@@ -111,11 +120,9 @@ def ConseguirDataParaGUI(conexion):
         
         color = 0
 
-        print(nombres[i])
 
         for actividad in objetoCritico.actividadesCriticas:        
             if(listaActividades[i].identificador == actividad.identificador):
-                print(listaActividades[i].identificador)
                 color = 1
                 break
 
