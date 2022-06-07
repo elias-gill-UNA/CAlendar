@@ -19,7 +19,6 @@ def __getProyectsList():
 
 def exportarProyecto(id):
     os.system(f'cp {path}/{id}.db ~/{id}.db')
-    print("si")
     return True
 
 # automatiza eleccion de ID para el proyecto
