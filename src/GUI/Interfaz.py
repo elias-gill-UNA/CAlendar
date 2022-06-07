@@ -54,6 +54,8 @@ def limpiar_Pantalla(framePrincipal, num_Ventana):
         ventana_Actividad(root)
         framePrincipal.destroy()
     elif num_Ventana == 1:
+        if conexion:
+            proyectManager.cerrarProyecto(conexion)
         ventana_Proyecto(root)
         framePrincipal.destroy()
     elif num_Ventana == 2:
@@ -139,23 +141,29 @@ def mostrar_Actividades_Criticas(objcritico):
     ventana.title("Actividades Críticas")
     centrar_Ventana(ventana, 3)
     frame = tk.Frame(ventana)
-    lbl_critico = tk.Label(
-        ventana, text="Cantidad de Caminos Críticos:"+" "+str(objcritico.cantidadCritico),font=("Courier", 14)).grid(row=0, column=0)
+    tk.Label(ventana, text="Cantidad de Caminos Críticos:"+" "+str(objcritico.cantidadCritico),font=("Courier", 14)).grid(row=0, column=0)
     
     frame.grid(row=1, column=0)
+    
+    tk.Label(frame, text="Duración del Proyecto (días labroales): "+ str(objProyecto.finTemprano)).grid(row=0, column=0)
+    tk.Label(frame, text="Fecha de Inicio del Proyecto: "+ str(objProyecto.fechaInicio)).grid(row=1, column=0)
+    tk.Label(frame, text="Fecha de Finalización prevista: "+ str(objProyecto.fechaFinTardio)).grid(row=2, column=0)
+    tk.Label(frame, text="\nLas fechas se calculan teniendo en cuenta los feriados y dias no laborales.").grid(row=3, column=0)
+
+
     lbl_critico = tk.Label(
-        frame, text="Lista de actividades del Camino Crítico").grid(row=0, column=0)
+        frame, text="Lista de actividades del Camino Crítico").grid(row=4, column=0)
 
     # Crea la tabla     ID / Nombre / Fecha Inicio  /  Duracion
     tabla1 = ttk.Treeview(frame, height=10, columns=("#0", "#1", "#2"))
     tabla1.place(x=90, y=180)
-    tabla1.grid(row=1, column=0)
+    tabla1.grid(row=5, column=0)
 
     # Barra de desplazamiento
     barraDesplazamiento = ttk.Scrollbar(
         frame, orient=tk.VERTICAL, command=tabla1.yview)
     tabla1.configure(yscrollcommand=barraDesplazamiento.set)
-    barraDesplazamiento.grid(row=1, column=1, sticky="ns")
+    barraDesplazamiento.grid(row=5, column=1, sticky="ns")
 
     # Tamaño de las columnas
     tabla1.column("#0", width=150, anchor=CENTER)
@@ -164,10 +172,10 @@ def mostrar_Actividades_Criticas(objcritico):
     tabla1.column("#3", width=250, anchor=CENTER)
 
     # Titulos
-    tabla1.heading("#0", text="Fecha Fin Temprano")
+    tabla1.heading("#0", text="Id")
     tabla1.heading("#1", text="Nombre")
-    tabla1.heading("#2", text="Fecha Inicio Temprano")
-    tabla1.heading("#3", text="Fecha Fin Temprano")
+    tabla1.heading("#2", text="Fecha Inicio")
+    tabla1.heading("#3", text="Fecha Fin")
 
     for item in tabla1.get_children():
         tabla1.delete(item)
@@ -176,19 +184,19 @@ def mostrar_Actividades_Criticas(objcritico):
             tabla1.insert("", tk.END, text=i.identificador, values=(
                 i.nombre, i.fechaInicioTemprano, i.fechaFinTemprano))
     
-    lbl_critico = tk.Label(
-        frame, text="Caminos Críticos").grid(row=0, column=2)
+    tk.Label(
+        frame, text="Caminos Críticos").grid(row=4, column=2)
     
     tabla2 = ttk.Treeview(frame, height=10, columns=())
 
     tabla2.place(x=90, y=180)
-    tabla2.grid(row=1, column=2)
+    tabla2.grid(row=5, column=2)
 
     # Barra de desplazamiento
     barraDesplazamiento = ttk.Scrollbar(
         frame, orient=tk.VERTICAL, command=tabla2.yview)
     tabla2.configure(yscrollcommand=barraDesplazamiento.set)
-    barraDesplazamiento.grid(row=1, column=3, sticky="ns")
+    barraDesplazamiento.grid(row=5, column=3, sticky="ns")
 
     # Tamaño de las columnas
     tabla2.column("#0", width=150, anchor=CENTER)
